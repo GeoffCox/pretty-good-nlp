@@ -1,0 +1,57 @@
+import { resolveSharedReferences } from "../referenceResolver";
+import { Example, Intent } from "../types";
+
+const numberPhrases = ["one", "two", "three"];
+const sizePhrases = ["small", "medium", "large", "extra-large"];
+const phonePatterns = ["###-####", "###-###-####"];
+const dateRegularExpressions = ["\\d{1,2}\\/\\d{1,2}(\\/(\\d{4}|\\d{2}))?"];
+
+describe("referenceResolver", () => {
+  describe("resolveSharedReferences", () => {
+    it("resolved shared phrases", () => {
+      const intent: Intent = {
+        name: "Test Intent",
+        examples: [
+          {
+            canonicalForm: "<example>",
+            parts: [{ phrases: ["$ref=numbers", "$ref=sizes"] }],
+          },
+        ],
+        sharedPhrases: {
+          numbers: numberPhrases,
+          sizes: sizePhrases,
+        },
+      };
+      resolveSharedReferences(intent);
+
+      const actual = intent.examples?.[0]?.parts?.[0]?.phrases;
+
+      expect(actual).toBeDefined();
+      expect(actual).toEqual([...numberPhrases, ...sizePhrases]);      
+    });
+    it("no-op when shared refs undefined", () => {
+      const intent: Intent = {
+        name: "Test Intent",
+        examples: [{ canonicalForm: "<example>", parts: [] }],
+      };
+      resolveSharedReferences(intent);
+    });
+    it("no-op when examples undefined", () => {
+      const intent: Intent = {
+        name: "Test Intent",
+        examples: undefined as unknown as Example[],
+        sharedPhrases: {
+          numbers: numberPhrases,
+          sizes: sizePhrases,
+        },
+        sharedPatterns: {
+          phoneNumbers: phonePatterns,
+        },
+        sharedRegularExpressions: {
+          dates: dateRegularExpressions,
+        },
+      };
+      resolveSharedReferences(intent);
+    });
+  });
+});

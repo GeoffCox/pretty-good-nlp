@@ -1,0 +1,49 @@
+{
+  "name": "@geoffcox/pretty-good-nlp",
+  "version": "1.0.0",
+  "description": "A splitter for Svelte that leverages CSS grid templates for simple and consistent resizing.",
+  "author": "Geoff Cox",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/GeoffCox/svelte-splitter/issues"
+  },
+  "homepage": "https://github.com/GeoffCox/svelte-splitter/blob/main/package/README.md",
+  "keywords": [
+    "nlp",
+    "natural language processings",
+    "recognizer",
+    "text recognition",
+    "regular expressions",
+    "trie search",
+    "machine learning",
+    "typescript"
+  ],
+  "module": "dist/index.mjs",
+  "main": "dist/index.js",
+  "types": "src/index.d.ts",
+  "files": [    
+    "dist"
+  ],
+  "scripts": {
+    "build": "rollup -c",
+    "test": "jest ./src",
+    "coverage": "jest ./src --coverage"
+  },
+  "devDependencies": {
+    "@types/jest": "^26.0.24",
+    "@types/lodash": "^4.14.171",
+    "jest": "^27.0.6",
+    "jest-cli": "^27.0.6",
+    "rollup": "^2.56.2",
+    "ts-jest": "^27.0.3",
+    "typescript": "^4.2.4"
+  },
+  "dependencies": {
+    "@rollup/plugin-commonjs": "^20.0.0",
+    "@rollup/plugin-node-resolve": "^13.0.4",
+    "@rollup/plugin-typescript": "^8.2.5",
+    "lodash": "^4.17.21",
+    "rollup-plugin-dts": "^3.0.2",
+    "tslib": "^2.3.1"
+  }
+}

@@ -1,0 +1,65 @@
+import { tokenize } from "../../package/src/basicTokenizer";
+import * as readline from "readline";
+import { vacationIntent, vacationShared } from "./vacationIntent";
+import { resolveIntentReferences } from "../../package/src/referenceResolver";
+import { recognize } from "../../package/src/recognizer";
+import { ExamplePartRecognition, ExampleRecognition } from "../../package/src/types";
+
+console.log("Hello Ernie");
+
+const logExamplePartRecognition = (
+  part: ExamplePartRecognition,
+  text: string
+) => {
+  if (part.matches.length > 0) {
+    console.log(
+      `    ${part.matches
+        .map((match) => text.substr(match.start, match.length))
+        .join("|")}`
+    );
+  }
+};
+
+const logExampleRecognition = (example: ExampleRecognition, text: string) => {
+  console.log(`  ${example.name} ${example.score}`);
+  example.parts
+    .filter(Boolean)
+    .forEach((part) => logExamplePartRecognition(part, text));
+};
+
+const run = async () => {
+  const intent = resolveIntentReferences(vacationIntent, vacationShared);
+
+  const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout,
+  });
+
+  let shouldContinue = true;
+  while (shouldContinue) {
+    await new Promise<void>((resolve) => {
+      rl.question(`>`, (text: string) => {
+        if (text) {
+          const recognition = recognize(text, intent, tokenize);
+          console.log(`${recognition.name} (${recognition.score})`);
+          Object.keys(recognition.variableValues).forEach((key) => {
+            const values = recognition.variableValues[key].join("|");
+            console.log(`    ${key} = ${values}`);
+          });
+
+          recognition.details.examples.forEach((example) =>
+            logExampleRecognition(example, text)
+          );
+        } else {
+          shouldContinue = false;
+        }
+
+        resolve();
+      });
+    });
+  }
+
+  rl.close();
+};
+
+run();
