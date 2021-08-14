@@ -1,1 +1,1 @@
-export { recognize } from "./recognizer";
+export * from "./recognizer";

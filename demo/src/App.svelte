@@ -1,8 +1,10 @@
-<script lang="typescript">
+<script lang="ts">
   import { coffeeIntent } from "./coffeeIntent";
   import { recognize } from "@geoffcox/pretty-good-nlp";
   import type { IntentRecognition } from "@geoffcox/pretty-good-nlp";
 
+  import IntentRecognitionCard from "./IntentRecognitionCard.svelte";
+  import UtteranceInput from "./UtteranceInput.svelte";
   import RecognitionLabel from "./RecognitionLabel.svelte";
 
   const intent = coffeeIntent;
@@ -11,12 +13,12 @@
   let score = 0;
   let scoreMetrics = '';
 
-  let recognition : IntentRecognition;
+  let intentRecognition : IntentRecognition;
 
   const recognizeInput = () => {
-    recognition = recognize(inputText, intent);        
-    score = recognition.score;    
-    const metrics = recognition.details.bestExample.scoreMetrics;
+    intentRecognition = recognize(inputText, intent);        
+    score = intentRecognition.score;    
+    const metrics = intentRecognition.details.bestExample.scoreMetrics;
     scoreMetrics = Object.keys(metrics).map((key) => `${key}:${metrics[key]}`).join('|');
   };
 </script>
@@ -25,11 +27,9 @@
   <div class="app">
     <div class="header">@geoffcox/pretty-good-nlp demo</div>
     <div class="content">
-      <input type="text" bind:value={inputText} placeholder="Type something" />
-      <button on:click={() => recognizeInput()}>Go</button>
-      <div>{score}</div>
-      <div>{scoreMetrics}</div>
-      <RecognitionLabel exampleRecognition={recognition?.details?.bestExample} text={inputText} />
+      <UtteranceInput bind:text={inputText} on:recognize={() => recognizeInput()} />     
+      <IntentRecognitionCard intentRecognition={intentRecognition} />
+      <RecognitionLabel exampleRecognition={intentRecognition?.details?.bestExample} text={inputText} />
     </div>
     <div class="footer" />
   </div>
@@ -77,7 +77,7 @@
     width: 100%;
     outline: none;
     overflow: hidden;
-    grid-area: content;
+    grid-area: content;    
   }
 
   .footer {
