@@ -1,8 +1,10 @@
 <script lang="ts">
   import * as _ from "lodash";
   import type { IntentRecognition } from "@geoffcox/pretty-good-nlp";
+  import ExampleRecognitionCard from "./ExampleRecognitionCard.svelte";
 
   export let intentRecognition: IntentRecognition;
+  export let text: string;
 
   $: score = intentRecognition ? Math.round(intentRecognition.score * 100) : 0;
   $: variables = intentRecognition
@@ -21,13 +23,20 @@
           {intentRecognition.name}
         </div>
         <div class="variables">
-          {#each variables as variable}            
-              <div class="variable-name">
-                {variable[0]}
-              </div>
-              <div class="variable-value">
-                {variable[1].join("|")}
-              </div>            
+          {#each variables as variable}
+            <div class="variable-name">
+              {variable[0]}
+            </div>
+            <div class="variable-value">
+              {variable[1].join(" | ")}
+            </div>
+          {/each}
+        </div>
+        <div class="examples">
+          {#each intentRecognition.details.examples as exampleRecognition}
+            <div class="example">
+              <ExampleRecognitionCard {exampleRecognition} {text} />
+            </div>
           {/each}
         </div>
       </div>
@@ -61,7 +70,7 @@
     grid-template-rows: auto;
     margin-left: 20px;
   }
-  .intent-name {    
+  .intent-name {
     display: grid;
     justify-content: start;
     align-content: center;
@@ -81,5 +90,9 @@
   }
   .variable-value::before {
     content: ":";
+  }
+  .example {
+    margin: 10px 10px 10px 20px;
+    padding: 10px;
   }
 </style>

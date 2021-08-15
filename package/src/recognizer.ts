@@ -57,16 +57,17 @@ const scoreExample = (
   const { parts, neverParts } = example;
   
   let matchCount = 0;
-  let possibleWeightSum = 0.0;
+  let partWeightSum = 0.0;
   let matchWeightSum = 0.0;
   let inOrderCount = 0;
   let lastEnd = -1;
   const bestMatches: CharacterRange[] = [];
   parts.forEach((part) => {
-    possibleWeightSum += part.weight !== undefined ? part.weight : 1;   
+    const weight = part.weight !== undefined ? part.weight : 1;
+    partWeightSum += weight; 
     if (part.matches.length > 0) {
       matchCount++;
-      matchWeightSum += part.weight !== undefined ? part.weight : 1;
+      matchWeightSum += weight;
       if (lastEnd == -1 || part.matches[0].start >= lastEnd) {
         inOrderCount++;
       }
@@ -86,13 +87,13 @@ const scoreExample = (
     (neverPart) => neverPart.matches.length > 0
   ).length;
 
-  // possible = weighted point per part + 1/2 point for every part in order  
-  const possibleScore = Math.max(0, possibleWeightSum + 0.5 * parts.length);
+  // possible = sum of part weights + 1/2 point for every match in order  
+  const possibleScore = Math.max(0, partWeightSum + 0.5 * matchCount);
 
-  // actual = weighted point per match + 1/2 point for each match in order - 1/2 point for each token not matched
+  // actual = sum of match weights + 1/2 point for each match in order - 1/4 point for each token not matched
   const actualScore =
     neverMatchCount === 0
-      ? Math.max(0, matchWeightSum + 0.5 * inOrderCount - 0.5 * nonMatchCount)
+      ? Math.max(0, matchWeightSum + 0.5 * inOrderCount - 0.25 * nonMatchCount)
       : 0;
 
   const score = possibleScore > 0 ? Math.min(1, Math.max(0, actualScore / possibleScore)) : 0;      
@@ -105,7 +106,7 @@ const scoreExample = (
       inOrderCount,
       nonMatchCount,
       neverMatchCount,
-      possibleWeightSum,
+      partWeightSum,
       matchWeightSum,      
       possibleScore,
       actualScore

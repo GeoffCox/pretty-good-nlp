@@ -35,8 +35,8 @@
         "--line-left": `${match.start * characterWidth}px`,
         "--line-top": `${s * 5}px`,
         "--line-width": `${match.length * characterWidth}px`,
-        "--line-height": '5px',
-        "--line-color": s > 0 ? 'gray' : 'green',
+        "--line-height": "3px",
+        "--line-color": s > 0 ? "gray" : "green",
       };
     })
   );
@@ -50,21 +50,19 @@
     )
   ) as string[][];
 
-  $: console.log(matchesStyles);
+  $: linesStyles = `--lines-height:${matches.length * 5}px;`;
 </script>
 
 <div class="recognition-label">
   <div class="measure-character" bind:this={measureCharacter}>W</div>
-  <div>{exampleRecognition?.name}</div>
   <div class="utterance">{text}</div>
-
-  {#each matchesStyles as matchSetStyles}
-      <div class="lines">
-        {#each matchSetStyles as matchStyle}          
-          <div class="line" style={matchStyle} />
-        {/each}
-      </div>
-  {/each}
+  <div class="lines" style={linesStyles}>
+    {#each matchesStyles as matchSetStyles}
+      {#each matchSetStyles as matchStyle}
+        <div class="line" style={matchStyle} />
+      {/each}
+    {/each}
+  </div>
 </div>
 
 <style>
@@ -74,8 +72,10 @@
   }
 
   .measure-character {
+    position: absolute;
     width: fit-content;
     height: fit-content;
+    left: -10000px;
     margin: 0;
     padding: 0;
   }
@@ -89,7 +89,7 @@
     position: relative;
     margin: 0;
     padding: 0;    
-    background-color: aliceblue;
+    height: var(--lines-height);
   }
 
   .line {

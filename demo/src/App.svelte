@@ -1,25 +1,23 @@
 <script lang="ts">
-  import { coffeeIntent } from "./coffeeIntent";
-  import { recognize } from "@geoffcox/pretty-good-nlp";
+  //import { coffeeIntent } from "./coffeeIntent";
+  import { recognize, resolveIntentReferences } from "@geoffcox/pretty-good-nlp";
   import type { IntentRecognition } from "@geoffcox/pretty-good-nlp";
 
   import IntentRecognitionCard from "./IntentRecognitionCard.svelte";
   import UtteranceInput from "./UtteranceInput.svelte";
   import RecognitionLabel from "./RecognitionLabel.svelte";
+import { vacationIntent, vacationShared } from "./vacationIntent";
 
-  const intent = coffeeIntent;
+  const intent = resolveIntentReferences(vacationIntent, vacationShared);
 
-  let inputText = "I would like a latte grande latte vanilla";
-  let score = 0;
-  let scoreMetrics = '';
+  let utteranceText = "I will be on vacation from 4/10 to 4/12/2021";
 
+  let recognizedText = '';
   let intentRecognition : IntentRecognition;
 
-  const recognizeInput = () => {
-    intentRecognition = recognize(inputText, intent);        
-    score = intentRecognition.score;    
-    const metrics = intentRecognition.details.bestExample.scoreMetrics;
-    scoreMetrics = Object.keys(metrics).map((key) => `${key}:${metrics[key]}`).join('|');
+  const recognizeInput = (text: string) => {
+    recognizedText = text;
+    intentRecognition = recognize(text, intent);        
   };
 </script>
 
@@ -27,9 +25,8 @@
   <div class="app">
     <div class="header">@geoffcox/pretty-good-nlp demo</div>
     <div class="content">
-      <UtteranceInput bind:text={inputText} on:recognize={() => recognizeInput()} />     
-      <IntentRecognitionCard intentRecognition={intentRecognition} />
-      <RecognitionLabel exampleRecognition={intentRecognition?.details?.bestExample} text={inputText} />
+      <UtteranceInput bind:text={utteranceText} on:recognize={(event) => recognizeInput(event.detail.text)} />     
+      <IntentRecognitionCard intentRecognition={intentRecognition} text={recognizedText} />      
     </div>
     <div class="footer" />
   </div>
@@ -39,12 +36,12 @@
   /* Absolute positioning provides an SPA layout */
   .root {
     box-sizing: border-box;
-    position: absolute;
+    /* position: absolute;
     top: 0;
     right: 0;
     bottom: 0;
     left: 0;
-    overflow: hidden;
+    overflow: hidden; */
     padding: 0;
     margin: 0;
   }
