@@ -6,7 +6,7 @@
   export let intentRecognition: IntentRecognition;
   export let text: string;
 
-  $: score = intentRecognition ? Math.round(intentRecognition.score * 100) : 0;
+  $: score = intentRecognition ? Math.floor(intentRecognition.score * 100) : 0;
   $: variables = intentRecognition
     ? _.toPairs(intentRecognition.variableValues)
     : undefined;

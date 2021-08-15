@@ -102,12 +102,24 @@ export type ExamplePartRecognition = {
   variable?: string;
 };
 
+export type ExampleScoreMetrics = {
+  parts: number;
+  matches: number;
+  inOrder: number;
+  unmatched: number;
+  neverMatches: number;
+  partWeightSum: number;
+  matchWeightSum: number;
+  possibleScore: number;
+  actualScore: number;
+}
+
 export type ExampleRecognition = {
   name?: string;
   parts: ExamplePartRecognition[];
   neverParts: ExamplePartRecognition[];
   score: number;
-  scoreMetrics: Record<string, number>;
+  scoreMetrics: ExampleScoreMetrics;
 };
 
 export type IntentRecognition = {

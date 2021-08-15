@@ -1,37 +1,72 @@
 <script lang="ts">
-  import * as _ from "lodash";
-  export let scoreMetrics: Record<string, number>;
+  import type { ExampleScoreMetrics } from "@geoffcox/pretty-good-nlp";
 
-  $: metrics = scoreMetrics ? _.toPairs(scoreMetrics) : undefined;
+  import * as _ from "lodash";
+  export let scoreMetrics: ExampleScoreMetrics;
 </script>
 
-<div class="score-metrics">
+<div class="metrics">
   {#if scoreMetrics}
-    {#each metrics as metric}
-      <div class="metric-name">
-        {metric[0]}:
-      </div>
+    <div class="metric">
       <div class="metric-value">
-        {metric[1]}
+        {scoreMetrics.matches}/{scoreMetrics.parts}
       </div>
-    {/each}
+      <div class="metric-description">matches</div>
+    </div>
+    <div class="metric">
+      <div class="metric-value">
+        {scoreMetrics.inOrder}/{scoreMetrics.matches}
+      </div>
+      <div class="metric-description">matches in order</div>
+    </div>
+
+    <div class="metric">
+      <div class="metric-value">
+        {scoreMetrics.unmatched}
+      </div>
+      <div class="metric-description">unmatched</div>
+    </div>
+    <div class="metric">
+      <div class="metric-value">
+        {scoreMetrics.neverMatches}
+      </div>
+      <div class="metric-description">never matches</div>
+    </div>
+    <div class="metric">
+      <div class="metric-value">
+        {scoreMetrics.matchWeightSum}/{scoreMetrics.partWeightSum}
+      </div>
+      <div class="metric-description">matched weight</div>
+    </div>
+    <div class="metric">
+      <div class="metric-value">
+        {scoreMetrics.actualScore}/{scoreMetrics.possibleScore}
+      </div>
+      <div class="metric-description">score</div>
+    </div>
   {/if}
 </div>
 
 <style>
-  .score-metrics {
+  .metrics {
     font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
     font-size: 10pt;
     display: grid;
-    grid-template-columns: auto auto;
+    grid-template-columns: auto;
     grid-template-rows: auto;
     justify-content: start;
+    border-left: 1px solid #efefef;
+    padding: 2px;
+    margin-left: 15px;    
   }
-  .metric-name {
-    font-weight: bold;
+  .metric {
     padding: 2px;
   }
   .metric-value {
-      padding: 2px;
+    display: inline;
+    font-weight: bold;
+  }
+  .metric-description {
+    display: inline;
   }
 </style>

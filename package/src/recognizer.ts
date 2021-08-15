@@ -9,6 +9,7 @@ import {
   MatchSortFactory,
   IntentRecognition,
   Tokenizer,
+  ExampleScoreMetrics,
 } from "./types";
 import { tokenize as basicTokenize } from "./basicTokenizer";
 import { createBasicMatchSort } from "./basicMatchSort";
@@ -45,15 +46,10 @@ const findPartMatches = (
   };
 };
 
-type MatchScore = {
-  score: number;
-  metrics: Record<string, number>;
-};
-
 const scoreExample = (
   example: Pick<ExampleRecognition, "parts" | "neverParts">,
   textTokenMap: TokenMap
-): MatchScore => {
+): {score: number, metrics: ExampleScoreMetrics} => {
   const { parts, neverParts } = example;
   
   let matchCount = 0;
@@ -101,13 +97,13 @@ const scoreExample = (
   return {
     score,
     metrics: {
-      partCount: parts.length,
-      matchCount,
-      inOrderCount,
-      nonMatchCount,
-      neverMatchCount,
+      parts: parts.length,
+      matches: matchCount,
+      inOrder: inOrderCount,
+      unmatched: nonMatchCount,
+      neverMatches: neverMatchCount,
       partWeightSum,
-      matchWeightSum,      
+      matchWeightSum,
       possibleScore,
       actualScore
     },

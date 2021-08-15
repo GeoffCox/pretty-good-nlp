@@ -1,7 +1,6 @@
-
 import * as CharacterRanges from "./characterRange";
 import * as TokenRanges from "./tokenRange";
-import { orderBy } from "lodash";
+import * as _ from "lodash";
 
 type CharacterRange = CharacterRanges.CharacterRange;
 type TokenRange = TokenRanges.TokenRange;
@@ -104,7 +103,7 @@ export const validate = (tokenMap: TokenMap) => {
     throw new Error("The characterRanges array is undefined.");
   }
 
-  const orderedRanges = orderBy(characterRanges, ["start", "end"]);
+  const orderedRanges = _.orderBy(characterRanges, ["start", "end"]);
   let index = -1;
   for (let i = 0; i < orderedRanges.length; i++) {
     const characterRange = orderedRanges[i];

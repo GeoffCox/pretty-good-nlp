@@ -7,7 +7,7 @@
     export let exampleRecognition: ExampleRecognition;
     export let text: string;
   
-    $: score = exampleRecognition ? Math.round(exampleRecognition.score * 100) : 0;    
+    $: score = exampleRecognition ? Math.floor(exampleRecognition.score * 100) : 0;    
   </script>
   
   <div>
