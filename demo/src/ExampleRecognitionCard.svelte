@@ -58,7 +58,7 @@
       justify-content: start;
       align-content: center;
       font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-      font-size: 14pt;
+      font-size: 14pt;            
     }   
   </style>
   

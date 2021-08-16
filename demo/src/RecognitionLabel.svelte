@@ -83,6 +83,7 @@
   .utterance {
     margin: 0;
     padding: 0;
+    white-space: nowrap;
   }
 
   .lines {

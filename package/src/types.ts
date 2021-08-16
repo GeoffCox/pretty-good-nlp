@@ -102,16 +102,15 @@ export type ExamplePartRecognition = {
   variable?: string;
 };
 
-export type ExampleScoreMetrics = {
-  parts: number;
-  matches: number;
-  inOrder: number;
-  unmatched: number;
-  neverMatches: number;
+export type ExampleScoreMetrics = {  
+  partCount: number;  
+  matchedPartCount: number;
+  inOrderMatchedPartCount: number;
+  matchedNeverPartCount: number;
   partWeightSum: number;
-  matchWeightSum: number;
-  possibleScore: number;
-  actualScore: number;
+  matchedPartWeightSum: number;
+  tokenCount: number;
+  matchedTokenCount: number;
 }
 
 export type ExampleRecognition = {

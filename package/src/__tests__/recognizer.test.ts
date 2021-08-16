@@ -200,11 +200,12 @@ describe("recognizer modules", () => {
         neverParts: [],
       };
 
-      // possible: 4.5 = 3 parts + 1/2 for each in order
-      // actual: 4 = 3 parts + 1/2 for 3 parts in order - 1/4 for 2 non-matched tokens
-      // expected: 0.8888888888888888
+      // weight: 3/3 = 1
+      // out of order = 0/3 * 0.25 = 0
+      // noise = 2/9 * 0.25 = -0.0555555555555556
+      // = 0.9444444444444444
       const actual = scoreExample(example, testTextTokenMap);
-      expect(Math.round(actual.score * 100)).toEqual(89);
+      expect(Math.floor(actual.score * 100)).toEqual(94);
     });
     it("returns score for matches and partial non-matches", () => {
       const example = {
@@ -225,11 +226,12 @@ describe("recognizer modules", () => {
         neverParts: [],
       };
 
-      // possible: 4.5 = 3 parts + 1/2 for each in order
-      // actual: 4 = 3 parts + 1/2 for 3 parts in order - 1/4 for 2 non-matched tokens
-      // expected: 0.8888888888888888
+      // weight: 3/3 = 1
+      // out of order: 0/3 * 0.25 = 0
+      // noise: 2/9 * 0.25: 0.0555555555555556
+      // score: 0.9444444444444444
       const actual = scoreExample(example, testTextTokenMap);
-      expect(Math.round(actual.score * 100)).toEqual(89);
+      expect(Math.floor(actual.score * 100)).toEqual(94);
     });
     it("returns score for weighted part matches", () => {
       const example = {
@@ -249,11 +251,12 @@ describe("recognizer modules", () => {
         neverParts: [],
       };
 
-      // possible: 6.5 = 3 part weights (0 + 4 + 1) + 1/2 for each in order
-      // actual: 6 = 3 parts (0 + 4 + 1) + 1/2 for 3 parts in order - 1/4 for 2 non-matched tokens
-      // expected: 0.9230769230769231
+      // weight = 5/5 = 1
+      // - 0/3 out of order * 0.25 = 0
+      // - 2/9 noise * 0.25 = -0.0555555555555556
+      // = 0.9444444444444444
       const actual = scoreExample(example, testTextTokenMap);
-      expect(Math.round(actual.score * 100)).toEqual(92);
+      expect(Math.floor(actual.score * 100)).toEqual(94);
     });
     it("returns score for ordered matches", () => {
       const example = {
@@ -275,10 +278,11 @@ describe("recognizer modules", () => {
       };
 
       const actual = scoreExample(example, testTextTokenMap);
-      // possible: 6 = 4 parts + 1/2 for each in order
-      // actual: 5 = 4 parts + 1/2 for 2 parts in order
-      // expected: 0.8333333333333333
-      expect(Math.round(actual.score * 100)).toEqual(83);
+      // score: 4/4 weight = 1
+      // -= 2/4 out of order = -.125
+      // -= 0/9 noise = 0
+      // = 0.875
+      expect(Math.floor(actual.score * 100)).toEqual(87);
     });
     it("returns metrics", () => {
       const example = {
@@ -301,16 +305,15 @@ describe("recognizer modules", () => {
         ],
       };
 
-      const expected = {
-        actualScore: 0,
-        inOrder: 2,
-        matches: 3,
-        matchWeightSum: 18,
-        neverMatches: 1,
-        unmatched: 2,
-        parts: 3,
-        possibleScore: 19.5,
+      const expected = {        
+        inOrderMatchedPartCount: 2,
+        matchedNeverPartCount: 1,
+        matchedPartCount: 3,
+        matchedPartWeightSum: 18,        
+        matchedTokenCount: 7,
+        partCount: 3,        
         partWeightSum: 18,
+        tokenCount: 9
       };
 
       const actual = scoreExample(example, testTextTokenMap);
@@ -481,10 +484,10 @@ describe("recognizer modules", () => {
 
       const actual = recognizeExample(example, testTextTokenMap, tokenize);
 
-      // possible: 3 = 2 parts + 1/2 for each in order
-      // actual: 1.75 = 2 parts + 1/2 for 2 parts in order - 1.4 for 5 unmatched
-      // expected: 0.5833333333333334
-      expect(Math.round(actual.score * 100)).toEqual(58);
+      // score = 2/2 = 1 (matched part weight percent)
+      // score -= 0/2 out of order = 1
+      // noise -= 5/9 non matched tokens = 0.8611111111111112      
+      expect(Math.floor(actual.score * 100)).toEqual(86);
       expect(actual.name).toEqual(example.canonicalForm);
       expect(actual.parts).toEqual([
         {
@@ -604,15 +607,14 @@ Object {
       ],
       "score": 1,
       "scoreMetrics": Object {
-        "actualScore": 4.5,
-        "inOrder": 3,
-        "matchWeightSum": 3,
-        "matches": 3,
-        "neverMatches": 0,
+        "inOrderMatchedPartCount": 3,
+        "matchedNeverPartCount": 0,
+        "matchedPartCount": 3,
+        "matchedPartWeightSum": 3,
+        "matchedTokenCount": 9,
+        "partCount": 3,
         "partWeightSum": 3,
-        "parts": 3,
-        "possibleScore": 4.5,
-        "unmatched": 0,
+        "tokenCount": 9,
       },
     },
     "examples": Array [
@@ -659,15 +661,14 @@ Object {
         ],
         "score": 1,
         "scoreMetrics": Object {
-          "actualScore": 4.5,
-          "inOrder": 3,
-          "matchWeightSum": 3,
-          "matches": 3,
-          "neverMatches": 0,
+          "inOrderMatchedPartCount": 3,
+          "matchedNeverPartCount": 0,
+          "matchedPartCount": 3,
+          "matchedPartWeightSum": 3,
+          "matchedTokenCount": 9,
+          "partCount": 3,
           "partWeightSum": 3,
-          "parts": 3,
-          "possibleScore": 4.5,
-          "unmatched": 0,
+          "tokenCount": 9,
         },
       },
       Object {
@@ -692,15 +693,14 @@ Object {
         ],
         "score": 0,
         "scoreMetrics": Object {
-          "actualScore": 0,
-          "inOrder": 0,
-          "matchWeightSum": 0,
-          "matches": 0,
-          "neverMatches": 0,
+          "inOrderMatchedPartCount": 0,
+          "matchedNeverPartCount": 0,
+          "matchedPartCount": 0,
+          "matchedPartWeightSum": 0,
+          "matchedTokenCount": 0,
+          "partCount": 3,
           "partWeightSum": 3,
-          "parts": 3,
-          "possibleScore": 3,
-          "unmatched": 9,
+          "tokenCount": 9,
         },
       },
     ],
