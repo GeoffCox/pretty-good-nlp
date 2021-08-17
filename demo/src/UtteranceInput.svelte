@@ -9,6 +9,12 @@
       text,
     });
   };
+
+  const onKeyPress = (event: KeyboardEvent) => {
+    if (event.key === 'Enter') {
+      onRecognize();
+    }
+  }
 </script>
 
 <div class="utterance-input">
@@ -16,6 +22,7 @@
     type="text"
     bind:value={text}
     placeholder="Type something to recognize"
+    on:keypress={onKeyPress}
   />
   <button on:click={() => onRecognize()}>Recognize</button>
 </div>

@@ -1,16 +1,17 @@
 <script lang="ts">
-  //import { coffeeIntent } from "./coffeeIntent";
+  import { coffeeIntent } from "./coffeeIntent";
   import { recognize, resolveIntentReferences } from "@geoffcox/pretty-good-nlp";
   import type { IntentRecognition } from "@geoffcox/pretty-good-nlp";
 
   import IntentRecognitionCard from "./IntentRecognitionCard.svelte";
   import UtteranceInput from "./UtteranceInput.svelte";
   import RecognitionLabel from "./RecognitionLabel.svelte";
-import { vacationIntent, vacationShared } from "./vacationIntent";
+//import { vacationIntent, vacationShared } from "./vacationIntent";
 
-  const intent = resolveIntentReferences(vacationIntent, vacationShared);
+  //const intent = resolveIntentReferences(vacationIntent, vacationShared);
+  const intent = coffeeIntent;
 
-  let utteranceText = "I will be on vacation from 4/10 to 4/12/2021";
+  let utteranceText = "";
 
   let recognizedText = '';
   let intentRecognition : IntentRecognition;

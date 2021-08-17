@@ -5,17 +5,17 @@
   export let scoreMetrics: ExampleScoreMetrics;
 
   $: weightPercent =
-    scoreMetrics.matchedNeverParts === 0 && scoreMetrics.partsWeight > 0
-      ? scoreMetrics.matchedPartsWeight / scoreMetrics.partsWeight
+    scoreMetrics.matchedNeverPartCount === 0 && scoreMetrics.partWeightSum > 0
+      ? scoreMetrics.matchedPartWeightSum / scoreMetrics.partWeightSum
       : 0;
   $: outOfOrderPercent =
-    scoreMetrics.matchedParts > 0
-      ? (scoreMetrics.matchedParts - scoreMetrics.inOrderMatchedParts) /
-        scoreMetrics.matchedParts
+    scoreMetrics.matchedPartCount > 0
+      ? (scoreMetrics.matchedPartCount - scoreMetrics.inOrderMatchedPartCount) /
+        scoreMetrics.matchedPartCount
       : 0;
   $: noisePercent =
-    scoreMetrics.tokens > 0
-      ? (scoreMetrics.tokens - scoreMetrics.matchedTokens) / scoreMetrics.tokens
+    scoreMetrics.tokenCount > 0
+      ? (scoreMetrics.tokenCount - scoreMetrics.matchedTokenCount) / scoreMetrics.tokenCount
       : 0;
 
   $: score = weightPercent - outOfOrderPercent * 0.25 - noisePercent * 0.25;
@@ -25,32 +25,32 @@
   {#if scoreMetrics}
     <div class="metric">
       <div class="metric-value">
-        {scoreMetrics.matchedParts}/{scoreMetrics.parts}
+        {scoreMetrics.matchedPartCount}/{scoreMetrics.partCount}
       </div>
       <div class="metric-description">matches</div>
     </div>
     <div class="metric">
       <div class="metric-value">
-        {scoreMetrics.matchedPartsWeight}/{scoreMetrics.partsWeight}
+        {scoreMetrics.matchedPartWeightSum}/{scoreMetrics.partWeightSum}
       </div>
       <div class="metric-description">matched weight</div>
     </div>
     <div class="metric">
       <div class="metric-value">
-        {scoreMetrics.inOrderMatchedParts}/{scoreMetrics.matchedParts}
+        {scoreMetrics.inOrderMatchedPartCount}/{scoreMetrics.matchedPartCount}
       </div>
       <div class="metric-description">matches in order</div>
     </div>
 
     <div class="metric">
       <div class="metric-value">
-        {scoreMetrics.matchedTokens}/{scoreMetrics.tokens}
+        {scoreMetrics.matchedTokenCount}/{scoreMetrics.tokenCount}
       </div>
       <div class="metric-description">token matches</div>
     </div>
     <div class="metric">
       <div class="metric-value">
-        {scoreMetrics.matchedNeverParts}
+        {scoreMetrics.matchedNeverPartCount}
       </div>
       <div class="metric-description">never matches</div>
     </div>

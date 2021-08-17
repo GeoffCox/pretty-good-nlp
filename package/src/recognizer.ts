@@ -90,8 +90,8 @@ const scoreExample = (
   let score = matchedNeverPartCount === 0 && partWeightSum > 0 ? matchedPartWeightSum / partWeightSum : 0;
   const outOfOrderPercent = matchedPartCount > 0 ? (matchedPartCount - inOrderMatchedPartCount)/matchedPartCount : 0;  
   const noisePercent = tokenCount > 0 ? (textTokenMap.characterRanges.length - matchedTokenCount) / tokenCount : 0;
-  score -= (outOfOrderPercent * 0.25);
-  score -= (noisePercent * 0.25);
+  score -= (outOfOrderPercent * 0.15);
+  score -= (noisePercent * 0.05);
   score = Math.max(0, Math.min(1, score));      
 
   return {
