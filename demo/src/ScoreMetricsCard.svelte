@@ -18,7 +18,7 @@
       ? (scoreMetrics.tokenCount - scoreMetrics.matchedTokenCount) / scoreMetrics.tokenCount
       : 0;
 
-  $: score = weightPercent - outOfOrderPercent * 0.25 - noisePercent * 0.25;
+  $: score = weightPercent - outOfOrderPercent * 0.15 - noisePercent * 0.05;
 </script>
 
 <div class="metrics">
@@ -69,7 +69,7 @@
     <div class="metric">
       <div class="metric-value">score=</div>
       <div class="metric-description">
-        weight - (out of order * 0.25) - (noise * 0.25) =
+        weight - (out of order * 0.15) - (noise * 0.05) =
       </div>
       <div class="metric-description">{score * 100}%</div>
     </div>
