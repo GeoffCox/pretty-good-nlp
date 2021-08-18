@@ -1,6 +1,6 @@
 import type { Intent } from "@geoffcox/pretty-good-nlp";
 
-export const coffeeIntent: Intent = {  
+export const coffeeIntent: Intent = {
   name: "Add coffee drink",
   examples: [
     {
@@ -24,7 +24,7 @@ export const coffeeIntent: Intent = {
             "Make",
             "Brew",
             "Add",
-            "Plus"
+            "Plus",
           ],
         },
         {
@@ -60,7 +60,14 @@ export const coffeeIntent: Intent = {
           weight: 0,
         },
         {
-          phrases: ["hot", "cold", "iced", "extra hot", 'room temperature', 'tepid'],
+          phrases: [
+            "hot",
+            "cold",
+            "iced",
+            "extra hot",
+            "room temperature",
+            "tepid",
+          ],
           variable: "temperature",
           weight: 0,
         },
@@ -89,6 +96,18 @@ export const coffeeIntent: Intent = {
             "brewed coffees",
           ],
           variable: "product",
+        },
+      ],
+      neverParts: [
+        {
+          phrases: [
+            "don't",
+            "do not",
+            "won't",
+            "will not",
+            "cancel",
+            "nevermind",
+          ],
         },
       ],
     },

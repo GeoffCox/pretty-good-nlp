@@ -13,7 +13,7 @@
     measureCharacter && measureCharacter.getBoundingClientRect();
   $: characterWidth = measureBoundingRect?.width || 0.0;
 
-  // Matches grouped into lines by best matches first
+  // Pivots matches from per part to per best/worst
   const pivotMatches = (parts: ExamplePartRecognition[]) => {
     const result = [];
     parts.forEach((part) => {
@@ -27,8 +27,9 @@
     return result;
   };
 
-  $: matches = pivotMatches(exampleRecognition?.parts || []);
-
+  // Matches
+  $: matches = pivotMatches(exampleRecognition?.parts || []);  
+  
   $: matchesCssVars = matches.map((matchSet, s) =>
     matchSet.map((match) => {
       return {
@@ -50,16 +51,48 @@
     )
   ) as string[][];
 
-  $: linesStyles = `--lines-height:${matches.length * 5}px;`;
+  $: matchesLinesStyles = `--lines-height:${matches.length * 5}px;`;
+
+  // Never Matches
+  $: neverMatches = pivotMatches(exampleRecognition.neverParts || []);
+
+  $: neverMatchesCssVars = neverMatches.map((neverMatchSet, s) =>
+    neverMatchSet.map((neverMatch) => {
+      return {
+        "--line-left": `${neverMatch.start * characterWidth}px`,
+        "--line-top": `${s * 5}px`,
+        "--line-width": `${neverMatch.length * characterWidth}px`,
+        "--line-height": "3px",        
+      };
+    })
+  );
+
+  $: neverMatchesStyles = neverMatchesCssVars.map((neverMatchSet) =>
+    neverMatchSet.map(
+      (neverMatch) =>
+        Object.entries(neverMatch)
+          .map(([key, value]) => `${key}:${value}`)
+          .join(";") as string
+    )
+  ) as string[][];
+
+  $: neverMatchesLinesStyles = `--lines-height:${neverMatches.length * 5}px;`;
 </script>
 
 <div class="recognition-label">
   <div class="measure-character" bind:this={measureCharacter}>W</div>
   <div class="utterance">{text}</div>
-  <div class="lines" style={linesStyles}>
+  <div class="never-lines" style={neverMatchesLinesStyles}>
+    {#each neverMatchesStyles as neverMatchSetStyles}
+      {#each neverMatchSetStyles as neverMatchStyle}
+        <div class="never-line" style={neverMatchStyle} />
+      {/each}
+    {/each}
+  </div>
+  <div class="match-lines" style={matchesLinesStyles}>
     {#each matchesStyles as matchSetStyles}
       {#each matchSetStyles as matchStyle}
-        <div class="line" style={matchStyle} />
+        <div class="match-line" style={matchStyle} />
       {/each}
     {/each}
   </div>
@@ -86,14 +119,14 @@
     white-space: nowrap;
   }
 
-  .lines {
+  .match-lines, .never-lines {
     position: relative;
     margin: 0;
     padding: 0;    
     height: var(--lines-height);
   }
 
-  .line {
+  .match-line, .never-line {
     position: absolute;
     left: var(--line-left);
     right: 0;
@@ -104,5 +137,9 @@
     background: var(--line-color);
     margin: 0;
     padding: 0;
+  }
+
+  .never-line {
+    background: darkred;
   }
 </style>
