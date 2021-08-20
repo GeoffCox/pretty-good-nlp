@@ -1,8 +1,12 @@
 <script lang="ts">
   import type {
+    CharacterRange,
     ExamplePartRecognition,
     ExampleRecognition,
   } from "@geoffcox/pretty-good-nlp";
+
+  import * as _ from "lodash";
+  import { getLines } from "./labels";
 
   export let text: string;
   export let exampleRecognition: ExampleRecognition;
@@ -13,87 +17,17 @@
     measureCharacter && measureCharacter.getBoundingClientRect();
   $: characterWidth = measureBoundingRect?.width || 0.0;
 
-  // Pivots matches from per part to per best/worst
-  const pivotMatches = (parts: ExamplePartRecognition[]) => {
-    const result = [];
-    parts.forEach((part) => {
-      part.matches.forEach((match, m) => {
-        if (!result[m]) {
-          result[m] = [];
-        }
-        result[m].push(match);
-      });
-    });
-    return result;
-  };
+  $: lines = getLines(exampleRecognition, characterWidth, 3, 2);
 
-  // Matches
-  $: matches = pivotMatches(exampleRecognition?.parts || []);  
-  
-  $: matchesCssVars = matches.map((matchSet, s) =>
-    matchSet.map((match) => {
-      return {
-        "--line-left": `${match.start * characterWidth}px`,
-        "--line-top": `${s * 5}px`,
-        "--line-width": `${match.length * characterWidth}px`,
-        "--line-height": "3px",
-        "--line-color": s > 0 ? "gray" : "green",
-      };
-    })
-  );
-
-  $: matchesStyles = matchesCssVars.map((matchSet) =>
-    matchSet.map(
-      (match) =>
-        Object.entries(match)
-          .map(([key, value]) => `${key}:${value}`)
-          .join(";") as string
-    )
-  ) as string[][];
-
-  $: matchesLinesStyles = `--lines-height:${matches.length * 5}px;`;
-
-  // Never Matches
-  $: neverMatches = pivotMatches(exampleRecognition.neverParts || []);
-
-  $: neverMatchesCssVars = neverMatches.map((neverMatchSet, s) =>
-    neverMatchSet.map((neverMatch) => {
-      return {
-        "--line-left": `${neverMatch.start * characterWidth}px`,
-        "--line-top": `${s * 5}px`,
-        "--line-width": `${neverMatch.length * characterWidth}px`,
-        "--line-height": "3px",        
-      };
-    })
-  );
-
-  $: neverMatchesStyles = neverMatchesCssVars.map((neverMatchSet) =>
-    neverMatchSet.map(
-      (neverMatch) =>
-        Object.entries(neverMatch)
-          .map(([key, value]) => `${key}:${value}`)
-          .join(";") as string
-    )
-  ) as string[][];
-
-  $: neverMatchesLinesStyles = `--lines-height:${neverMatches.length * 5}px;`;
+  $: linesStyles = `--lines-height:${lines.lineCount * 5}px;`;
 </script>
 
 <div class="recognition-label">
   <div class="measure-character" bind:this={measureCharacter}>W</div>
   <div class="utterance">{text}</div>
-  <div class="never-lines" style={neverMatchesLinesStyles}>
-    {#each neverMatchesStyles as neverMatchSetStyles}
-      {#each neverMatchSetStyles as neverMatchStyle}
-        <div class="never-line" style={neverMatchStyle} />
-      {/each}
-    {/each}
-  </div>
-  <div class="match-lines" style={matchesLinesStyles}>
-    {#each matchesStyles as matchSetStyles}
-      {#each matchSetStyles as matchStyle}
-        <div class="match-line" style={matchStyle} />
-      {/each}
+  <div class="lines" style={linesStyles}>
+    {#each lines.segments as segment}
+      <div class="line" style={segment} />
     {/each}
   </div>
 </div>
@@ -119,14 +53,14 @@
     white-space: nowrap;
   }
 
-  .match-lines, .never-lines {
+  .lines {
     position: relative;
     margin: 0;
-    padding: 0;    
+    padding: 0;
     height: var(--lines-height);
   }
 
-  .match-line, .never-line {
+  .line {
     position: absolute;
     left: var(--line-left);
     right: 0;
@@ -137,9 +71,5 @@
     background: var(--line-color);
     margin: 0;
     padding: 0;
-  }
-
-  .never-line {
-    background: darkred;
   }
 </style>
