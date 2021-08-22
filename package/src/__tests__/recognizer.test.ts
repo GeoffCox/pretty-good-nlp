@@ -41,59 +41,6 @@ describe("recognizer modules", () => {
         expect(actual).toMatchInlineSnapshot(`
 Object {
   "details": Object {
-    "bestExample": Object {
-      "name": undefined,
-      "neverParts": Array [],
-      "parts": Array [
-        Object {
-          "matches": Array [
-            Object {
-              "end": 19,
-              "kind": "characterRange",
-              "length": 19,
-              "start": 0,
-            },
-          ],
-          "variable": undefined,
-          "weight": undefined,
-        },
-        Object {
-          "matches": Array [
-            Object {
-              "end": 30,
-              "kind": "characterRange",
-              "length": 10,
-              "start": 20,
-            },
-          ],
-          "variable": undefined,
-          "weight": undefined,
-        },
-        Object {
-          "matches": Array [
-            Object {
-              "end": 43,
-              "kind": "characterRange",
-              "length": 12,
-              "start": 31,
-            },
-          ],
-          "variable": undefined,
-          "weight": undefined,
-        },
-      ],
-      "score": 1,
-      "scoreMetrics": Object {
-        "inOrderMatchedPartCount": 3,
-        "matchedNeverPartCount": 0,
-        "matchedPartCount": 3,
-        "matchedPartWeightSum": 3,
-        "matchedTokenCount": 9,
-        "partCount": 3,
-        "partWeightSum": 3,
-        "tokenCount": 9,
-      },
-    },
     "examples": Array [
       Object {
         "name": undefined,

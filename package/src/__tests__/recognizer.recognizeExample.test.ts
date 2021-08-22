@@ -19,7 +19,7 @@ describe("recognizer modules", () => {
         neverParts: [],
       };
 
-      const actual = recognizeExample(example, testTextTokenMap, tokenize);
+      const actual = recognizeExample(example, testTextTokenMap, tokenize, 0.15, 0.05);
       expect(actual.score).toEqual(0);
       expect(actual.parts).toEqual([]);
       expect(actual.neverParts).toEqual([]);
@@ -40,7 +40,7 @@ describe("recognizer modules", () => {
       const text = "";
       const textTokenMap = tokenize(text);
 
-      const actual = recognizeExample(example, textTokenMap, tokenize);
+      const actual = recognizeExample(example, textTokenMap, tokenize, 0.15, 0.05);
       expect(actual.score).toEqual(0);
       expect(actual.parts).toEqual([
         {
@@ -66,7 +66,7 @@ describe("recognizer modules", () => {
         neverParts: [],
       };
 
-      const actual = recognizeExample(example, testTextTokenMap, tokenize);
+      const actual = recognizeExample(example, testTextTokenMap, tokenize, 0.15, 0.05);
       
       expect(Math.floor(actual.score * 100)).toEqual(97);
       expect(actual.name).toEqual(example.canonicalForm);
@@ -94,7 +94,7 @@ describe("recognizer modules", () => {
         ],
       };
 
-      const actual = recognizeExample(example, testTextTokenMap, tokenize);
+      const actual = recognizeExample(example, testTextTokenMap, tokenize, 0.15, 0.05);
 
       expect(actual.score).toEqual(0);
       expect(actual.name).toEqual(example.canonicalForm);

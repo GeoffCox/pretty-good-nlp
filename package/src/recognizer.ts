@@ -202,7 +202,7 @@ export type RecognizeOptions = {
 
   /**
    * A number between 0 and 1 indicating the max penalty for tokens being out of order.
-   * @default 0.1
+   * @default 0.15
    */
   maxOutOfOrderPenalty?: number;
 
@@ -226,7 +226,7 @@ export const recognize = (
   options?: RecognizeOptions
 ): IntentRecognition => {
 
-  const { maxOutOfOrderPenalty = 0.1, maxNoisePenalty = 0.05, shared, tokenizer = basicTokenize} = options || {};
+  const { maxOutOfOrderPenalty = 0.15, maxNoisePenalty = 0.05, shared, tokenizer = basicTokenize} = options || {};
 
   if (maxOutOfOrderPenalty < 0 || maxOutOfOrderPenalty > 1) {
     throw new Error('The maxOutOfOrderPenalty must be between 0 and 1 (inclusive).')

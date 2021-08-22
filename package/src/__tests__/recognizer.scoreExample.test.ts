@@ -31,7 +31,7 @@ describe("recognizer modules", () => {
         neverParts: [],
       };
 
-      const actual = scoreExample(example, testTextTokenMap);
+      const actual = scoreExample(example, testTextTokenMap, 1, 1);
       expect(actual.score).toEqual(1);
     });
     it("returns score of 0 for no parts", () => {
@@ -40,7 +40,7 @@ describe("recognizer modules", () => {
         neverParts: [],
       };
 
-      const actual = scoreExample(example, testTextTokenMap);
+      const actual = scoreExample(example, testTextTokenMap, 0, 0);
       expect(actual.score).toEqual(0);
     });
     it("returns score of 0 for no matches", () => {
@@ -59,7 +59,7 @@ describe("recognizer modules", () => {
         neverParts: [],
       };
 
-      const actual = scoreExample(example, testTextTokenMap);
+      const actual = scoreExample(example, testTextTokenMap, 0, 0);
       expect(actual.score).toEqual(0);
     });
     it("returns score of 0 for for never match", () => {
@@ -85,7 +85,7 @@ describe("recognizer modules", () => {
         ],
       };
 
-      const actual = scoreExample(example, testTextTokenMap);
+      const actual = scoreExample(example, testTextTokenMap, 0, 0);
       expect(actual.score).toEqual(0);
     });
     it("returns score for matches and non-matches", () => {
@@ -104,7 +104,7 @@ describe("recognizer modules", () => {
         neverParts: [],
       };
 
-      const actual = scoreExample(example, testTextTokenMap);
+      const actual = scoreExample(example, testTextTokenMap, 0.15, 0.05);
       expect(Math.floor(actual.score * 100)).toEqual(98);
     });
     it("returns score for matches and partial non-matches", () => {
@@ -126,7 +126,7 @@ describe("recognizer modules", () => {
         neverParts: [],
       };
       
-      const actual = scoreExample(example, testTextTokenMap);
+      const actual = scoreExample(example, testTextTokenMap, 0.15, 0.05);
       expect(Math.floor(actual.score * 100)).toEqual(98);
     });
     it("returns score for weighted part matches", () => {
@@ -147,7 +147,7 @@ describe("recognizer modules", () => {
         neverParts: [],
       };
 
-      const actual = scoreExample(example, testTextTokenMap);
+      const actual = scoreExample(example, testTextTokenMap, 0.15, 0.05);
       expect(Math.floor(actual.score * 100)).toEqual(98);
     });
     it("returns score for ordered matches", () => {
@@ -169,7 +169,7 @@ describe("recognizer modules", () => {
         neverParts: [],
       };
 
-      const actual = scoreExample(example, testTextTokenMap);
+      const actual = scoreExample(example, testTextTokenMap, 0.15, 0.05);
       // score: 4/4 weight = 1
       // -= 2/4 out of order * .15 = -7.5
       // -= 0/9 noise * 0.05 = 0
@@ -208,7 +208,7 @@ describe("recognizer modules", () => {
         tokenCount: 9,
       };
 
-      const actual = scoreExample(example, testTextTokenMap);
+      const actual = scoreExample(example, testTextTokenMap, 0.15, 0.05);
       expect(actual.metrics).toEqual(expected);
     });
   });
