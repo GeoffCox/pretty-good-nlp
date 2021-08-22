@@ -1,5 +1,6 @@
-import * as CharacterRanges from "./characterRange";
-
 export * from "./recognizer";
 export * from "./referenceResolver";
-export {CharacterRanges };
+export * from "./textRange";
+export * from "./characterRange";
+export * from "./tokenRange";
+export * from "./tokenMap";

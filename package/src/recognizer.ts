@@ -16,9 +16,7 @@ import { createBasicMatchSort } from "./basicMatchSort";
 import { findPatterns } from "./findPatterns";
 import { findPhrases } from "./findPhrases";
 import { findRegularExpressions } from "./findRegularExpressions";
-import * as CharacterRanges from "./characterRange";
-
-type CharacterRange = CharacterRanges.CharacterRange;
+import { CharacterRange, CharacterRanges } from "./characterRange";
 
 const findPartMatches = (
   part: ExamplePart,
@@ -49,10 +47,10 @@ const findPartMatches = (
 const scoreExample = (
   example: Pick<ExampleRecognition, "parts" | "neverParts">,
   textTokenMap: TokenMap
-): {score: number, metrics: ExampleScoreMetrics} => {
+): { score: number; metrics: ExampleScoreMetrics } => {
   const { parts, neverParts } = example;
-  
-  // count matches, sum the weights of parts and matches, count the in order matches  
+
+  // count matches, sum the weights of parts and matches, count the in order matches
   let matchedPartCount = 0;
   let partWeightSum = 0.0;
   let matchedPartWeightSum = 0.0;
@@ -61,7 +59,7 @@ const scoreExample = (
   const bestMatches: CharacterRange[] = [];
   parts.forEach((part) => {
     const weight = part.weight !== undefined ? part.weight : 1;
-    partWeightSum += weight; 
+    partWeightSum += weight;
     if (part.matches.length > 0) {
       matchedPartCount++;
       matchedPartWeightSum += weight;
@@ -78,7 +76,6 @@ const scoreExample = (
     (neverPart) => neverPart.matches.length > 0
   ).length;
 
-
   // count how many tokens matched
   const tokenCount = textTokenMap.characterRanges.length;
   const matchedTokenCount = textTokenMap.characterRanges.filter(
@@ -86,25 +83,33 @@ const scoreExample = (
       bestMatches.some((m) => CharacterRanges.contains(m, characterRange))
   ).length;
 
-
-  let score = matchedNeverPartCount === 0 && partWeightSum > 0 ? matchedPartWeightSum / partWeightSum : 0;
-  const outOfOrderPercent = matchedPartCount > 0 ? (matchedPartCount - inOrderMatchedPartCount)/matchedPartCount : 0;  
-  const noisePercent = tokenCount > 0 ? (textTokenMap.characterRanges.length - matchedTokenCount) / tokenCount : 0;
-  score -= (outOfOrderPercent * 0.15);
-  score -= (noisePercent * 0.05);
-  score = Math.max(0, Math.min(1, score));      
+  let score =
+    matchedNeverPartCount === 0 && partWeightSum > 0
+      ? matchedPartWeightSum / partWeightSum
+      : 0;
+  const outOfOrderPercent =
+    matchedPartCount > 0
+      ? (matchedPartCount - inOrderMatchedPartCount) / matchedPartCount
+      : 0;
+  const noisePercent =
+    tokenCount > 0
+      ? (textTokenMap.characterRanges.length - matchedTokenCount) / tokenCount
+      : 0;
+  score -= outOfOrderPercent * 0.15;
+  score -= noisePercent * 0.05;
+  score = Math.max(0, Math.min(1, score));
 
   return {
     score,
     metrics: {
       partCount: parts.length,
       matchedPartCount,
-      inOrderMatchedPartCount,      
+      inOrderMatchedPartCount,
       matchedNeverPartCount,
       partWeightSum,
       matchedPartWeightSum,
       tokenCount,
-      matchedTokenCount,      
+      matchedTokenCount,
     },
   };
 };
@@ -206,6 +211,6 @@ export namespace UnitTestApi {
     findPartMatches,
     scoreExample,
     extractVariableValues,
-    recognizeExample,    
+    recognizeExample,
   };
 }

@@ -1,10 +1,7 @@
-import * as CharacterRanges from "../characterRange";
-import * as TokenMaps from "../tokenMap";
-import * as TokenRanges from "../tokenRange";
-import { TokenMap } from "../tokenMap";
+import {CharacterRange, CharacterRanges} from "../characterRange";
+import {TokenRange, TokenRanges} from "../tokenRange";
+import { TokenMap, TokenMaps } from "../tokenMap";
 
-type CharacterRange = CharacterRanges.CharacterRange;
-type TokenRange = TokenRanges.TokenRange;
 
 const testTokenMap = {
   text: "The quick brown fox",

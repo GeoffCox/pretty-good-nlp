@@ -1,7 +1,6 @@
-import * as CharacterRanges from "../characterRange";
+import {CharacterRange, CharacterRanges} from "../characterRange";
 import { createBasicMatchSort } from "../basicMatchSort";
 
-type CharacterRange = CharacterRanges.CharacterRange;
 
 describe('basicMatchSort module', () => {
     describe('createBasicMatchSort', () => {

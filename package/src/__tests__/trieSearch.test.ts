@@ -4,8 +4,9 @@ import {
   trieSearch,
   validateTrieNode,
 } from "../trieSearch";
-import { CharacterRange } from "../characterRange";
-import * as TokenRanges from "../tokenRange";
+
+import {CharacterRange} from "../characterRange";
+import {TokenRanges} from "../tokenRange";
 
 const testTextTokens = [
   "The",

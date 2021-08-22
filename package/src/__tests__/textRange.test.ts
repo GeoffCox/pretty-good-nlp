@@ -1,6 +1,4 @@
-import * as TextRanges from "../textRange";
-
-type TextRange = TextRanges.TextRange;
+import {TextRange, TextRanges} from "../textRange";
 
 describe("textRange module", () => {
   describe("create", () => {

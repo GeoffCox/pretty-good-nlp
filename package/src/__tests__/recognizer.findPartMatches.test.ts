@@ -1,6 +1,6 @@
 import { tokenize } from "../basicTokenizer";
 import { ExamplePart, ExamplePartRecognition } from "../types";
-import * as CharacterRanges from "../characterRange";
+import {CharacterRanges} from "../characterRange";
 
 import { UnitTestApi } from "../recognizer";
 

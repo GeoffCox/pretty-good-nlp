@@ -1,4 +1,4 @@
-import * as TokenRanges from '../tokenRange';
+import {TokenRanges} from "../tokenRange";
 
 describe("tokenRange module", () => {
     describe("create", () => {

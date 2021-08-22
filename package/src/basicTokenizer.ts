@@ -1,6 +1,5 @@
 import { TokenMap } from "./tokenMap";
-import * as CharacterRanges from "./characterRange";
-type CharacterRange = CharacterRanges.CharacterRange;
+import { CharacterRange, CharacterRanges } from "./characterRange";
 
 const delimiters = [" ", ".", ",", ":", ";"];
 
@@ -18,7 +17,7 @@ export const tokenize = (text: string): TokenMap => {
     if (delimiters.includes(text[i])) {
       if (start >= 0) {
         characterRanges.push(
-          CharacterRanges.create({            
+          CharacterRanges.create({
             start,
             end: i,
           })
@@ -29,10 +28,10 @@ export const tokenize = (text: string): TokenMap => {
       start = i;
     }
   }
-  
+
   if (start >= 0) {
     characterRanges.push(
-      CharacterRanges.create({        
+      CharacterRanges.create({
         start,
         end: text.length,
       })

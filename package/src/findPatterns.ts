@@ -65,9 +65,9 @@ const patternToRegularExpression = (pattern: string) => {
   return result.join("");
 };
 
-export const findPatterns = (  
+export const findPatterns = (
   patterns: string[],
-  text: string,
+  text: string
 ): CharacterRange[] => {
   return patterns
     ? findRegularExpressions(patterns.map(patternToRegularExpression), text)
@@ -78,7 +78,7 @@ export const findPatterns = (
  * @internal
  */
 export namespace UnitTestApi {
-  export const findPatternsModule  = {
-    patternToRegularExpression
-  }  
-};
+  export const findPatternsModule = {
+    patternToRegularExpression,
+  };
+}

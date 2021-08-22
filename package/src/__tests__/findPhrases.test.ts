@@ -1,8 +1,6 @@
 import { tokenize } from "../basicTokenizer";
 import { findPhrases } from "../findPhrases";
-import * as CharacterRanges from "../characterRange";
-
-type CharacterRange = CharacterRanges.CharacterRange;
+import {CharacterRange, CharacterRanges} from "../characterRange";
 
 const testText = "The quick brown fox jumps over the lazy dog";
 const testTextTokens = tokenize(testText);

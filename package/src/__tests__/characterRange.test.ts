@@ -1,4 +1,4 @@
-import * as CharacterRanges from '../characterRange';
+import {CharacterRanges} from "../characterRange";
 
 describe("characterRange module", () => {
     describe("create", () => {

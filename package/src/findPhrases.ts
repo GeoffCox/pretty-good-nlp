@@ -1,5 +1,4 @@
-import * as TokenMaps from "./tokenMap";
-import { TokenMap } from "./tokenMap";
+import { TokenMap, TokenMaps } from "./tokenMap";
 import { addTokensToTrieNode, TrieNode, trieSearch } from "./trieSearch";
 import { Tokenizer } from "./types";
 import { CharacterRange } from "./characterRange";

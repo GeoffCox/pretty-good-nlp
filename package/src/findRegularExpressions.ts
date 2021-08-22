@@ -1,6 +1,4 @@
-import * as CharacterRanges from "./characterRange";
-
-type CharacterRange = CharacterRanges.CharacterRange;
+import { CharacterRange, CharacterRanges } from "./characterRange";
 
 const searchForRegularExpression = (
   text: string,
@@ -23,7 +21,7 @@ const searchForRegularExpression = (
   return result;
 };
 
-export const findRegularExpressions = (  
+export const findRegularExpressions = (
   regularExpressions: string[],
   text: string
 ): CharacterRange[] => {

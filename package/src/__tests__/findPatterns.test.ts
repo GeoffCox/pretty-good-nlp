@@ -1,7 +1,5 @@
 import { findPatterns, UnitTestApi } from "../findPatterns";
-import * as CharacterRanges from "../characterRange";
-
-type CharacterRange = CharacterRanges.CharacterRange;
+import {CharacterRange, CharacterRanges} from "../characterRange";
 
 describe("findPatterns module", () => {
   describe("patternToRegularExpression", () => {

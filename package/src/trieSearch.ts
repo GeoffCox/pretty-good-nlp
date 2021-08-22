@@ -1,5 +1,4 @@
-import * as TokenRanges from "./tokenRange";
-type TokenRange = TokenRanges.TokenRange;
+import { TokenRange, TokenRanges } from "./tokenRange";
 
 export type TrieNode = {
   children?: Record<string, TrieNode>;
@@ -145,7 +144,7 @@ export const trieSearch = (textTokens: string[], node: TrieNode) => {
       if (progressNode) {
         progressNode.endIds?.forEach((endId) => {
           const start = matchStarts[endId];
-          const tokenRange = TokenRanges.create({            
+          const tokenRange = TokenRanges.create({
             start: start,
             end: i + 1,
           });
@@ -174,7 +173,7 @@ export const trieSearch = (textTokens: string[], node: TrieNode) => {
       // a first child could be both an end and a start
       firstChildNode.endIds?.forEach((endId) => {
         const start = matchStarts[endId];
-        const tokenRange = TokenRanges.create({          
+        const tokenRange = TokenRanges.create({
           start: start,
           end: i + 1,
         });

@@ -1,5 +1,4 @@
-import * as CharacterRanges from "./characterRange";
-type CharacterRange = CharacterRanges.CharacterRange;
+import { CharacterRange, CharacterRanges} from "./characterRange";
 
 /**
  * Provides a sort method to order matches for an example part from best to worst.
