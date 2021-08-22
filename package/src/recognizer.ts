@@ -5,18 +5,18 @@ import {
   ExampleRecognition,
   ExamplePart,
   ExamplePartRecognition,
-  Intent,
-  MatchSortFactory,
+  Intent,  
   IntentRecognition,
   Tokenizer,
   ExampleScoreMetrics,
 } from "./types";
 import { tokenize as basicTokenize } from "./basicTokenizer";
-import { createBasicMatchSort } from "./basicMatchSort";
+import { createMatchSort } from "./matchSort";
 import { findPatterns } from "./findPatterns";
 import { findPhrases } from "./findPhrases";
 import { findRegularExpressions } from "./findRegularExpressions";
 import { CharacterRange, CharacterRanges } from "./characterRange";
+import { resolveIntentReferences } from "./referenceResolver";
 
 const findPartMatches = (
   part: ExamplePart,
@@ -46,7 +46,9 @@ const findPartMatches = (
 
 const scoreExample = (
   example: Pick<ExampleRecognition, "parts" | "neverParts">,
-  textTokenMap: TokenMap
+  textTokenMap: TokenMap,
+  maxOutOfOrderPenalty: number,
+  maxNoisePenalty: number,
 ): { score: number; metrics: ExampleScoreMetrics } => {
   const { parts, neverParts } = example;
 
@@ -95,8 +97,8 @@ const scoreExample = (
     tokenCount > 0
       ? (textTokenMap.characterRanges.length - matchedTokenCount) / tokenCount
       : 0;
-  score -= outOfOrderPercent * 0.15;
-  score -= noisePercent * 0.05;
+  score -= outOfOrderPercent * maxOutOfOrderPenalty;
+  score -= noisePercent * maxNoisePenalty;
   score = Math.max(0, Math.min(1, score));
 
   return {
@@ -142,12 +144,13 @@ const recognizeExample = (
   example: Example,
   textTokenMap: TokenMap,
   tokenizer: Tokenizer,
-  createMatchSort?: MatchSortFactory
+  maxOutOfOrderPenalty: number,
+  maxNoisePenalty: number,
 ): ExampleRecognition => {
   const { canonicalForm, parts, neverParts } = example;
-  const matchSort = createMatchSort
-    ? createMatchSort()
-    : createBasicMatchSort();
+
+  // I need to create a new match sort for each example because it is stateful.
+  const matchSort = createMatchSort();
 
   const partResults =
     parts?.map((part) => {
@@ -165,7 +168,9 @@ const recognizeExample = (
 
   const { score, metrics } = scoreExample(
     { parts: partResults, neverParts: neverPartResults },
-    textTokenMap
+    textTokenMap,
+    maxOutOfOrderPenalty,
+    maxNoisePenalty
   );
 
   return {
@@ -177,25 +182,75 @@ const recognizeExample = (
   };
 };
 
+/**
+ * Options for recognize()
+ */
+export type RecognizeOptions = {
+  /**
+   * A set of expressions, patterns, or regular expressions shared across intents or examples.   
+   * @example 
+   * weekdayNames ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
+   * This would be referenced in phrases with "$ref=weekdayNames"
+  */ 
+  shared?: Record<string, string[]>;
+
+  /**
+   * A tokenizer to use during recognition instead of the basic tokenizer.
+   * @default basicTokenize()
+   */
+  tokenizer?: Tokenizer;
+
+  /**
+   * A number between 0 and 1 indicating the max penalty for tokens being out of order.
+   * @default 0.1
+   */
+  maxOutOfOrderPenalty?: number;
+
+  /**
+   * A number between 0 and 1 indicating the max penalty for unmatched tokens.
+   * @default 0.05
+   */
+  maxNoisePenalty: number;
+}
+
+/**
+ * Recognizes an intent within some text.
+ * @param text The input text to inspect.
+ * @param intent The intent to recognize.
+ * @param options Options for the recognize method.
+ * @returns The recognition: a score, variable values, and details information.
+ */
 export const recognize = (
   text: string,
   intent: Intent,
-  tokenizer?: Tokenizer
+  options?: RecognizeOptions
 ): IntentRecognition => {
-  const tokenize = tokenizer ?? basicTokenize;
 
+  const { maxOutOfOrderPenalty = 0.1, maxNoisePenalty = 0.05, shared, tokenizer = basicTokenize} = options || {};
+
+  if (maxOutOfOrderPenalty < 0 || maxOutOfOrderPenalty > 1) {
+    throw new Error('The maxOutOfOrderPenalty must be between 0 and 1 (inclusive).')
+  }
+
+  if (maxNoisePenalty < 0 || maxNoisePenalty > 1) {
+    throw new Error('The maxNoisePenalty must be between 0 and 1 (inclusive).')
+  }
+
+  const readyIntent = shared ? resolveIntentReferences(intent, shared) : intent;
+
+  const tokenize = options?.tokenizer ?? basicTokenize;
   const textTokenMap = tokenize(text);
-  const exampleRecognitions = intent.examples.map((example) =>
-    recognizeExample(example, textTokenMap, tokenize)
+
+  const exampleRecognitions = readyIntent.examples.map((example) =>
+    recognizeExample(example, textTokenMap, tokenizer, maxOutOfOrderPenalty, maxNoisePenalty)
   );
 
   const best = maxBy(exampleRecognitions, "score");
 
   return {
-    name: intent.name,
+    name: readyIntent.name,
     score: best ? best.score : 0,
-    details: {
-      bestExample: best,
+    details: {      
       examples: exampleRecognitions,
       textTokenMap,
     },

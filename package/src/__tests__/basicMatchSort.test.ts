@@ -1,5 +1,5 @@
 import {CharacterRange, CharacterRanges} from "../characterRange";
-import { createBasicMatchSort } from "../basicMatchSort";
+import { createMatchSort } from "../matchSort";
 
 
 describe('basicMatchSort module', () => {
@@ -17,7 +17,7 @@ describe('basicMatchSort module', () => {
                 CharacterRanges.create({ start: 10, length: 5}),
             ];
 
-            const sort = createBasicMatchSort();
+            const sort = createMatchSort();
             sort(actual);
             expect(actual).toEqual(expected);
         });
@@ -38,7 +38,7 @@ describe('basicMatchSort module', () => {
                 CharacterRanges.create({ start: 30, length: 9}),
             ];
 
-            const sort = createBasicMatchSort();
+            const sort = createMatchSort();
             sort(ranges);
             sort(actual);
             expect(actual).toEqual(expected);
@@ -58,7 +58,7 @@ describe('basicMatchSort module', () => {
                 CharacterRanges.create({ start: 16, length: 2}),                
             ];
 
-            const sort = createBasicMatchSort();
+            const sort = createMatchSort();
             sort(ranges);
             sort(actual);
             expect(actual).toEqual(expected);
@@ -76,7 +76,7 @@ describe('basicMatchSort module', () => {
                 CharacterRanges.create({ start: 6, length: 5}),                
             ];
 
-            const sort = createBasicMatchSort();
+            const sort = createMatchSort();
             sort(actual);
             expect(actual).toEqual(expected);
         });
@@ -93,7 +93,7 @@ describe('basicMatchSort module', () => {
                 CharacterRanges.create({ start: 5, length: 7}),                
             ];
 
-            const sort = createBasicMatchSort();
+            const sort = createMatchSort();
             sort(actual);
             expect(actual).toEqual(expected);
         });
@@ -101,7 +101,7 @@ describe('basicMatchSort module', () => {
             const expected = undefined as unknown as CharacterRange[];
             const actual = undefined as unknown as CharacterRange[];
 
-            const sort = createBasicMatchSort();
+            const sort = createMatchSort();
             sort(actual);
             expect(actual).toEqual(expected);
         });
@@ -109,7 +109,7 @@ describe('basicMatchSort module', () => {
             const expected : CharacterRange[] = [];
             const actual : CharacterRange[] = [];
 
-            const sort = createBasicMatchSort();
+            const sort = createMatchSort();
             sort(actual);
             expect(actual).toEqual(expected);
         });
@@ -140,7 +140,7 @@ describe('basicMatchSort module', () => {
                 CharacterRanges.create({ start: 20, length: 7}),   
             ];
 
-            const sort = createBasicMatchSort();
+            const sort = createMatchSort();
             sort(ranges1);
             sort(ranges2);
             sort(ranges3);

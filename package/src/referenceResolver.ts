@@ -30,15 +30,15 @@ const replacePartReferences = (part: ExamplePart, library: Record<string, string
   }
 }
 
-export const resolveIntentReferences = (intent: Intent, library: Record<string, string[]>) : Intent => {
+export const resolveIntentReferences = (intent: Intent, shared: Record<string, string[]>) : Intent => {
   const result = cloneDeep<Intent>(intent);
 
   result.examples?.forEach((example) => {
     example.parts?.forEach((part) => {
-      replacePartReferences(part, library);
+      replacePartReferences(part, shared);
     });
     example.neverParts?.forEach((neverPart) => {
-      replacePartReferences(neverPart, library);
+      replacePartReferences(neverPart, shared);
     });
   });
 

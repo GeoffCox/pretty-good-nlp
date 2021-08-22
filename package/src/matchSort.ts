@@ -2,8 +2,9 @@ import { CharacterRange, CharacterRanges} from "./characterRange";
 
 /**
  * Provides a sort method to order matches for an example part from best to worst.
- * @description
- * ## Stateful sort
+ *
+ * **Stateful sort**
+ * 
  * The sort method is expected to be repeatedly called for the matches of examples parts for a single example.
  * This means the result of each sort call is based on previous calls.
  *
@@ -14,13 +15,13 @@ import { CharacterRange, CharacterRanges} from "./characterRange";
  * - The match order for origin should be Seattle then Portland.
  * - The match order destination should be Portland then Seattle.
  *
- * ## The sort comparison prefers:
+ * **The sort comparison prefers:**
  * 1. new matches (no overlap with previous matches)
  * 2. after last part's best match
  * 3. earlier start of match
  * 4. longer match
  */
-export const createBasicMatchSort = () => {
+export const createMatchSort = () => {
   let lastBestMatchEnd = -1;
   const allMatches: CharacterRange[] = [];
 
