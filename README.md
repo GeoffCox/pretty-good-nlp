@@ -66,7 +66,7 @@ intent.examples.push(example);
 // This is wildly simplified.
 const parts: ExamplePart[] = [
   {
-    phrases: ["Turn the oven on to"],
+    phrases: ["Turn on the oven to"],
   },
   {
     patterns: ["### degrees"],
@@ -87,7 +87,7 @@ example.parts.push(...parts);
 ```ts
 const parts: ExamplePart[] = [
   {
-    phrases: ["Turn the oven on to"],
+    phrases: ["Turn on the oven to"],
   },
   {
     patterns: ["### degrees"],
@@ -103,27 +103,80 @@ const parts: ExamplePart[] = [
 ];
 ```
 
-5. Use weights to increase or decrease the importance of different parts. The default weight is 1.  A part with a weight of 2 will be twice as important. If a part is optional, set the weight to 0.
+5. Use weights to increase or decrease the importance of different parts. The default weight is 1. A part with a weight of 2 will be twice as important. If a part is optional, set the weight to 0.
 
 ```ts
 const parts: ExamplePart[] = [
   {
-    phrases: ["Turn the oven on to"],
-    weight: 1
+    phrases: ["Turn on the oven to"],
+    weight: 1,
   },
   {
     patterns: ["### degrees"],
     variable: "temperature",
-    weight: 2
+    weight: 2,
   },
-  {      
+  {
     phrases: ["for"],
     weight: 0,
   },
   {
     regularExpressions: ["\\d+ hours"],
     variable: "duration",
-    weight: 0.5
+    weight: 0.5,
   },
 ];
+```
+
+6. Iteratively improve your examples.
+
+Brainstorm the other ways people might express the same example or other examples of the same intent. You'll need to spend a little time factoring examples into their parts to get the best accuracy and extract the right value.
+
+```ts
+const parts: ExamplePart[] = [
+  {
+    phrases: [
+      "Oven on",
+      "Turn on the oven",
+      "Turn the oven on",
+      "Start the oven",
+      "Bake at",
+      "Set the oven",
+    ],
+  },
+  {
+    phrases: ["to", "at", "for"],
+    weight: 0,
+  },
+  {
+    patterns: ["###"],
+    variable: "temperature",
+  },
+  {
+    phrases: ["degrees", "fahrenheit", "celcius"],
+    weight: 0.5,
+    variable: "temperatureUnit",
+  },
+  {
+    phrases: ["for", "lasting", "ending after", "no more than"],
+    weight: 0,
+  },
+  {
+    regularExpressions: ["\\d+"],
+    variable: "duration",
+  },
+  {
+    phrases: ["hours", "minutes"],
+    variable: "durationUnit",
+  },
+];
+```
+
+> As you create more examples, it is common to put a pattern into their name.
+
+```ts
+const example: Example = {
+  name: "<Oven on> to <temperature> <temperatureUnit> for <duration> <durationUnit>",
+  //...
+};
 ```
