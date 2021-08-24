@@ -4,7 +4,7 @@ export const coffeeIntent: Intent = {
   name: "Add coffee drink",
   examples: [
     {
-      canonicalForm: "<order intent> [quantity] <size> [flavor] [temp] <drink>",
+      name: "<order intent> [quantity] <size> [flavor] [temp] <drink>",
       parts: [
         {
           phrases: [

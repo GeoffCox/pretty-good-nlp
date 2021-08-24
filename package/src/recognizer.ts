@@ -147,7 +147,7 @@ const recognizeExample = (
   maxOutOfOrderPenalty: number,
   maxNoisePenalty: number,
 ): ExampleRecognition => {
-  const { canonicalForm, parts, neverParts } = example;
+  const { name, parts, neverParts } = example;
 
   // I need to create a new match sort for each example because it is stateful.
   const matchSort = createMatchSort();
@@ -174,7 +174,7 @@ const recognizeExample = (
   );
 
   return {
-    name: canonicalForm,
+    name,
     parts: partResults,
     neverParts: neverPartResults,
     score,

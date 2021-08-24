@@ -4,7 +4,7 @@ export const simpleVacationIntent: Intent = {
   name: "Add vacation",
   examples: [
     {
-      canonicalForm: "I will be on vacation Monday",
+      name: "I will be on vacation Monday",
       parts: [
         {
           phrases: ["I am", "I'm", "I will", "I will be", "I'll be"],

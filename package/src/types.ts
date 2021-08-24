@@ -47,10 +47,9 @@ export type ExamplePart = {
  */
 export type Example = {
   /**
-   * Gets or sets the canonical form of this example.
-   * For display only. Not used in recognition.
+   * Gets or sets the name of this example.   
    */
-  canonicalForm?: string;
+  name?: string;
 
   /**
    * Gets or sets the ordered list of parts expected for this example.

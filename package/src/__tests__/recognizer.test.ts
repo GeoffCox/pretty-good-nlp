@@ -34,7 +34,7 @@ describe("recognizer modules", () => {
         name: "Test intent",
         examples: [
           {
-            canonicalForm: 'Trebel Clef lines',
+            name: 'Trebel Clef lines',
             parts: [
               {
                 phrases: ["Every"],
@@ -48,7 +48,7 @@ describe("recognizer modules", () => {
             ],            
           },
           {
-            canonicalForm: 'The Earth’s Atmospheres',
+            name: 'The Earth’s Atmospheres',
             parts: [
               {
                 phrases: ["The Strong Man’s"],

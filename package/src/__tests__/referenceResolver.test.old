@@ -13,7 +13,7 @@ describe("referenceResolver", () => {
         name: "Test Intent",
         examples: [
           {
-            canonicalForm: "<example>",
+            name: "<example>",
             parts: [{ phrases: ["$ref=numbers", "$ref=sizes"] }],
           },
         ],
@@ -32,7 +32,7 @@ describe("referenceResolver", () => {
     it("no-op when shared refs undefined", () => {
       const intent: Intent = {
         name: "Test Intent",
-        examples: [{ canonicalForm: "<example>", parts: [] }],
+        examples: [{ name: "<example>", parts: [] }],
       };
       resolveSharedReferences(intent);
     });

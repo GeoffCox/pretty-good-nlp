@@ -61,7 +61,7 @@ export const vacationIntent: Intent = {
   name: "Add vacation",
   examples: [
     {
-      canonicalForm: "Add vacation <dayOfWeek | date>",
+      name: "Add vacation <dayOfWeek | date>",
       parts: [
         {
           phrases: ["add", "set", "plus"],
@@ -84,7 +84,7 @@ export const vacationIntent: Intent = {
       ],
     },
     {
-      canonicalForm: "I will be on vacation <dayOfWeek>",
+      name: "I will be on vacation <dayOfWeek>",
       parts: [
         {
           phrases: ["$ref=iWillPhrases"],
@@ -109,7 +109,7 @@ export const vacationIntent: Intent = {
       ],
     },
     {
-      canonicalForm: "I will be on vacation <date> through <date>",
+      name: "I will be on vacation <date> through <date>",
       parts: [
         {
           phrases: ["$ref=iWillPhrases"],
@@ -143,7 +143,7 @@ export const vacationIntent: Intent = {
       ],
     },
     {
-      canonicalForm:
+      name:
         "I will be on vacation this <dayOfWeek> through next <dayOfWeek>",
       parts: [
         {

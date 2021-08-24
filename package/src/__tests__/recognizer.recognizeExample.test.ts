@@ -63,7 +63,7 @@ describe("recognizer modules", () => {
     });
     it("return result for part matches", () => {
       const example: Example = {
-        canonicalForm: "test example",
+        name: "test example",
         parts: [
           {
             phrases: ["The quick"],
@@ -78,7 +78,7 @@ describe("recognizer modules", () => {
       const actual = recognizeExample(example, testTextTokenMap, tokenize, 0.15, 0.05);
       
       expect(Math.floor(actual.score * 100)).toEqual(97);
-      expect(actual.name).toEqual(example.canonicalForm);
+      expect(actual.name).toEqual(example.name);
       expect(actual.parts).toEqual([
         {
           matches: [CharacterRanges.create({ start: 0, length: 9 })],
@@ -91,7 +91,7 @@ describe("recognizer modules", () => {
     });
     it("return result for never part matches", () => {
       const example: Example = {
-        canonicalForm: "test example",
+        name: "test example",
         parts: [],
         neverParts: [
           {
@@ -106,7 +106,7 @@ describe("recognizer modules", () => {
       const actual = recognizeExample(example, testTextTokenMap, tokenize, 0.15, 0.05);
 
       expect(actual.score).toEqual(0);
-      expect(actual.name).toEqual(example.canonicalForm);
+      expect(actual.name).toEqual(example.name);
       expect(actual.parts).toEqual([]);
       expect(actual.neverParts).toEqual([
         {
