@@ -6,39 +6,112 @@ const testText = "The quick brown fox jumps over the lazy dog.";
 
 describe("recognizer modules", () => {
   describe("recognize", () => {
+    it("returns score=1 when matches exactly", () => {
+      const intent: Intent = {
+        name: "Test intent",
+        examples: [
+          {
+            parts: [
+              {
+                phrases: ["The quick brown fox"],
+              },
+              {
+                phrases: ["jumps over"],
+              },
+              {
+                phrases: ["The lazy dog"],
+              },
+            ],
+          },
+        ],
+      };
+
+      const actual = recognize(testText, intent);
+      expect(actual.score).toEqual(1);
+    });
+    it("returns score=0 for intent when no examples match", () => {
+      const intent: Intent = {
+        name: "Test intent",
+        examples: [
+          {
+            canonicalForm: 'Trebel Clef lines',
+            parts: [
+              {
+                phrases: ["Every"],
+              },
+              {
+                phrases: ["good boy"],
+              },
+              {
+                phrases: ["deserves fudge"],
+              },
+            ],            
+          },
+          {
+            canonicalForm: 'The Earth’s Atmospheres',
+            parts: [
+              {
+                phrases: ["The Strong Man’s"],
+              },
+              {
+                phrases: ["Triceps Explode"],
+              },
+            ],
+          },
+        ],
+      };
+
+      const actual = recognize(testText, intent);
+      expect(actual.score).toEqual(0);
+    });
+    it("returns score=0 for intent with empty parts", () => {
+      const intent: Intent = {
+        name: "Test intent",
+        examples: [
+          {
+            parts: [],
+          },
+        ],
+      };
+
+      const actual = recognize(testText, intent);
+      expect(actual.score).toEqual(0);
+    });
     it("recognizes intent", () => {
-        const intent : Intent = {
-            name: "Is typical sentence with all letters",
-            examples: [
-                {
-                    parts: [{
-                        phrases: ["The quick brown fox"],
+      const intent: Intent = {
+        name: "Test intent",
+        examples: [
+          {
+            parts: [
+              {
+                phrases: ["The quick brown fox"],
+              },
+              {
+                phrases: ["jumps over"],
+              },
+              {
+                phrases: ["The lazy dog"],
+              },
+            ],
+          },
+          {
+            parts: [
+              {
+                phrases: ["Every good boy"],
+              },
+              {
+                phrases: ["deserves"],
+              },
+              {
+                phrases: ["fudge"],
+              },
+            ],
+          },
+        ],
+      };
 
-                    },
-                    {
-                        phrases: ["jumps over"],
-                    },
-                    {
-                        phrases: ["The lazy dog"],
-                    }]
-                },
-                {
-                    parts: [{
-                        phrases: ["Every good boy"],
-                    },
-                    {
-                        phrases: ["deserves"],
-                    },
-                    {
-                        phrases: ["fudge"],
-                    }]
-                }
-            ]
-        };
-
-        const actual = recognize(testText, intent);
-
-        expect(actual).toMatchInlineSnapshot(`
+      const actual = recognize(testText, intent);
+      expect(actual).toMatchInlineSnapshot(`
 Object {
   "details": Object {
     "examples": Array [
@@ -188,11 +261,55 @@ Object {
       "text": "The quick brown fox jumps over the lazy dog.",
     },
   },
-  "name": "Is typical sentence with all letters",
+  "name": "Test intent",
   "score": 1,
   "variableValues": Object {},
 }
 `);
-    })
+    });
+    it("throws error when passed maxOutOfOrderPenalty > 1", () => {
+      const intent: Intent = {
+        name: "Test Intent",
+        examples: [],
+      };
+      expect(() =>
+        recognize(testText, intent, { maxOutOfOrderPenalty: 1.1 })
+      ).toThrowErrorMatchingInlineSnapshot(
+        `"The maxOutOfOrderPenalty must be between 0 and 1 (inclusive)."`
+      );
+    });
+    it("throws error when passed maxOutOfOrderPenalty < 0>", () => {
+      const intent: Intent = {
+        name: "Test Intent",
+        examples: [],
+      };
+      expect(() =>
+        recognize(testText, intent, { maxOutOfOrderPenalty: -0.1 })
+      ).toThrowErrorMatchingInlineSnapshot(
+        `"The maxOutOfOrderPenalty must be between 0 and 1 (inclusive)."`
+      );
+    });
+    it("throws error when passed maxNoisePenalty > 1", () => {
+      const intent: Intent = {
+        name: "Test Intent",
+        examples: [],
+      };
+      expect(() =>
+        recognize(testText, intent, { maxNoisePenalty: 1.1 })
+      ).toThrowErrorMatchingInlineSnapshot(
+        `"The maxNoisePenalty must be between 0 and 1 (inclusive)."`
+      );
+    });
+    it("throws error when passed maxNoisePenalty < 0>", () => {
+      const intent: Intent = {
+        name: "Test Intent",
+        examples: [],
+      };
+      expect(() =>
+        recognize(testText, intent, { maxNoisePenalty: -0.1 })
+      ).toThrowErrorMatchingInlineSnapshot(
+        `"The maxNoisePenalty must be between 0 and 1 (inclusive)."`
+      );
+    });
   });
 });

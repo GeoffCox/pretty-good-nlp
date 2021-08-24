@@ -210,7 +210,7 @@ export type RecognizeOptions = {
    * A number between 0 and 1 indicating the max penalty for unmatched tokens.
    * @default 0.05
    */
-  maxNoisePenalty: number;
+  maxNoisePenalty?: number;
 }
 
 /**

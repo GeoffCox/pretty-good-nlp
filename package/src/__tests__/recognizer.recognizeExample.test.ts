@@ -13,11 +13,20 @@ const testTextTokenMap = tokenize(testText);
 
 describe("recognizer modules", () => {
   describe("recognizeExample", () => {
-    it("return result when no parts nor neverParts", () => {
+    it("return result when parts and neverParts are emtpy", () => {
       const example = {
         parts: [],
         neverParts: [],
       };
+
+      const actual = recognizeExample(example, testTextTokenMap, tokenize, 0.15, 0.05);
+      expect(actual.score).toEqual(0);
+      expect(actual.parts).toEqual([]);
+      expect(actual.neverParts).toEqual([]);
+    });
+    it("return result when parts and neverParts are undefined", () => {
+      const example = {        
+      } as unknown as Example;
 
       const actual = recognizeExample(example, testTextTokenMap, tokenize, 0.15, 0.05);
       expect(actual.score).toEqual(0);
