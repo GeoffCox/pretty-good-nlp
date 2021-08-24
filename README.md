@@ -1,30 +1,129 @@
 # pretty-good-nlp
+
 A programmable and deterministic natural language processing (NLP) recognizer.
-
-
-# Usage
 
 ## Recognizing Intent
 
-Let's say you are writing a home automation application. You want the app to respond to user input and take action. For example, the user might say `Turn on the oven to 450 degrees for 2 hours`. The app should recognize the user *intention* to turn on the oven.  It should also extract the temperature and duration.
+Let's say you are writing a home automation application. You want the app to respond to user input and take action. For example, the user might say `Turn on the oven to 450 degrees for 2 hours`. The app should recognize the user's _intention_ to turn on the oven. It should also extract the temperature and duration.
 
-There are many different ways a user might express the same intent. 
+There are many different ways a user might express the same intent.
+
 - `Turn the oven on to 450 degrees for 2 hours`
 - `I want to heat the oven to 450 degrees and bake for 2 hours.`
 - `Please bake for 2 hours at 450 degrees.`
 - `Bake at 450 for 120 minutes`
 
-To recognize the multitude of different expressions and correctly identify the user's intention requires sophisticated natural language processing (NLP) and an accurate machine learning (ML) model. These systems can be very difficult to build and time-consuming properly train. 
+To correctly recognize any of the multitude of different expressions requires sophisticated natural language processing (NLP) and an accurate machine learning (ML) model. These systems can be very difficult to build and time-consuming properly train.
 
 They often require considerable expertise in data science, NLP, and machine learning algorithms. Getting an accurate model requires thousands to millions of labeled examples that cover the variety of possible expressions. You also need to build features to identify the different parts of the each example.
 
 Your app might need to recognize many different intents (e.g. `Turn off the oven at 4pm`, `Preheat the oven to 325 then let me know`). Each intent likely requires building a separate model.
 
-The side quest of building machine learning models might take so long, you never get back to the main quest of building your app. Yikes! 
+The side quest of building machine learning models might take so long, you never get back to the main quest of building your app. **Yikes!**
 
-Pretty-good-nlp was built to help:
-- You get your app doing basic recognition in under and hour. The algorithm is deterministic, debuggable, and requires no NLP nor machine learning. Use it to work through the expected expressions your app needs to handle.
-- You get a jump start for later when you move to machine learning. The examples you define for pretty-good-nlp capture the inputs to training a machine learning model. There are intents containing labeled examples. The examples are made up of ordered parts (i.e. patterns). There are also sets of phrases, patterns, and regular expressions (i.e. dictionary and pattern features). 
-- You get something to help tune your machine learning model post prediction. Machine learning models are not always deterministic. You can use the pretty-good-nlp recognizer to correct any problems with your model or even short-cut for well-known examples.
+## Pretty-good-nlp to the rescue
 
+- Get basic recognition working in minutes.
+- Extract values from the text to named variables.
+- Fast, deterministic, and debuggable algorithm.
+- No machine learning or NLP knowledge required.
+- No external dependencies.
 
+> Bonus: When you get to the point that you do need machine learning, you can leverage the configuration you've done as labeled examples, dictionary features, and patterns.
+
+# Usage
+
+1. For each intent you want to recognize, create an Intent. Each intent is contains an Example array.
+
+```ts
+const intent : Intent = {
+    name: 'Turn on oven',
+    examples: [];
+}
+```
+
+2. Add examples to your intent. Each example contains ExamplePart arrays; parts and neverParts. Part are an ordered set of things to look for to recognize your example. We'll cover never parts later.
+
+```ts
+// Of course you can declare the entire Intent at once.
+// Creating an example and pushing it onto the array is just for ease of writing this doc.
+const example: Example = {
+  name: "Turn the oven on to 450 degrees for 2 hours",
+  parts: [],
+  neverParts: [],
+};
+
+intent.examples.push(example);
+```
+
+3. Add parts to your example. Parts can be phrases, patterns, or regular expressions.
+
+- Phrases are a collection of strings that are used to case-insensitive match the text.
+- Patterns are a collection of simple syntax that is a little easier than writing regular expressions.
+- Regular expressions are a collection of regular expressions.
+
+```ts
+// This is wildly simplified.
+const parts: ExamplePart[] = [
+  {
+    phrases: ["Turn the oven on to"],
+  },
+  {
+    patterns: ["### degrees"],
+  },
+  {
+    phrases: ["for"],
+  },
+  {
+    regularExpressions: ["\\d+ hours"],
+  },
+];
+
+example.parts.push(...parts);
+```
+
+4. Determine which parts you would like to extract and choose a variable name for them. When a part matches, the matched value will be returned as the variable value.
+
+```ts
+const parts: ExamplePart[] = [
+  {
+    phrases: ["Turn the oven on to"],
+  },
+  {
+    patterns: ["### degrees"],
+    variable: "temperature",
+  },
+  {
+    phrases: ["for"],
+  },
+  {
+    regularExpressions: ["\\d+ hours"],
+    variable: "duration",
+  },
+];
+```
+
+5. Use weights to increase or decrease the importance of different parts. The default weight is 1.  A part with a weight of 2 will be twice as important. If a part is optional, set the weight to 0.
+
+```ts
+const parts: ExamplePart[] = [
+  {
+    phrases: ["Turn the oven on to"],
+    weight: 1
+  },
+  {
+    patterns: ["### degrees"],
+    variable: "temperature",
+    weight: 2
+  },
+  {      
+    phrases: ["for"],
+    weight: 0,
+  },
+  {
+    regularExpressions: ["\\d+ hours"],
+    variable: "duration",
+    weight: 0.5
+  },
+];
+```
