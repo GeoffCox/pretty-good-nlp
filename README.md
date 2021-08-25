@@ -8,18 +8,12 @@ Let's say you are writing a home automation application. You want the app to res
 
 There are many different ways a user might express the same intent.
 
-- `Turn the oven on to 450 degrees for 2 hours`
+- `Turn on the oven to 450 degrees for 2 hours`
 - `I want to heat the oven to 450 degrees and bake for 2 hours.`
 - `Please bake for 2 hours at 450 degrees.`
 - `Bake at 450 for 120 minutes`
 
-To correctly recognize any of the multitude of different expressions requires sophisticated natural language processing (NLP) and an accurate machine learning (ML) model. These systems can be very difficult to build and time-consuming properly train.
-
-They often require considerable expertise in data science, NLP, and machine learning algorithms. Getting an accurate model requires thousands to millions of labeled examples that cover the variety of possible expressions. You also need to build features to identify the different parts of the each example.
-
-Your app might need to recognize many different intents (e.g. `Turn off the oven at 4pm`, `Preheat the oven to 325 then let me know`). Each intent likely requires building a separate model.
-
-The side quest of building machine learning models might take so long, you never get back to the main quest of building your app. **Yikes!**
+Correctly recognizing the multitude of possible expressions needs sophisticated natural language processing (NLP) and an accurate machine learning (ML) model. Building these systems requires significant expertise, large labeled data sets, and many days of effort. The cost is multipled because each intent likely needs it own model. The side quest of building machine learning models might take so long, you never get back to the main quest of building your app. **Yikes!**
 
 ## Pretty-good-nlp to the rescue
 
@@ -29,108 +23,76 @@ The side quest of building machine learning models might take so long, you never
 - No machine learning or NLP knowledge required.
 - No external dependencies.
 
-> Bonus: When you get to the point that you do need machine learning, you can leverage the configuration you've done as labeled examples, dictionary features, and patterns.
+> Bonus: Bookend your machine learning model
 
-# Usage
+- When you get to the point that you do need machine learning, you can use the data you've already captured for labeled examples, dictionary features, and patterns.
+- If you have a machine learning model but don't get a 100% score for the exact match cases, you can leverage this recognizer either pre- or post-prediction.
 
-1. For each intent you want to recognize, create an Intent. Each intent is contains an Example array.
+## Basic Usage
 
-```ts
-const intent : Intent = {
-    name: 'Turn on oven',
-    examples: [];
-}
+### Creating an Intent
+
+The `Turn on the oven to 450 degrees for 2 hours` example will help demonstrate building an intent to pass to the recognizer. The steps below will take you through creating example parts, examples, and then an intent.
+
+1. Define the parts that should match in order to recognize this example.
+
+```
+Turn on the oven | to | 450 | degrees | for | 2 | hours
 ```
 
-2. Add examples to your intent. Each example contains ExamplePart arrays; parts and neverParts. Part are an ordered set of things to look for to recognize your example. We'll cover never parts later.
+In the ExamplePart type, we can define:
 
-```ts
-// Of course you can declare the entire Intent at once.
-// Creating an example and pushing it onto the array is just for ease of writing this doc.
-const example: Example = {
-  name: "Turn the oven on to 450 degrees for 2 hours",
-  parts: [],
-  neverParts: [],
-};
+- phrases like `Turn on`, `the oven`, and `degrees`
+- patterns like `###` for the temperature
+- regular expressions like `\\d+` for the hours
 
-intent.examples.push(example);
-```
-
-3. Add parts to your example. Parts can be phrases, patterns, or regular expressions.
-
-- Phrases are a collection of strings that are used to case-insensitive match the text.
-- Patterns are a collection of simple syntax that is a little easier than writing regular expressions.
-- Regular expressions are a collection of regular expressions.
-
-```ts
-// This is wildly simplified.
-const parts: ExamplePart[] = [
-  {
-    phrases: ["Turn on the oven to"],
-  },
-  {
-    patterns: ["### degrees"],
-  },
-  {
-    phrases: ["for"],
-  },
-  {
-    regularExpressions: ["\\d+ hours"],
-  },
-];
-
-example.parts.push(...parts);
-```
-
-4. Determine which parts you would like to extract and choose a variable name for them. When a part matches, the matched value will be returned as the variable value.
+Phrases are string literals that are case-insensitive matched. Patterns are a simpler way to write a regular expression. Regular expressions let you define sophsticated pattern matching. If needed, an ExamplePart can have phrases, patterns, and regular expressions.
 
 ```ts
 const parts: ExamplePart[] = [
-  {
-    phrases: ["Turn on the oven to"],
-  },
-  {
-    patterns: ["### degrees"],
-    variable: "temperature",
-  },
-  {
-    phrases: ["for"],
-  },
-  {
-    regularExpressions: ["\\d+ hours"],
-    variable: "duration",
-  },
+  { phrases: ["Turn on the oven"] },
+  { phrases: ["to"] },
+  { patterns: ["###"] },
+  { phrases: ["degrees"] },
+  { phrases: ["for"] },
+  { regularExpressions: ["\\d+"] },
+  { phrases: ["hours"] },
 ];
 ```
 
-5. Use weights to increase or decrease the importance of different parts. The default weight is 1. A part with a weight of 2 will be twice as important. If a part is optional, set the weight to 0.
+2. Define a variable name in each part that should be extracted.
+
+In this example, the temperature, temperatureUnit, duration, and durationUnit should be extracted. If they match, the recognizer will return them in a name/value dictionary.
 
 ```ts
 const parts: ExamplePart[] = [
-  {
-    phrases: ["Turn on the oven to"],
-    weight: 1,
-  },
-  {
-    patterns: ["### degrees"],
-    variable: "temperature",
-    weight: 2,
-  },
-  {
-    phrases: ["for"],
-    weight: 0,
-  },
-  {
-    regularExpressions: ["\\d+ hours"],
-    variable: "duration",
-    weight: 0.5,
-  },
+  { phrases: ["Turn on the oven"] },
+  { phrases: ["to"] },
+  { patterns: ["###"], variable: "temperature" },
+  { phrases: ["degrees"], variable: "temperatureUnit" },
+  { phrases: ["for"] },
+  { regularExpressions: ["\\d+"], variable: "duration" },
+  { phrases: ["hours"], variable: "durationUnit" },
 ];
 ```
 
-6. Iteratively improve your examples.
+3. Set a weight on a part that should be relatively more or less important than other parts. A weight of zero indictes an optional part. The default is 1.
 
-Brainstorm the other ways people might express the same example or other examples of the same intent. You'll need to spend a little time factoring examples into their parts to get the best accuracy and extract the right value.
+In this example, knowing the temperature is very important, the duration moderately important, and `to` and `for` can be completely optional.
+
+```ts
+const parts: ExamplePart[] = [
+  { phrases: ["Turn on the oven"] },
+  { phrases: ["to"], weight: 0 },
+  { patterns: ["###"], variable: "temperature", weight: 4 },
+  { phrases: ["degrees"], variable: "temperatureUnit" },
+  { phrases: ["for"], weight: 0 },
+  { regularExpressions: ["\\d+"], variable: "duration", weight: 2 },
+  { phrases: ["hours"], variable: "durationUnit" },
+];
+```
+
+4. Fill out your example parts to cover different variations. Add alternative phrases, word synonyms, and patterns/regular expressions.
 
 ```ts
 const parts: ExamplePart[] = [
@@ -151,6 +113,7 @@ const parts: ExamplePart[] = [
   {
     patterns: ["###"],
     variable: "temperature",
+    weight: 4,
   },
   {
     phrases: ["degrees", "fahrenheit", "celcius"],
@@ -164,6 +127,7 @@ const parts: ExamplePart[] = [
   {
     regularExpressions: ["\\d+"],
     variable: "duration",
+    weight: 2,
   },
   {
     phrases: ["hours", "minutes"],
@@ -172,11 +136,101 @@ const parts: ExamplePart[] = [
 ];
 ```
 
-> As you create more examples, it is common to put a pattern into their name.
+5. Define an example.
+
+An example is an ordered set of parts to match. You can name it to help with debugging.
+
+Here's a few of ways to name this example:
+
+- `Turn on the oven to 450 degrees for 2 hours`
+- `Turn on the oven to <temperature> degrees for <duration> hours`
+- `<Turn on oven command> [to] <temperature> <temperatureUnit> [for] <duration> <durationUnit>`
+
+There is also a collection of neverParts. Never parts allow you to specify things that shouldn't show in the example. If any never part matches then the entire example is considered a non-match and gets a recognition score of 0.
 
 ```ts
 const example: Example = {
-  name: "<Oven on> to <temperature> <temperatureUnit> for <duration> <durationUnit>",
-  //...
+  name: "Turn the oven on to 450 degrees for 2 hours",
+  parts: [
+    // TODO: Put the parts you define here.
+  ],
+  neverParts: [],
 };
 ```
+
+Each example acts as an overall sentence structure to match. Remember there are lot of ways a user might express an intent. You probably want to create an example for each variation. Here are the variations from earlier.
+
+- `Turn on the oven to 450 degrees for 2 hours`
+- `I want to heat the oven to 450 degrees and bake for 2 hours.`
+- `Please bake for 2 hours at 450 degrees.`
+- `Bake at 450 for 120 minutes`
+
+These can be handled in a single example because the sentence structure is the same. Something like `Start baking at 10 AM for 2 hours at 325 degrees` would required a new example.
+
+6. Define an intent.
+
+An intent is a just a named set of examples.
+
+```ts
+const intent : Intent = {
+    name: 'Turn on oven',
+    examples: [
+      //TODO: Put the examples you define here.
+    ];
+}
+```
+
+### Calling recognize()
+
+The recognize method takes the text to recognize, the intent you created, and some options. The options are covered later in the advanced usage section.
+
+```ts
+function recognize(
+  text: string,
+  intent: Intent,
+  options?: RecognizeOptions
+): IntentRecognition;
+```
+
+Recognize returns an IntentRecognition. 
+It has the name of the intent, a recognition score, and a dictionary of extracted variable name/values. 
+There is also a details object that contains more information specific to this recognizer.
+
+```ts
+export type IntentRecognition = {
+  name: string;
+  score: number;
+  variableValues: Record<string, string[]>;
+  details: {
+    examples: ExampleRecognition[];
+    textTokenMap: TokenMap;
+  };
+```
+
+How scoring works:
+- The recognition score for the intent is the highest example recognition score. 
+- The score will be between 0 (not recognized) and 1 (exactly recognized) inclusive.
+- Each example recognition is scored by a ratio of the actual/expected part matches. 
+  - The score is adjusted based on the relative weight of each part.
+  - There is a deduction if the matches are out of order up to a maximum of 0.15.
+  - There is also a deduction for noise (i.e. words in the text that are not matched) up to a maximum of 0.05.
+
+About variable values:
+- The variable values will contain the variables extracted for the higest scoring example.
+- Sometimes there are multiple possible matches for a variable. In this case there will be more than one value in the values array.
+- The values array associated with each varaible name will be in order from best to worst match.
+
+About details:
+- The example recognitions are in the same order as the examples in the intent.
+- Each example recognition can be inspected to review the example's name, score, recognized parts, recognized never parts, and some metrics from the scoring process.
+- The text token map can be inspected to review the input text and the tokens from tokenization. Tokenization is breaking up the input text into words.
+
+## Advanced Usage
+
+### Shared phrases, patterns, and regular expressions
+
+### Tuning the out of order and noise penalties
+
+### Using a different tokenizer
+
+### 
