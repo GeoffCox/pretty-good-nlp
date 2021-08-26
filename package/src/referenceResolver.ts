@@ -1,5 +1,5 @@
 import { ExamplePart, Intent } from "./types";
-import { cloneDeep } from "lodash";
+import cloneDeep from "lodash/cloneDeep";
 
 const resolveReferences = (items: string[], library: Record<string, string[]>) => {
   const newItems: string[] = [];
@@ -28,7 +28,7 @@ const replacePartReferences = (part: ExamplePart, library: Record<string, string
   if (part.regularExpressions) {
     part.regularExpressions = resolveReferences(part.regularExpressions, library);
   }
-}
+};
 
 export const resolveIntentReferences = (intent: Intent, shared: Record<string, string[]>) : Intent => {
   const result = cloneDeep<Intent>(intent);
@@ -43,4 +43,14 @@ export const resolveIntentReferences = (intent: Intent, shared: Record<string, s
   });
 
   return result;
+}
+
+/**
+ * @internal
+ */
+ export namespace UnitTestApi {
+  export const referenceResolverModule = {
+    resolveReferences,
+    replacePartReferences,    
+  };
 }

@@ -1,4 +1,5 @@
-import { maxBy, uniqBy } from "lodash";
+import maxBy from "lodash/maxBy";
+import uniqBy from "lodash/uniqBy";
 import { TokenMap } from "./tokenMap";
 import {
   Example,

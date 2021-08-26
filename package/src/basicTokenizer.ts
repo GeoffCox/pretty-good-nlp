@@ -1,7 +1,7 @@
 import { TokenMap } from "./tokenMap";
 import { CharacterRange, CharacterRanges } from "./characterRange";
 
-const delimiters = [" ", ".", ",", ":", ";"];
+const delimiters = [" ", ".", ",", ":", ";", "?", "!"];
 
 export const tokenize = (text: string): TokenMap => {
   if (!text || text.trim().length === 0) {

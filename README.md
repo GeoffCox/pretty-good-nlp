@@ -1,6 +1,6 @@
 # pretty-good-nlp
 
-A programmable and deterministic natural language processing (NLP) recognizer.
+A simple natural language processing (NLP) recognizer you can use in minutes.
 
 ## Recognizing Intent
 
@@ -29,6 +29,12 @@ Correctly recognizing the multitude of possible expressions needs sophisticated 
 - If you have a machine learning model but don't get a 100% score for the exact match cases, you can leverage this recognizer either pre- or post-prediction.
 
 ## Basic Usage
+
+### Installation
+
+```
+npm install @geoffcox/pretty-good-nlp
+```
 
 ### Creating an Intent
 
@@ -227,10 +233,56 @@ About details:
 
 ## Advanced Usage
 
-### Shared phrases, patterns, and regular expressions
+Pass an options parameter to the recognize method to handle advanced scenarios.
 
-### Tuning the out of order and noise penalties
+### Share phrases, patterns, and regular expressions
+
+Use the shared property to specify named sets of phrases, patterns, and regular expressions to use across intents and examples. 
+
+```ts
+const options = {
+  shared: {
+    temperatureUnits: ['fahrenheit', 'celcius', 'kelvin'],
+    timeDurations: ['hours', 'minutes'],
+    datePatterns: ['####-##-##','##/##/##','##-####'],
+    timeRegexs: ['\\d\\d:\\d\\d', '\\d+']
+  }
+};
+```
+You can then include them into example parts by reference.
+
+```ts
+const part : ExamplePart = {
+  // This resolves to ['degrees', fahrenheit', 'celcius', 'kelvin']
+  phrases: ['degrees', '$ref=temperatureUnits']
+}
+```
+
+### Tune the out of order and noise penalties
+
+Set the maxOutOfOrderPenalty or maxNoisePenalty to control how severe the penalties are when scoring examples. Values must be between 0 and 1 inclusive.
+
+```ts
+const options = {
+  maxOutOfOrderPenalty: 0.2,
+  maxNoisePenalty: 0    
+};
+```
 
 ### Using a different tokenizer
 
-### 
+The tokenize method takes a string of text and returns a TokenMap. A TokenMap is the original text and an array of character ranges with one range per token.
+
+```ts
+export type Tokenizer = (text: string) => TokenMap;
+```
+
+You can implement a tokenizer to separate words based on a particular language, or if you want to break on different delimiters.  The default tokenizer breaks up words based on ' .,:;' (i.e. space, period, comma, colon, semicolon, question mark, and exclamation point). Pass your tokenizer in the options.
+
+```ts
+const options = {
+  tokenizer: myTokenizer,  
+};
+```
+
+

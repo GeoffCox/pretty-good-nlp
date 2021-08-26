@@ -6,7 +6,7 @@
   } from "@geoffcox/pretty-good-nlp";
 
   import * as _ from "lodash";
-  import { getLines } from "./labels";
+  import { getLabelLines } from "./labels";
 
   export let text: string;
   export let exampleRecognition: ExampleRecognition;
@@ -17,7 +17,7 @@
     measureCharacter && measureCharacter.getBoundingClientRect();
   $: characterWidth = measureBoundingRect?.width || 0.0;
 
-  $: lines = getLines(exampleRecognition, characterWidth, 3, 2);
+  $: lines = getLabelLines(exampleRecognition, characterWidth, 3, 2);
 
   $: linesStyles = `--lines-height:${lines.lineCount * 5}px;`;
 </script>
