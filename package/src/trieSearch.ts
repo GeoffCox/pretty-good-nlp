@@ -33,9 +33,10 @@ const validateChildNode = (
       );
     }
   } else {
+    const nodeChildren = node.children;
     // Validate each child
-    Object.keys(node.children).forEach((key) => {
-      const child = node.children?.[key];
+    Object.keys(nodeChildren).forEach((key) => {
+      const child = nodeChildren[key];
       if (!child) {
         throw new Error(`The ${key} node is not defined.`);
       }
@@ -63,8 +64,9 @@ export const validateTrieNode = (node: TrieNode) => {
 
   // Validate children
   if (node.children) {
-    Object.keys(node.children).forEach((key) => {
-      const child = node.children?.[key];
+    const nodeChildren = node.children;
+    Object.keys(nodeChildren).forEach((key) => {
+      const child = nodeChildren[key];
       if (!child) {
         throw new Error(`The ${key} node is not defined.`);
       }
@@ -123,6 +125,12 @@ export const addTokensToTrieNode = (searchTokens: string[], node: TrieNode) => {
   });
 };
 
+type InProgressTrieNode = {
+  children: Record<string, TrieNode>;
+  startIds?: number[];
+  endIds?: number[];
+};
+
 export const trieSearch = (textTokens: string[], node: TrieNode) => {
   if (!textTokens) {
     throw new Error("The textTokens array argument is undefined or null.");
@@ -131,16 +139,16 @@ export const trieSearch = (textTokens: string[], node: TrieNode) => {
   validateTrieNode(node);
 
   const result: TokenRange[] = [];
-  const inProgressNodes: TrieNode[] = [];
+  const inProgressNodes: InProgressTrieNode[] = [];
   const matchStarts: Record<number, number> = {};
 
   textTokens.forEach((token, i) => {
-    const textToken = token?.trim();
+    const textToken = token.trim();
     const tokenKey = textToken.toLowerCase();
 
     let p = 0;
     while (p < inProgressNodes.length) {
-      const progressNode = inProgressNodes[p].children?.[tokenKey];
+      const progressNode = inProgressNodes[p].children[tokenKey];
       if (progressNode) {
         progressNode.endIds?.forEach((endId) => {
           const start = matchStarts[endId];
@@ -155,7 +163,7 @@ export const trieSearch = (textTokens: string[], node: TrieNode) => {
           progressNode.children &&
           Object.keys(progressNode.children).length > 0
         ) {
-          inProgressNodes[p] = progressNode;
+          inProgressNodes[p] = progressNode as InProgressTrieNode;
           p++;
         } else {
           inProgressNodes.splice(p, 1);
@@ -185,7 +193,7 @@ export const trieSearch = (textTokens: string[], node: TrieNode) => {
         firstChildNode.children &&
         Object.keys(firstChildNode.children).length > 0
       ) {
-        inProgressNodes.push(firstChildNode);
+        inProgressNodes.push(firstChildNode as InProgressTrieNode);
       }
     }
   });

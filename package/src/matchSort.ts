@@ -47,7 +47,7 @@ export const createMatchSort = () => {
       return xAfterLastMatch ? -1 : 1;
     }
 
-    // new matched ordered earlier
+    // new match ordered earlier
     return xNewMatch ? -1 : 1;
   };
 

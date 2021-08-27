@@ -193,20 +193,6 @@ describe("referenceResolver", () => {
 
       const actual = resolveIntentReferences(intent, testShared);
       expect(actual).toEqual(expected);
-    });
-    it("no-op for intent with undefined examples", () => {
-      const intent = {
-        name: "Test Intent",
-        examples: undefined,
-      } as unknown as Intent;
-
-      const expected = {
-        name: "Test Intent",
-        examples: undefined,
-      } as unknown as Intent;
-
-      const actual = resolveIntentReferences(intent, testShared);
-      expect(actual).toEqual(expected);
-    });
+    });   
   });
 });

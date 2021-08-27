@@ -6,7 +6,7 @@ import {
   ExampleRecognition,
   ExamplePart,
   ExamplePartRecognition,
-  Intent,  
+  Intent,
   IntentRecognition,
   Tokenizer,
   ExampleScoreMetrics,
@@ -49,7 +49,7 @@ const scoreExample = (
   example: Pick<ExampleRecognition, "parts" | "neverParts">,
   textTokenMap: TokenMap,
   maxOutOfOrderPenalty: number,
-  maxNoisePenalty: number,
+  maxNoisePenalty: number
 ): { score: number; metrics: ExampleScoreMetrics } => {
   const { parts, neverParts } = example;
 
@@ -146,7 +146,7 @@ const recognizeExample = (
   textTokenMap: TokenMap,
   tokenizer: Tokenizer,
   maxOutOfOrderPenalty: number,
-  maxNoisePenalty: number,
+  maxNoisePenalty: number
 ): ExampleRecognition => {
   const { name, parts, neverParts } = example;
 
@@ -154,11 +154,11 @@ const recognizeExample = (
   const matchSort = createMatchSort();
 
   const partResults =
-    parts?.map((part) => {
+    parts.map((part) => {
       const partResult = findPartMatches(part, textTokenMap, tokenizer);
       matchSort(partResult.matches);
       return partResult;
-    }) || [];
+    });
 
   const neverPartResults =
     neverParts?.map((part) => {
@@ -188,11 +188,11 @@ const recognizeExample = (
  */
 export type RecognizeOptions = {
   /**
-   * A set of expressions, patterns, or regular expressions shared across intents or examples.   
-   * @example 
+   * A set of expressions, patterns, or regular expressions shared across intents or examples.
+   * @example
    * weekdayNames ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
    * This would be referenced in phrases with "$ref=weekdayNames"
-  */ 
+   */
   shared?: Record<string, string[]>;
 
   /**
@@ -212,7 +212,7 @@ export type RecognizeOptions = {
    * @default 0.05
    */
   maxNoisePenalty?: number;
-}
+};
 
 /**
  * Recognizes an intent within some text.
@@ -225,16 +225,23 @@ export const recognize = (
   text: string,
   intent: Intent,
   options?: RecognizeOptions
-): IntentRecognition => {
+): IntentRecognition => {  
 
-  const { maxOutOfOrderPenalty = 0.15, maxNoisePenalty = 0.05, shared, tokenizer = basicTokenize} = options || {};
+  const {
+    maxOutOfOrderPenalty = 0.15,
+    maxNoisePenalty = 0.05,
+    shared,
+    tokenizer = basicTokenize,
+  } = options || {};
 
   if (maxOutOfOrderPenalty < 0 || maxOutOfOrderPenalty > 1) {
-    throw new Error('The maxOutOfOrderPenalty must be between 0 and 1 (inclusive).')
+    throw new Error(
+      "The maxOutOfOrderPenalty must be between 0 and 1 (inclusive)."
+    );
   }
 
   if (maxNoisePenalty < 0 || maxNoisePenalty > 1) {
-    throw new Error('The maxNoisePenalty must be between 0 and 1 (inclusive).')
+    throw new Error("The maxNoisePenalty must be between 0 and 1 (inclusive).");
   }
 
   const readyIntent = shared ? resolveIntentReferences(intent, shared) : intent;
@@ -243,7 +250,13 @@ export const recognize = (
   const textTokenMap = tokenize(text);
 
   const exampleRecognitions = readyIntent.examples.map((example) =>
-    recognizeExample(example, textTokenMap, tokenizer, maxOutOfOrderPenalty, maxNoisePenalty)
+    recognizeExample(
+      example,
+      textTokenMap,
+      tokenizer,
+      maxOutOfOrderPenalty,
+      maxNoisePenalty
+    )
   );
 
   const best = maxBy(exampleRecognitions, "score");
@@ -251,7 +264,7 @@ export const recognize = (
   return {
     name: readyIntent.name,
     score: best ? best.score : 0,
-    details: {      
+    details: {
       examples: exampleRecognitions,
       textTokenMap,
     },

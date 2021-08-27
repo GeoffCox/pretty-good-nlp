@@ -61,7 +61,7 @@ describe("trieSearch module", () => {
   describe("addTokensToTrieNode", () => {
     it("returns trie for token sequence", () => {
       const tokens = ["The", "quick", "brown", "fox"];
-      const node: TrieNode = { children: {} };
+      const node: TrieNode = {};
       addTokensToTrieNode(tokens, node);
 
       const actual = trieNodeToComparableString(node);

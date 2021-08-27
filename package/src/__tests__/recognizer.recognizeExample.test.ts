@@ -23,16 +23,7 @@ describe("recognizer modules", () => {
       expect(actual.score).toEqual(0);
       expect(actual.parts).toEqual([]);
       expect(actual.neverParts).toEqual([]);
-    });
-    it("return result when parts and neverParts are undefined", () => {
-      const example = {        
-      } as unknown as Example;
-
-      const actual = recognizeExample(example, testTextTokenMap, tokenize, 0.15, 0.05);
-      expect(actual.score).toEqual(0);
-      expect(actual.parts).toEqual([]);
-      expect(actual.neverParts).toEqual([]);
-    });
+    });    
     it("return result for empty string", () => {
       const example: Example = {
         parts: [

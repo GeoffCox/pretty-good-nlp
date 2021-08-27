@@ -47,8 +47,8 @@ export const resolveIntentReferences = (
 ): Intent => {  
   const result = cloneDeep<Intent>(intent);
 
-  result.examples?.forEach((example) => {
-    example.parts?.forEach((part) => {
+  result.examples.forEach((example) => {
+    example.parts.forEach((part) => {
       resolvePartReferences(part, shared);
     });
     example.neverParts?.forEach((neverPart) => {
