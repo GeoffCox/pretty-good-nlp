@@ -5,6 +5,9 @@ export type TextRange = {
   end: number;
 };
 
+/**
+ * Functions for working with TextRange
+ */
 export namespace TextRanges {
   /**
    * Returns a formatted string of the [start..end](length)kind.

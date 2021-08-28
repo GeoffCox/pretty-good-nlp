@@ -2,16 +2,26 @@ import { CharacterRange, CharacterRanges } from "./characterRange";
 import { TokenRange, TokenRanges } from "./tokenRange";
 import sortBy from "lodash/sortBy";
 
+/**
+ * The result of tokenizing text into a collection of character ranges; one per token.
+ */
 export type TokenMap = {
   text: string;
   characterRanges: CharacterRange[];
 };
 
+/**
+ * Functions for working with TokenMap
+ */
 export namespace TokenMaps {
+
+  /**
+   * Gets the character range corresponding to a token range 
+   */
   export const getCharacterRange = (
     tokenMap: TokenMap,
     tokenRange: TokenRange
-  ) => {
+  ) : CharacterRange => {
     validate(tokenMap);
     TokenRanges.validate(tokenRange);
 
@@ -42,7 +52,10 @@ export namespace TokenMaps {
     });
   };
 
-  export const getTokens = (tokenMap: TokenMap) => {
+  /**
+   * Gets the text of each token.
+   */
+  export const getTokens = (tokenMap: TokenMap) : string[] => {
     validate(tokenMap);
 
     return tokenMap.characterRanges.map((characterRange) => {
@@ -50,6 +63,9 @@ export namespace TokenMaps {
     });
   };
 
+  /**
+   * Gets the text of a character range.
+   */
   export const getTextForCharacterRange = (
     tokenMap: TokenMap,
     characterRange: CharacterRange
@@ -60,6 +76,9 @@ export namespace TokenMaps {
     return text.substring(characterRange.start, characterRange.end);
   };
 
+  /**
+   * Gets the text of a token range.
+   */
   export const getTextForTokenRange = (
     tokenMap: TokenMap,
     tokenRange: TokenRange
@@ -73,7 +92,10 @@ export namespace TokenMaps {
     );
   };
 
-  export const getTokenAtIndex = (tokenMap: TokenMap, tokenIndex: number) => {
+  /**
+   * Gets the text of token at the specified index.
+   */
+  export const getTokenAtIndex = (tokenMap: TokenMap, tokenIndex: number) : string => {
     validate(tokenMap);
 
     if (tokenIndex < 0) {
@@ -86,6 +108,9 @@ export namespace TokenMaps {
     return tokenMap.text.substring(range.start, range.end);
   };
 
+  /**
+   * Validates a token map.
+   */
   export const validate = (tokenMap: TokenMap) => {
     if (tokenMap === undefined) {
       throw new Error("The tokenMap is undefined.");

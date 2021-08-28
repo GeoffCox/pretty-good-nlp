@@ -4,6 +4,9 @@ export type TokenRange = TextRange & {
   kind: "tokenRange";
 };
 
+/**
+ * Functions for working with TokenRange
+ */
 export namespace TokenRanges {
   /**
    * Creates a token range from a partial range.

@@ -4,6 +4,9 @@ export type CharacterRange = TextRange & {
   kind: "characterRange";
 };
 
+/**
+ * Functions for working with CharacterRange
+ */
 export namespace CharacterRanges {
   /**
    * Creates a character range from a partial range.
