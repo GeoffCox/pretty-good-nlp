@@ -5,7 +5,7 @@ import {CharacterRange, CharacterRanges} from "../characterRange";
 const testText = "The quick brown fox jumps over the lazy dog";
 const testTextTokens = basicTokenize(testText);
 
-describe("findPhrases module", () => {
+describe("findPhrases", () => {
   it("returns matches", () => {
     const phrases = ["brown fox", "the lazy", "The quick brown"];
     const expected = [

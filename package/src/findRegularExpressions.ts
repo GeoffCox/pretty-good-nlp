@@ -1,4 +1,5 @@
-import { CharacterRange, CharacterRanges } from "./characterRange";
+import type { CharacterRange } from "./characterRange";
+import { CharacterRanges } from "./characterRange";
 
 const searchForRegularExpression = (
   text: string,

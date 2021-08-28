@@ -1,7 +1,15 @@
 import maxBy from "lodash/maxBy";
 import uniqBy from "lodash/uniqBy";
-import { TokenMap } from "./tokenMap";
-import {
+import { basicTokenize as basicTokenize } from "./basicTokenizer";
+import type { CharacterRange } from "./characterRange";
+import { CharacterRanges } from "./characterRange";
+import { findPatterns } from "./findPatterns";
+import { findPhrases } from "./findPhrases";
+import { findRegularExpressions } from "./findRegularExpressions";
+import { createMatchSort } from "./matchSort";
+import { resolveReferences } from "./referenceResolver";
+import type { TokenMap } from "./tokenMap";
+import type {
   Example,
   ExampleRecognition,
   ExamplePart,
@@ -11,13 +19,6 @@ import {
   Tokenizer,
   ExampleScoreMetrics,
 } from "./types";
-import { basicTokenize as basicTokenize } from "./basicTokenizer";
-import { createMatchSort } from "./matchSort";
-import { findPatterns } from "./findPatterns";
-import { findPhrases } from "./findPhrases";
-import { findRegularExpressions } from "./findRegularExpressions";
-import { CharacterRange, CharacterRanges } from "./characterRange";
-import { resolveReferences } from "./referenceResolver";
 
 /**
  * @internal

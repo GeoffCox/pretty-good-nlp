@@ -1,6 +1,6 @@
 export { basicTokenize } from "./basicTokenizer";
 export { CharacterRanges } from "./characterRange";
-export { TextRanges } from "./textRange";
+export { LinearRanges } from "./linearRange";
 export { TokenMaps } from "./tokenMap";
 export { TokenRanges } from "./tokenRange";
 export { recognize } from "./recognizer";

@@ -1,4 +1,5 @@
-import { TokenRange, TokenRanges } from "./tokenRange";
+import type { TokenRange } from "./tokenRange";
+import { TokenRanges } from "./tokenRange";
 
 export type TrieNode = {
   children?: Record<string, TrieNode>;

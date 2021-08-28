@@ -1,6 +1,6 @@
 import { basicTokenize } from "../basicTokenizer";
 
-describe("basicTokenizer module", () => {
+describe("basicTokenizer", () => {
   describe("tokenize", () => {
     it("returns tokens", () => {
       const text = "The quick brown fox jumped over the lazy dog";

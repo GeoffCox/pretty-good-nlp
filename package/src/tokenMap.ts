@@ -1,5 +1,7 @@
-import { CharacterRange, CharacterRanges } from "./characterRange";
-import { TokenRange, TokenRanges } from "./tokenRange";
+import type { CharacterRange } from "./characterRange";
+import { CharacterRanges } from "./characterRange";
+import type { TokenRange } from "./tokenRange";
+import { TokenRanges } from "./tokenRange";
 import sortBy from "lodash/sortBy";
 
 /**

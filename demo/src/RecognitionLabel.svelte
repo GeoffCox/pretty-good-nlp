@@ -1,7 +1,5 @@
 <script lang="ts">
-  import type {
-    CharacterRange,
-    ExamplePartRecognition,
+  import type {    
     ExampleRecognition,
   } from "@geoffcox/pretty-good-nlp";
 

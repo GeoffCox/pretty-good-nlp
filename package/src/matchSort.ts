@@ -1,4 +1,5 @@
-import { CharacterRange, CharacterRanges} from "./characterRange";
+import type { CharacterRange } from "./characterRange";
+import { CharacterRanges } from "./characterRange";
 
 /**
  * Provides a sort method to order matches for an example part from best to worst.

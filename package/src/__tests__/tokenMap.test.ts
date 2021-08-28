@@ -25,7 +25,7 @@ const testTokenMap = {
   ],
 };
 
-describe("tokenMap module", () => {
+describe("tokenMap", () => {
   describe("getCharacterRange", () => {
     it("returns character ranges", () => {
       const tokenRange = TokenRanges.create({

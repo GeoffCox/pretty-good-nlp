@@ -1,9 +1,10 @@
-import { TextRange, TextRanges } from "./textRange";
+import type { LinearRange } from "./linearRange";
+import { LinearRanges } from "./linearRange";
 
 /**
  * Describes a range of characters within text.
  */
-export type CharacterRange = TextRange & {
+export type CharacterRange = LinearRange & {
   /**
    * The kind of character range.   
    */
@@ -20,42 +21,42 @@ export namespace CharacterRanges {
   export const create = (
     range: Partial<Omit<CharacterRange, "kind">>
   ): CharacterRange =>
-    TextRanges.create<CharacterRange>({ ...range, kind: "characterRange" });
+    LinearRanges.create<CharacterRange>({ ...range, kind: "characterRange" });
 
   /**
    * Returns true if the two character ranges are deeply equal; false otherwise.
    */
   export const equals: (x: CharacterRange, y: CharacterRange) => boolean =
-    TextRanges.equals;
+    LinearRanges.equals;
 
   /**
    * Returns true if the first character range contains the other character range; false otherwise.
    */
   export const contains: (x: CharacterRange, y: CharacterRange) => boolean =
-    TextRanges.contains;
+    LinearRanges.contains;
 
   /**
    * Returns true if the two character ranges overlap; false otherwise.
    */
   export const overlaps: (x: CharacterRange, y: CharacterRange) => boolean =
-    TextRanges.overlaps;
+    LinearRanges.overlaps;
 
   /**
    * Returns true if the character range is valid; false otherwise.
    */
-  export const isValid: (range: CharacterRange) => boolean = TextRanges.isValid;
+  export const isValid: (range: CharacterRange) => boolean = LinearRanges.isValid;
 
   /**
    * Returns a formatted string of the [start..end](length)kind.
    */
   export const toString: (range: Partial<CharacterRange>) => string =
-    TextRanges.toString;
+    LinearRanges.toString;
 
   /**
    * Validates the character range is valid and throws errors if not.
    */
   export const validate = (range: CharacterRange, text?: string): void => {
-    TextRanges.validate<CharacterRange>(range);
+    LinearRanges.validate<CharacterRange>(range);
 
     if (text !== undefined) {
       if (range.start > text.length) {

@@ -1,7 +1,7 @@
 import { findRegularExpressions } from "../findRegularExpressions";
 import {CharacterRange, CharacterRanges} from "../characterRange";
 
-describe("findRegularExpressions module", () => {
+describe("findRegularExpressions", () => {
   describe("findRegularExpressions", () => {
     it("returns character ranges for a single occurance of an expression", () => {
       const text = "This is a phone number 555-1212 to call";

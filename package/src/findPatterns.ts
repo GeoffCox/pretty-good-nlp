@@ -1,5 +1,5 @@
+import type { CharacterRange } from "./characterRange";
 import { findRegularExpressions } from "./findRegularExpressions";
-import { CharacterRange } from "./characterRange";
 
 /**
  * @internal

@@ -1,5 +1,5 @@
-import { CharacterRange } from "./characterRange";
-import { TokenMap } from "./tokenMap";
+import type { CharacterRange } from "./characterRange";
+import type { TokenMap } from "./tokenMap";
 
 /**
  * A method that breaks up a continuous string of text into a map of tokens.

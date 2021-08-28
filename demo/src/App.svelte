@@ -1,6 +1,6 @@
 <script lang="ts">
   import { coffeeIntent } from "./coffeeIntent";
-  import { recognize, resolveIntentReferences } from "@geoffcox/pretty-good-nlp";
+  import { recognize } from "@geoffcox/pretty-good-nlp";
   import type { IntentRecognition } from "@geoffcox/pretty-good-nlp";
 
   import IntentRecognitionCard from "./IntentRecognitionCard.svelte";

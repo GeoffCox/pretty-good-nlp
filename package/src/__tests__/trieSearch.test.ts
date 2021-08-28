@@ -57,7 +57,7 @@ const trieNodeToComparableString = (node: TrieNode): string => {
   return result.join("");
 };
 
-describe("trieSearch module", () => {
+describe("trieSearch", () => {
   describe("addTokensToTrieNode", () => {
     it("returns trie for token sequence", () => {
       const tokens = ["The", "quick", "brown", "fox"];

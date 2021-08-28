@@ -4,7 +4,7 @@ import {
 } from "../findPatterns";
 import { CharacterRange, CharacterRanges } from "../characterRange";
 
-describe("findPatterns module", () => {
+describe("findPatterns", () => {
   describe("patternToRegularExpression", () => {
     it.each([
       ["#", "\\d"], // digit

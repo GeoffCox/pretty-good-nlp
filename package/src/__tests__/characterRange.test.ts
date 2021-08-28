@@ -1,6 +1,6 @@
 import {CharacterRanges} from "../characterRange";
 
-describe("characterRange module", () => {
+describe("characterRange", () => {
     describe("create", () => {
         it("creates instance of CharacterRange", () => {
             const actual = CharacterRanges.create({ start: 4, length: 5 });

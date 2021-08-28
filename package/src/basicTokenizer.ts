@@ -1,5 +1,6 @@
-import { TokenMap } from "./tokenMap";
-import { CharacterRange, CharacterRanges } from "./characterRange";
+import type { TokenMap } from "./tokenMap";
+import type { CharacterRange } from "./characterRange";
+import { CharacterRanges } from "./characterRange";
 
 const delimiters = [
   // punctuation

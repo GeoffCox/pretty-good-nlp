@@ -1,7 +1,10 @@
-import { TokenMap, TokenMaps } from "./tokenMap";
-import { addTokensToTrieNode, TrieNode, trieSearch } from "./trieSearch";
-import { Tokenizer } from "./types";
-import { CharacterRange } from "./characterRange";
+import type { CharacterRange } from "./characterRange";
+import type { TokenMap } from "./tokenMap";
+import { TokenMaps } from "./tokenMap";
+import type { TrieNode } from "./trieSearch";
+import { addTokensToTrieNode, trieSearch } from "./trieSearch";
+import type { Tokenizer } from "./types";
+
 
 export const findPhrases = (  
   phrases: string[],

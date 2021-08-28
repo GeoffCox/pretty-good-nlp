@@ -1,4 +1,4 @@
-import { ExamplePart, Intent } from "./types";
+import type { ExamplePart, Intent } from "./types";
 import cloneDeep from "lodash/cloneDeep";
 
 /**

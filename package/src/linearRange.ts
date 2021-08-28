@@ -1,11 +1,11 @@
 /**
- * Describes a range of content within text.
+ * Describes a linear range of content within larger content.
  * This is used to provide CharacterRange and TokenRange.
  */
-export type TextRange = {
+export type LinearRange = {
   /**
-   * The kind of text range.
-   * @default "textRange"
+   * The kind of range.
+   * @default "linearRange"
    */
   kind: string;
   /**
@@ -23,13 +23,13 @@ export type TextRange = {
 };
 
 /**
- * Functions for working with TextRange
+ * Functions for working with LinearRange
  */
-export namespace TextRanges {
+export namespace LinearRanges {
   /**
    * Returns a formatted string of the [start..end](length)kind.
    */
-  export const toString = <T extends TextRange>(range: Partial<T>): string => {
+  export const toString = <T extends LinearRange>(range: Partial<T>): string => {
     const startText = range?.start ?? "";
     const endText = range?.end ?? "";
     const lengthText = range?.length ?? "";
@@ -39,10 +39,10 @@ export namespace TextRanges {
 
   /**
    * Creates a range from a partial range.
-   * Range.kind defaults to the generic 'textRange' if not specified.
+   * @default Range.kind='linearRange'
    */
-  export const create = <T extends TextRange>(range: Partial<T>): T => {
-    const { kind = "textRange", start, end, length } = range;
+  export const create = <T extends LinearRange>(range: Partial<T>): T => {
+    const { kind = "linearRange", start, end, length } = range;
 
     if (start !== undefined) {
       if (start < 0) {
@@ -145,7 +145,7 @@ export namespace TextRanges {
   /**
    * Returns true if the range is valid; false otherwise.
    */
-  export const isValid = <T extends TextRange>(range: T): boolean => {
+  export const isValid = <T extends LinearRange>(range: T): boolean => {
     if (range === undefined) {
       return false;
     }
@@ -168,7 +168,7 @@ export namespace TextRanges {
   /**
    * Validates the range is valid and throws errors if not.
    */
-  export const validate = <T extends TextRange>(range: T) => {
+  export const validate = <T extends LinearRange>(range: T) => {
     if (range === undefined) {
       throw new Error(`The range is undefined. ${toString(range)}`);
     }
@@ -206,7 +206,7 @@ export namespace TextRanges {
   /**
    * Returns true if the two ranges are deeply equal; false otherwise.
    */
-  export const equals = <T extends TextRange>(x: T, y: T): boolean => {
+  export const equals = <T extends LinearRange>(x: T, y: T): boolean => {
     validate(x);
     validate(y);
     return (
@@ -220,7 +220,7 @@ export namespace TextRanges {
   /**
    * Returns true if the first range contains the other range; false otherwise.
    */
-  export const contains = <T extends TextRange>(
+  export const contains = <T extends LinearRange>(
     range: T,
     other: T
   ): boolean => {
@@ -232,7 +232,7 @@ export namespace TextRanges {
   /**
    * Returns true if the two ranges overlap; false otherwise.
    */
-  export const overlaps = <T extends TextRange>(x: T, y: T): boolean => {
+  export const overlaps = <T extends LinearRange>(x: T, y: T): boolean => {
     validate(x);
     validate(y);
     // a single length range has start of N and end of N+1 so I use < and >
