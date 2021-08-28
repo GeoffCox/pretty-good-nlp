@@ -1,4 +1,4 @@
-import { tokenize } from "../basicTokenizer";
+import { basicTokenize } from "../basicTokenizer";
 import { Example } from "../types";
 import { CharacterRanges} from "../characterRange";
 
@@ -9,7 +9,7 @@ const {
 } = UnitTestApi.recognizerModule;
 
 const testText = "The quick brown fox jumps over the lazy dog.";
-const testTextTokenMap = tokenize(testText);
+const testTextTokenMap = basicTokenize(testText);
 
 describe("recognizer modules", () => {
   describe("recognizeExample", () => {
@@ -19,7 +19,7 @@ describe("recognizer modules", () => {
         neverParts: [],
       };
 
-      const actual = recognizeExample(example, testTextTokenMap, tokenize, 0.15, 0.05);
+      const actual = recognizeExample(example, testTextTokenMap, basicTokenize, 0.15, 0.05);
       expect(actual.score).toEqual(0);
       expect(actual.parts).toEqual([]);
       expect(actual.neverParts).toEqual([]);
@@ -38,9 +38,9 @@ describe("recognizer modules", () => {
       };
 
       const text = "";
-      const textTokenMap = tokenize(text);
+      const textTokenMap = basicTokenize(text);
 
-      const actual = recognizeExample(example, textTokenMap, tokenize, 0.15, 0.05);
+      const actual = recognizeExample(example, textTokenMap, basicTokenize, 0.15, 0.05);
       expect(actual.score).toEqual(0);
       expect(actual.parts).toEqual([
         {
@@ -66,7 +66,7 @@ describe("recognizer modules", () => {
         neverParts: [],
       };
 
-      const actual = recognizeExample(example, testTextTokenMap, tokenize, 0.15, 0.05);
+      const actual = recognizeExample(example, testTextTokenMap, basicTokenize, 0.15, 0.05);
       
       expect(Math.floor(actual.score * 100)).toEqual(97);
       expect(actual.name).toEqual(example.name);
@@ -94,7 +94,7 @@ describe("recognizer modules", () => {
         ],
       };
 
-      const actual = recognizeExample(example, testTextTokenMap, tokenize, 0.15, 0.05);
+      const actual = recognizeExample(example, testTextTokenMap, basicTokenize, 0.15, 0.05);
 
       expect(actual.score).toEqual(0);
       expect(actual.name).toEqual(example.name);

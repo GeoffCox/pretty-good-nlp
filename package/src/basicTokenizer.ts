@@ -1,9 +1,48 @@
 import { TokenMap } from "./tokenMap";
 import { CharacterRange, CharacterRanges } from "./characterRange";
 
-const delimiters = [" ", ".", ",", ":", ";", "?", "!"];
+const delimiters = [
+  // punctuation
+  " ",
+  ".",
+  ",",
+  ":",
+  ";",
+  "?",
+  "!",
+  // grouping
+  "(",
+  ")",
+  "[",
+  "]",
+  "{",
+  "}",
+  "<",
+  ">",
+  // separators
+  "\\",
+  "|",
+  "/",
+];
 
-export const tokenize = (text: string): TokenMap => {
+/**
+ * Tokenizes text using delimiters:
+ * - space
+ * - period `.`
+ * - comma `,`
+ * - colon `:`
+ * - semi-colon `;`
+ * - question mark `?`
+ * - exclamation point `!`
+ * - parenthesis `(` `)`
+ * - brackets `[` `]`
+ * - curly brackets `{` `}`
+ * - angle brackets `<` `>`
+ * - vertical separator `|`
+ * - back slash `\` 
+ * - forward slash `/` 
+ */
+export const basicTokenize = (text: string): TokenMap => {
   if (!text || text.trim().length === 0) {
     return {
       text: "",

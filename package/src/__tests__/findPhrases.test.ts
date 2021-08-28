@@ -1,9 +1,9 @@
-import { tokenize } from "../basicTokenizer";
+import { basicTokenize } from "../basicTokenizer";
 import { findPhrases } from "../findPhrases";
 import {CharacterRange, CharacterRanges} from "../characterRange";
 
 const testText = "The quick brown fox jumps over the lazy dog";
-const testTextTokens = tokenize(testText);
+const testTextTokens = basicTokenize(testText);
 
 describe("findPhrases module", () => {
   it("returns matches", () => {
@@ -14,7 +14,7 @@ describe("findPhrases module", () => {
       CharacterRanges.create({ start: 31, end: 39 }), //the lazy
     ];
 
-    const actual = findPhrases(phrases, testTextTokens, tokenize);
+    const actual = findPhrases(phrases, testTextTokens, basicTokenize);
     expect(actual).toBeDefined();
     expect(actual).toEqual(expected);
   });
@@ -22,7 +22,7 @@ describe("findPhrases module", () => {
     const phrases: string[] = [];
     const expected: CharacterRange[] = [];
 
-    const actual = findPhrases(phrases, testTextTokens, tokenize);
+    const actual = findPhrases(phrases, testTextTokens, basicTokenize);
     expect(actual).toBeDefined();
     expect(actual).toEqual(expected);
   });
@@ -30,7 +30,7 @@ describe("findPhrases module", () => {
     const phrases: string[] = undefined as unknown as string[];
     const expected: CharacterRange[] = [];
 
-    const actual = findPhrases(phrases, testTextTokens, tokenize);
+    const actual = findPhrases(phrases, testTextTokens, basicTokenize);
     expect(actual).toBeDefined();
     expect(actual).toEqual(expected);
   });

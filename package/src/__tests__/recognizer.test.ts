@@ -2,7 +2,7 @@ import { Intent } from "../types";
 
 import { recognize } from "../recognizer";
 import { CharacterRanges } from "../characterRange";
-import { tokenize } from "../basicTokenizer";
+import { basicTokenize } from "../basicTokenizer";
 
 const testText = "The quick brown fox jumps over the lazy dog.";
 
@@ -260,7 +260,7 @@ describe("recognizer modules", () => {
             ],
           };
         }
-        return tokenize(text);
+        return basicTokenize(text);
       };
 
       const intent: Intent = {

@@ -1,4 +1,4 @@
-import { tokenize } from "../basicTokenizer";
+import { basicTokenize } from "../basicTokenizer";
 import { ExamplePart, ExamplePartRecognition } from "../types";
 import {CharacterRanges} from "../characterRange";
 
@@ -9,7 +9,7 @@ const {
 } = UnitTestApi.recognizerModule;
 
 const testText = "The quick brown fox jumps over the lazy dog.";
-const testTextTokenMap = tokenize(testText);
+const testTextTokenMap = basicTokenize(testText);
 
 describe("recognizer modules", () => {
   describe("findPartMatches", () => {
@@ -25,7 +25,7 @@ describe("recognizer modules", () => {
         ],
       };
 
-      const actual = findPartMatches(part, testTextTokenMap, tokenize);
+      const actual = findPartMatches(part, testTextTokenMap, basicTokenize);
 
       expect(actual).toBeDefined();
       expect(actual).toEqual(expected);
@@ -42,7 +42,7 @@ describe("recognizer modules", () => {
         ],
       };
 
-      const actual = findPartMatches(part, testTextTokenMap, tokenize);
+      const actual = findPartMatches(part, testTextTokenMap, basicTokenize);
 
       expect(actual).toBeDefined();
       expect(actual).toEqual(expected);
@@ -59,7 +59,7 @@ describe("recognizer modules", () => {
         ],
       };
 
-      const actual = findPartMatches(part, testTextTokenMap, tokenize);
+      const actual = findPartMatches(part, testTextTokenMap, basicTokenize);
 
       expect(actual).toBeDefined();
       expect(actual).toEqual(expected);
@@ -77,7 +77,7 @@ describe("recognizer modules", () => {
         ],
       };
 
-      const actual = findPartMatches(part, testTextTokenMap, tokenize);
+      const actual = findPartMatches(part, testTextTokenMap, basicTokenize);
 
       expect(actual).toBeDefined();
       expect(actual).toEqual(expected);
@@ -98,7 +98,7 @@ describe("recognizer modules", () => {
         variable: "test",
       };
 
-      const actual = findPartMatches(part, testTextTokenMap, tokenize);
+      const actual = findPartMatches(part, testTextTokenMap, basicTokenize);
 
       expect(actual).toBeDefined();
       expect(actual).toEqual(expected);

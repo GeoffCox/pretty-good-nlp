@@ -1,10 +1,10 @@
-import { tokenize } from "../basicTokenizer";
+import { basicTokenize } from "../basicTokenizer";
 
 describe("basicTokenizer module", () => {
   describe("tokenize", () => {
     it("returns tokens", () => {
       const text = "The quick brown fox jumped over the lazy dog";
-      const actual = tokenize(text);
+      const actual = basicTokenize(text);
 
       expect(actual).toBeDefined();
       expect(actual.text).toEqual(text);
@@ -13,7 +13,7 @@ describe("basicTokenizer module", () => {
     });
     it("returns tokens if ends in delimiter", () => {
       const text = "he quick brown fox jumped over the lazy dog.";
-      const actual = tokenize(text);
+      const actual = basicTokenize(text);
 
       expect(actual).toBeDefined();
       expect(actual.text).toEqual(text);
@@ -22,7 +22,7 @@ describe("basicTokenizer module", () => {
     });
     it("returns tokens for text with delimiters", () => {
         const text = "The. quick, brown fox jump:ed over the la;zy dog";
-        const actual = tokenize(text);
+        const actual = basicTokenize(text);
   
         expect(actual).toBeDefined();
         expect(actual.text).toEqual(text);
@@ -30,7 +30,7 @@ describe("basicTokenizer module", () => {
         expect(actual.characterRanges.length).toEqual(11);
       });
     it("returns empty for undefined", () => {
-      const actual = tokenize(undefined as unknown as string);
+      const actual = basicTokenize(undefined as unknown as string);
 
       expect(actual).toBeDefined();
       expect(actual.text).toEqual("");
@@ -38,7 +38,7 @@ describe("basicTokenizer module", () => {
       expect(actual.characterRanges.length).toEqual(0);
     });
     it("returns empty for empty string", () => {
-        const actual = tokenize("");
+        const actual = basicTokenize("");
     
         expect(actual).toBeDefined();
         expect(actual.text).toEqual("");
@@ -46,7 +46,7 @@ describe("basicTokenizer module", () => {
         expect(actual.characterRanges.length).toEqual(0);
       });
       it("returns empty for all whitespace", () => {
-        const actual = tokenize("       ");
+        const actual = basicTokenize("       ");
     
         expect(actual).toBeDefined();
         expect(actual.text).toEqual("");

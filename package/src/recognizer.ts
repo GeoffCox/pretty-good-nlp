@@ -11,7 +11,7 @@ import {
   Tokenizer,
   ExampleScoreMetrics,
 } from "./types";
-import { tokenize as basicTokenize } from "./basicTokenizer";
+import { basicTokenize as basicTokenize } from "./basicTokenizer";
 import { createMatchSort } from "./matchSort";
 import { findPatterns } from "./findPatterns";
 import { findPhrases } from "./findPhrases";

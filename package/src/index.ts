@@ -1,5 +1,6 @@
-export * from "./recognizer";
-export * from "./textRange";
-export * from "./characterRange";
-export * from "./tokenRange";
-export * from "./tokenMap";
+export { basicTokenize } from "./basicTokenizer";
+export { CharacterRanges } from "./characterRange";
+export { TextRanges } from "./textRange";
+export { TokenMaps } from "./tokenMap";
+export { TokenRanges } from "./tokenRange";
+export { recognize } from "./recognizer";
