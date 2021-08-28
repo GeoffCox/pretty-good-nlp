@@ -153,12 +153,11 @@ const recognizeExample = (
   // I need to create a new match sort for each example because it is stateful.
   const matchSort = createMatchSort();
 
-  const partResults =
-    parts.map((part) => {
-      const partResult = findPartMatches(part, textTokenMap, tokenizer);
-      matchSort(partResult.matches);
-      return partResult;
-    });
+  const partResults = parts.map((part) => {
+    const partResult = findPartMatches(part, textTokenMap, tokenizer);
+    matchSort(partResult.matches);
+    return partResult;
+  });
 
   const neverPartResults =
     neverParts?.map((part) => {
@@ -225,8 +224,7 @@ export const recognize = (
   text: string,
   intent: Intent,
   options?: RecognizeOptions
-): IntentRecognition => {  
-
+): IntentRecognition => {
   const {
     maxOutOfOrderPenalty = 0.15,
     maxNoisePenalty = 0.05,

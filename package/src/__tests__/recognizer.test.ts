@@ -1,12 +1,14 @@
 import { Intent } from "../types";
 
 import { recognize } from "../recognizer";
+import { CharacterRanges } from "../characterRange";
+import { tokenize } from "../basicTokenizer";
 
 const testText = "The quick brown fox jumps over the lazy dog.";
 
 describe("recognizer modules", () => {
   describe("recognize", () => {
-    it("returns score=1 when matches exactly", () => {
+    it("returns score=1 when exactly recognized", () => {
       const intent: Intent = {
         name: "Test intent",
         examples: [
@@ -27,14 +29,15 @@ describe("recognizer modules", () => {
       };
 
       const actual = recognize(testText, intent);
+      expect(actual.name).toEqual(intent.name);
       expect(actual.score).toEqual(1);
     });
-    it("returns score=0 for intent when no examples match", () => {
+    it("returns score=0 when unrecognized", () => {
       const intent: Intent = {
         name: "Test intent",
         examples: [
           {
-            name: 'Trebel Clef lines',
+            name: "Trebel Clef lines",
             parts: [
               {
                 phrases: ["Every"],
@@ -45,10 +48,10 @@ describe("recognizer modules", () => {
               {
                 phrases: ["deserves fudge"],
               },
-            ],            
+            ],
           },
           {
-            name: 'The Earth’s Atmospheres',
+            name: "The Earth’s Atmospheres",
             parts: [
               {
                 phrases: ["The Strong Man’s"],
@@ -62,22 +65,204 @@ describe("recognizer modules", () => {
       };
 
       const actual = recognize(testText, intent);
+      expect(actual.name).toEqual(intent.name);
       expect(actual.score).toEqual(0);
     });
-    it("returns score=0 for intent with empty parts", () => {
+    it("returns score=0 when examples empty", () => {
       const intent: Intent = {
         name: "Test intent",
-        examples: [
-          {
-            parts: [],
-          },
-        ],
+        examples: [],
       };
 
       const actual = recognize(testText, intent);
       expect(actual.score).toEqual(0);
     });
-    it("recognizes intent", () => {
+    it("returns best score of multiple examples", () => {
+      const intent: Intent = {
+        name: "Test intent",
+        examples: [
+          {
+            name: "adjectives",
+            parts: [
+              {
+                phrases: ["quick"],
+              },
+              {
+                phrases: ["over"],
+              },
+              {
+                phrases: ["lazy"],
+              },
+            ],
+          },
+          {
+            name: "best",
+            parts: [
+              {
+                phrases: ["the quick"],
+              },
+              {
+                phrases: ["brown fox"],
+              },
+              {
+                phrases: ["jumps over the"],
+              },
+              {
+                phrases: ["dog"],
+              },
+            ],
+          },
+          {
+            name: "nouns",
+            parts: [
+              {
+                phrases: ["lazy dog"],
+              },
+              {
+                phrases: ["brown fox"],
+              },
+            ],
+          },
+        ],
+      };
+
+      const actual = recognize(testText, intent);
+      expect(actual.score).toEqual(0.9944444444444445);
+
+      // verify examples in order and have correct scores.
+      expect(actual.details.examples[0].name).toEqual("adjectives");
+      expect(actual.details.examples[0].score).toEqual(0.9666666666666667);
+
+      expect(actual.details.examples[1].name).toEqual("best");
+      expect(actual.details.examples[1].score).toEqual(actual.score);
+
+      expect(actual.details.examples[2].name).toEqual("nouns");
+      expect(actual.details.examples[2].score).toEqual(0.8972222222222223);
+    });
+    it("returns variable values from best match", () => {
+      const intent: Intent = {
+        name: "Test intent",
+        examples: [
+          {
+            name: "adjectives",
+            parts: [
+              {
+                phrases: ["quick"],
+              },
+              {
+                phrases: ["over"],
+                variable: "preposition",
+              },
+              {
+                phrases: ["lazy"],
+              },
+            ],
+          },
+          {
+            name: "best",
+            parts: [
+              {
+                phrases: ["the"],
+              },
+              {
+                phrases: ["quick"],
+                variable: "foxSpeed",
+              },
+              {
+                phrases: ["brown"],
+                variable: "foxColor",
+              },
+              {
+                phrases: ["fox"],
+              },
+              {
+                phrases: ["jumps over the"],
+              },
+              {
+                phrases: ["dog"],
+              },
+            ],
+          },
+          {
+            name: "nouns",
+            parts: [
+              {
+                phrases: ["lazy"],
+                variable: "dogType",
+              },
+              {
+                phrases: ["dog"],
+                variable: "dogType",
+              },
+              {
+                phrases: ["blue"],
+                variable: "foxColor",
+              },
+              {
+                phrases: ["fox"],
+              },
+            ],
+          },
+        ],
+      };
+
+      const actual = recognize(testText, intent);
+      expect(actual.variableValues["preposition"]).toBeUndefined();
+      expect(actual.variableValues["dogType"]).toBeUndefined();
+      expect(actual.variableValues["foxSpeed"]).toEqual(["quick"]);
+      expect(actual.variableValues["foxColor"]).toEqual(["brown"]);
+    });
+    it("returns score using resolved references", () => {
+      const shared = {
+        actionsPhrases: ["jumps over"],
+      };
+
+      const intent: Intent = {
+        name: "Test intent",
+        examples: [
+          {
+            parts: [
+              {
+                phrases: ["The quick brown fox"],
+              },
+              {
+                phrases: ["$ref=actionsPhrases"],
+              },
+              {
+                phrases: ["the lazy dog"],
+              },
+            ],
+          },
+        ],
+      };
+
+      const actual = recognize(testText, intent, { shared });
+      expect(actual.score).toEqual(1);
+    });
+    it("returns score using custom tokenizer", () => {
+      const input = "The quick brown fox jumps over the lazy dog today";
+
+      const tokenizer = (text: string) => {
+        if (text === input) {
+          return {
+            text,
+            characterRanges: [
+              CharacterRanges.create({ start: 0, length: 3 }), //the
+              CharacterRanges.create({ start: 4, length: 5 }), //quick
+              CharacterRanges.create({ start: 10, length: 5 }), //brown
+              CharacterRanges.create({ start: 16, length: 3 }), //fox
+              CharacterRanges.create({ start: 20, length: 5 }), //jumps
+              CharacterRanges.create({ start: 26, length: 4 }), //over
+              CharacterRanges.create({ start: 31, length: 3 }), //the
+              CharacterRanges.create({ start: 35, length: 4 }), //lazy
+              CharacterRanges.create({ start: 40, length: 3 }), //dog
+              CharacterRanges.create({ start: 44, length: 5 }), //today
+            ],
+          };
+        }
+        return tokenize(text);
+      };
+
       const intent: Intent = {
         name: "Test intent",
         examples: [
@@ -90,182 +275,15 @@ describe("recognizer modules", () => {
                 phrases: ["jumps over"],
               },
               {
-                phrases: ["The lazy dog"],
-              },
-            ],
-          },
-          {
-            parts: [
-              {
-                phrases: ["Every good boy"],
-              },
-              {
-                phrases: ["deserves"],
-              },
-              {
-                phrases: ["fudge"],
+                phrases: ["the lazy dog"],
               },
             ],
           },
         ],
       };
 
-      const actual = recognize(testText, intent);
-      expect(actual).toMatchInlineSnapshot(`
-Object {
-  "details": Object {
-    "examples": Array [
-      Object {
-        "name": undefined,
-        "neverParts": Array [],
-        "parts": Array [
-          Object {
-            "matches": Array [
-              Object {
-                "end": 19,
-                "kind": "characterRange",
-                "length": 19,
-                "start": 0,
-              },
-            ],
-            "variable": undefined,
-            "weight": undefined,
-          },
-          Object {
-            "matches": Array [
-              Object {
-                "end": 30,
-                "kind": "characterRange",
-                "length": 10,
-                "start": 20,
-              },
-            ],
-            "variable": undefined,
-            "weight": undefined,
-          },
-          Object {
-            "matches": Array [
-              Object {
-                "end": 43,
-                "kind": "characterRange",
-                "length": 12,
-                "start": 31,
-              },
-            ],
-            "variable": undefined,
-            "weight": undefined,
-          },
-        ],
-        "score": 1,
-        "scoreMetrics": Object {
-          "inOrderMatchedPartCount": 3,
-          "matchedNeverPartCount": 0,
-          "matchedPartCount": 3,
-          "matchedPartWeightSum": 3,
-          "matchedTokenCount": 9,
-          "partCount": 3,
-          "partWeightSum": 3,
-          "tokenCount": 9,
-        },
-      },
-      Object {
-        "name": undefined,
-        "neverParts": Array [],
-        "parts": Array [
-          Object {
-            "matches": Array [],
-            "variable": undefined,
-            "weight": undefined,
-          },
-          Object {
-            "matches": Array [],
-            "variable": undefined,
-            "weight": undefined,
-          },
-          Object {
-            "matches": Array [],
-            "variable": undefined,
-            "weight": undefined,
-          },
-        ],
-        "score": 0,
-        "scoreMetrics": Object {
-          "inOrderMatchedPartCount": 0,
-          "matchedNeverPartCount": 0,
-          "matchedPartCount": 0,
-          "matchedPartWeightSum": 0,
-          "matchedTokenCount": 0,
-          "partCount": 3,
-          "partWeightSum": 3,
-          "tokenCount": 9,
-        },
-      },
-    ],
-    "textTokenMap": Object {
-      "characterRanges": Array [
-        Object {
-          "end": 3,
-          "kind": "characterRange",
-          "length": 3,
-          "start": 0,
-        },
-        Object {
-          "end": 9,
-          "kind": "characterRange",
-          "length": 5,
-          "start": 4,
-        },
-        Object {
-          "end": 15,
-          "kind": "characterRange",
-          "length": 5,
-          "start": 10,
-        },
-        Object {
-          "end": 19,
-          "kind": "characterRange",
-          "length": 3,
-          "start": 16,
-        },
-        Object {
-          "end": 25,
-          "kind": "characterRange",
-          "length": 5,
-          "start": 20,
-        },
-        Object {
-          "end": 30,
-          "kind": "characterRange",
-          "length": 4,
-          "start": 26,
-        },
-        Object {
-          "end": 34,
-          "kind": "characterRange",
-          "length": 3,
-          "start": 31,
-        },
-        Object {
-          "end": 39,
-          "kind": "characterRange",
-          "length": 4,
-          "start": 35,
-        },
-        Object {
-          "end": 43,
-          "kind": "characterRange",
-          "length": 3,
-          "start": 40,
-        },
-      ],
-      "text": "The quick brown fox jumps over the lazy dog.",
-    },
-  },
-  "name": "Test intent",
-  "score": 1,
-  "variableValues": Object {},
-}
-`);
+      const actual = recognize(input, intent, { tokenizer });
+      expect(actual.score).toEqual(0.995);
     });
     it("throws error when passed maxOutOfOrderPenalty > 1", () => {
       const intent: Intent = {
@@ -278,7 +296,7 @@ Object {
         `"The maxOutOfOrderPenalty must be between 0 and 1 (inclusive)."`
       );
     });
-    it("throws error when passed maxOutOfOrderPenalty < 0>", () => {
+    it("throws error when passed maxOutOfOrderPenalty < 0", () => {
       const intent: Intent = {
         name: "Test Intent",
         examples: [],
@@ -300,7 +318,7 @@ Object {
         `"The maxNoisePenalty must be between 0 and 1 (inclusive)."`
       );
     });
-    it("throws error when passed maxNoisePenalty < 0>", () => {
+    it("throws error when passed maxNoisePenalty < 0", () => {
       const intent: Intent = {
         name: "Test Intent",
         examples: [],
