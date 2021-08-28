@@ -176,7 +176,8 @@ export const trieSearch = (textTokens: string[], node: TrieNode) => {
     const firstChildNode = node.children?.[tokenKey];
     if (firstChildNode) {
       // only first children have start IDs
-      firstChildNode.startIds?.forEach((startId) => (matchStarts[startId] = i));
+      const startIds = firstChildNode.startIds as number[];
+      startIds.forEach((startId) => (matchStarts[startId] = i));
 
       // a first child could be both an end and a start
       firstChildNode.endIds?.forEach((endId) => {
