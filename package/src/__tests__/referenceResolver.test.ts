@@ -1,8 +1,9 @@
-import { resolveIntentReferences, UnitTestApi } from "../referenceResolver";
+import {
+  resolveReferences,
+  _resolveStringReferences as resolveStringReferences,
+  _resolvePartReferences as resolvePartReferences,
+} from "../referenceResolver";
 import { Intent } from "../types";
-
-const { resolveReferences, resolvePartReferences } =
-  UnitTestApi.referenceResolverModule;
 
 const testShared = {
   phrasesA: ["phrasesA1", "phrasesA2", "phrasesA3"],
@@ -17,11 +18,11 @@ const testShared = {
 };
 
 describe("referenceResolver", () => {
-  describe("resolveReferences", () => {
+  describe("resolveStringReferences", () => {
     it("resolves single reference", () => {
       const items = ["$ref=phrasesA"];
       const expected = testShared.phrasesA;
-      const actual = resolveReferences(items, testShared);
+      const actual = resolveStringReferences(items, testShared);
       expect(actual).toEqual(expected);
     });
     it("resolves references in order", () => {
@@ -31,7 +32,7 @@ describe("referenceResolver", () => {
         ...testShared.phrasesA,
         ...testShared.phrasesB,
       ];
-      const actual = resolveReferences(items, testShared);
+      const actual = resolveStringReferences(items, testShared);
       expect(actual).toEqual(expected);
     });
     it("resolves references and keeps non-references", () => {
@@ -53,7 +54,7 @@ describe("referenceResolver", () => {
         ...testShared.phrasesB,
         "fourth",
       ];
-      const actual = resolveReferences(items, testShared);
+      const actual = resolveStringReferences(items, testShared);
       expect(actual).toEqual(expected);
     });
     it("does not resolve non-references", () => {
@@ -63,10 +64,10 @@ describe("referenceResolver", () => {
         "$ref=phrases404",
         ...testShared.phrasesB,
       ];
-      const actual = resolveReferences(items, testShared);
+      const actual = resolveStringReferences(items, testShared);
       expect(actual).toEqual(expected);
     });
-  });  
+  });
   describe("resolvePartReferences", () => {
     it("resolves phrase references", () => {
       const actual = { phrases: ["$ref=phrasesA", "$ref=phrasesC"] };
@@ -118,12 +119,12 @@ describe("referenceResolver", () => {
       const actual = {
         phrases: [],
         patterns: [],
-        regularExpressions: []
+        regularExpressions: [],
       };
       const expected = {
         phrases: [],
         patterns: [],
-        regularExpressions: []
+        regularExpressions: [],
       };
       resolvePartReferences(actual, testShared);
       expect(actual).toEqual(expected);
@@ -135,8 +136,8 @@ describe("referenceResolver", () => {
       expect(actual).toEqual(expected);
     });
   });
-  describe("resolveIntentReferences", () => {
-    it("resolves reference for intent", () => {
+  describe("resolveReferences", () => {
+    it("resolves references", () => {
       const intent: Intent = {
         name: "Test Intent",
         examples: [
@@ -175,9 +176,9 @@ describe("referenceResolver", () => {
             neverParts: [{ phrases: [...testShared.phrasesC] }],
           },
         ],
-      }
+      };
 
-      const actual = resolveIntentReferences(intent, testShared);
+      const actual = resolveReferences(intent, testShared);
       expect(actual).toEqual(expected);
     });
     it("no-op for intent with empty examples", () => {
@@ -189,10 +190,10 @@ describe("referenceResolver", () => {
       const expected = {
         name: "Test Intent",
         examples: [],
-      }
+      };
 
-      const actual = resolveIntentReferences(intent, testShared);
+      const actual = resolveReferences(intent, testShared);
       expect(actual).toEqual(expected);
-    });   
+    });
   });
 });

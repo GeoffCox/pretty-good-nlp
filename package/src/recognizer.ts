@@ -17,9 +17,12 @@ import { findPatterns } from "./findPatterns";
 import { findPhrases } from "./findPhrases";
 import { findRegularExpressions } from "./findRegularExpressions";
 import { CharacterRange, CharacterRanges } from "./characterRange";
-import { resolveIntentReferences } from "./referenceResolver";
+import { resolveReferences } from "./referenceResolver";
 
-const findPartMatches = (
+/**
+ * @internal
+ */
+export const _findPartMatches = (
   part: ExamplePart,
   textTokenMap: TokenMap,
   tokenizer: Tokenizer
@@ -45,7 +48,10 @@ const findPartMatches = (
   };
 };
 
-const scoreExample = (
+/**
+ * @internal
+ */
+export const _scoreExample = (
   example: Pick<ExampleRecognition, "parts" | "neverParts">,
   textTokenMap: TokenMap,
   maxOutOfOrderPenalty: number,
@@ -117,7 +123,10 @@ const scoreExample = (
   };
 };
 
-const extractVariableValues = (
+/**
+ * @internal
+ */
+export const _extractVariableValues = (
   text: string,
   example: Pick<ExampleRecognition, "parts">
 ): Record<string, string[]> => {
@@ -141,7 +150,10 @@ const extractVariableValues = (
   return variableValues;
 };
 
-const recognizeExample = (
+/**
+ * @internal
+ */
+export const _recognizeExample = (
   example: Example,
   textTokenMap: TokenMap,
   tokenizer: Tokenizer,
@@ -154,19 +166,19 @@ const recognizeExample = (
   const matchSort = createMatchSort();
 
   const partResults = parts.map((part) => {
-    const partResult = findPartMatches(part, textTokenMap, tokenizer);
+    const partResult = _findPartMatches(part, textTokenMap, tokenizer);
     matchSort(partResult.matches);
     return partResult;
   });
 
   const neverPartResults =
     neverParts?.map((part) => {
-      const partResult = findPartMatches(part, textTokenMap, tokenizer);
+      const partResult = _findPartMatches(part, textTokenMap, tokenizer);
       matchSort(partResult.matches);
       return partResult;
     }) || [];
 
-  const { score, metrics } = scoreExample(
+  const { score, metrics } = _scoreExample(
     { parts: partResults, neverParts: neverPartResults },
     textTokenMap,
     maxOutOfOrderPenalty,
@@ -242,13 +254,13 @@ export const recognize = (
     throw new Error("The maxNoisePenalty must be between 0 and 1 (inclusive).");
   }
 
-  const readyIntent = shared ? resolveIntentReferences(intent, shared) : intent;
+  const readyIntent = shared ? resolveReferences(intent, shared) : intent;
 
   const tokenize = options?.tokenizer ?? basicTokenize;
   const textTokenMap = tokenize(text);
 
   const exampleRecognitions = readyIntent.examples.map((example) =>
-    recognizeExample(
+    _recognizeExample(
       example,
       textTokenMap,
       tokenizer,
@@ -266,18 +278,6 @@ export const recognize = (
       examples: exampleRecognitions,
       textTokenMap,
     },
-    variableValues: best ? extractVariableValues(text, best) : {},
+    variableValues: best ? _extractVariableValues(text, best) : {},
   };
 };
-
-/**
- * @internal
- */
-export namespace UnitTestApi {
-  export const recognizerModule = {
-    findPartMatches,
-    scoreExample,
-    extractVariableValues,
-    recognizeExample,
-  };
-}

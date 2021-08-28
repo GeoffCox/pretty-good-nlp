@@ -2,11 +2,7 @@ import { basicTokenize } from "../basicTokenizer";
 import { ExamplePart, ExamplePartRecognition } from "../types";
 import {CharacterRanges} from "../characterRange";
 
-import { UnitTestApi } from "../recognizer";
-
-const {
-  findPartMatches,
-} = UnitTestApi.recognizerModule;
+import { _findPartMatches as findPartMatches } from "../recognizer";
 
 const testText = "The quick brown fox jumps over the lazy dog.";
 const testTextTokenMap = basicTokenize(testText);

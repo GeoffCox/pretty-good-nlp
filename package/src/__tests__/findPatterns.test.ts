@@ -1,5 +1,8 @@
-import { findPatterns, UnitTestApi } from "../findPatterns";
-import {CharacterRange, CharacterRanges} from "../characterRange";
+import {
+  findPatterns,
+  _patternToRegularExpression as patternToRegularExpression,
+} from "../findPatterns";
+import { CharacterRange, CharacterRanges } from "../characterRange";
 
 describe("findPatterns module", () => {
   describe("patternToRegularExpression", () => {
@@ -31,31 +34,25 @@ describe("findPatterns module", () => {
         "\\(\\d\\d\\d\\)\\[[a-zA-Z][a-zA-Z][a-zA-Z]-\\d\\d\\d\\]\\?\\w*",
       ], //complex pattern
     ])("returns %p", (pattern, expected) => {
-      expect(
-        UnitTestApi.findPatternsModule.patternToRegularExpression(pattern)
-      ).toEqual(expected);
+      expect(patternToRegularExpression(pattern)).toEqual(expected);
     });
     it("throws when pattern undefined", () => {
       expect(() =>
-        UnitTestApi.findPatternsModule.patternToRegularExpression(
-          undefined as unknown as string
-        )
+        patternToRegularExpression(undefined as unknown as string)
       ).toThrowErrorMatchingInlineSnapshot(
         `"The pattern is undefined, null, or empty."`
       );
     });
     it("throws when pattern null", () => {
       expect(() =>
-        UnitTestApi.findPatternsModule.patternToRegularExpression(
-          null as unknown as string
-        )
+        patternToRegularExpression(null as unknown as string)
       ).toThrowErrorMatchingInlineSnapshot(
         `"The pattern is undefined, null, or empty."`
       );
     });
     it("throws when pattern empty", () => {
       expect(() =>
-        UnitTestApi.findPatternsModule.patternToRegularExpression("")
+        patternToRegularExpression("")
       ).toThrowErrorMatchingInlineSnapshot(
         `"The pattern is undefined, null, or empty."`
       );

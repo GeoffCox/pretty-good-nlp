@@ -1,6 +1,12 @@
 import { TextRange, TextRanges } from "./textRange";
 
+/**
+ * Describes a range of tokens (e.g. words) within text.
+ */
 export type TokenRange = TextRange & {
+  /**
+   * The kind of token range.
+   */
   kind: "tokenRange";
 };
 

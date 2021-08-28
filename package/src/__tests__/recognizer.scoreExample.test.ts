@@ -1,11 +1,7 @@
 import { basicTokenize } from "../basicTokenizer";
 import {CharacterRanges} from "../characterRange";
 
-import { UnitTestApi } from "../recognizer";
-
-const {
-  scoreExample,
-} = UnitTestApi.recognizerModule;
+import { _scoreExample as scoreExample } from "../recognizer";
 
 const testText = "The quick brown fox jumps over the lazy dog.";
 const testTextTokenMap = basicTokenize(testText);

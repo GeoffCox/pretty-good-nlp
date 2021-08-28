@@ -1,6 +1,12 @@
 import { TextRange, TextRanges } from "./textRange";
 
+/**
+ * Describes a range of characters within text.
+ */
 export type CharacterRange = TextRange & {
+  /**
+   * The kind of character range.   
+   */
   kind: "characterRange";
 };
 

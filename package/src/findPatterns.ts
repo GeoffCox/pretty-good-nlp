@@ -1,7 +1,10 @@
 import { findRegularExpressions } from "./findRegularExpressions";
 import { CharacterRange } from "./characterRange";
 
-const patternToRegularExpression = (pattern: string) => {
+/**
+ * @internal
+ */
+export const _patternToRegularExpression = (pattern: string) => {
   if (!pattern) {
     throw new Error("The pattern is undefined, null, or empty.");
   }
@@ -70,15 +73,6 @@ export const findPatterns = (
   text: string
 ): CharacterRange[] => {
   return patterns
-    ? findRegularExpressions(patterns.map(patternToRegularExpression), text)
+    ? findRegularExpressions(patterns.map(_patternToRegularExpression), text)
     : [];
 };
-
-/**
- * @internal
- */
-export namespace UnitTestApi {
-  export const findPatternsModule = {
-    patternToRegularExpression,
-  };
-}

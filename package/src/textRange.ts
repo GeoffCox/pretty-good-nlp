@@ -1,7 +1,24 @@
+/**
+ * Describes a range of content within text.
+ * This is used to provide CharacterRange and TokenRange.
+ */
 export type TextRange = {
+  /**
+   * The kind of text range.
+   * @default "textRange"
+   */
   kind: string;
+  /**
+   * The start position of the range.
+   */
   start: number;
+  /**
+   * The length of the range.
+   */
   length: number;
+  /**
+   * The end position of the range.
+   */
   end: number;
 };
 

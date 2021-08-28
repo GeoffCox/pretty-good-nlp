@@ -1,10 +1,6 @@
 import {CharacterRanges} from "../characterRange";
 
-import { UnitTestApi } from "../recognizer";
-
-const {
-  extractVariableValues,
-} = UnitTestApi.recognizerModule;
+import { _extractVariableValues as extractVariableValues } from "../recognizer";
 
 const testText = "The quick brown fox jumps over the lazy dog.";
 
