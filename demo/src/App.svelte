@@ -2,23 +2,23 @@
   import { coffeeIntent } from "./coffeeIntent";
   import { recognize } from "@geoffcox/pretty-good-nlp";
   import type { IntentRecognition } from "@geoffcox/pretty-good-nlp";
-
+  import { Split } from "@geoffcox/svelte-splitter";
   import IntentRecognitionCard from "./IntentRecognitionCard.svelte";
   import UtteranceInput from "./UtteranceInput.svelte";
   import RecognitionLabel from "./RecognitionLabel.svelte";
-//import { vacationIntent, vacationShared } from "./vacationIntent";
+  //import { vacationIntent, vacationShared } from "./vacationIntent";
 
   //const intent = resolveIntentReferences(vacationIntent, vacationShared);
   const intent = coffeeIntent;
 
   let utteranceText = "";
 
-  let recognizedText = '';
-  let intentRecognition : IntentRecognition;
+  let recognizedText = "";
+  let intentRecognition: IntentRecognition;
 
   const recognizeInput = (text: string) => {
     recognizedText = text;
-    intentRecognition = recognize(text, intent);        
+    intentRecognition = recognize(text, intent);
   };
 </script>
 
@@ -26,8 +26,17 @@
   <div class="app">
     <div class="header">@geoffcox/pretty-good-nlp demo</div>
     <div class="content">
-      <UtteranceInput bind:text={utteranceText} on:recognize={(event) => recognizeInput(event.detail.text)} />     
-      <IntentRecognitionCard intentRecognition={intentRecognition} text={recognizedText} />      
+      <Split resetOnDoubleClick>
+        <svelte:fragment slot="primary">
+          <UtteranceInput
+            bind:text={utteranceText}
+            on:recognize={(event) => recognizeInput(event.detail.text)}
+          />
+        </svelte:fragment>
+        <svelte:fragment slot="secondary">
+          <IntentRecognitionCard {intentRecognition} text={recognizedText} />
+        </svelte:fragment>
+      </Split>
     </div>
     <div class="footer" />
   </div>
@@ -75,7 +84,7 @@
     width: 100%;
     outline: none;
     overflow: hidden;
-    grid-area: content;    
+    grid-area: content;
   }
 
   .footer {
