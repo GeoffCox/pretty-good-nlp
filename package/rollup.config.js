@@ -30,12 +30,12 @@ export default [
       typescript({
         sourceMap: true,
       }),
-      terser(),
+      //terser(),
     ],
   },
   {
     // path to your declaration files root
-    input: "./src/index.d.ts",
+    input: "./dist/dts/index.d.ts",
     output: [{ file: "dist/index.d.ts", format: "es" }],
     plugins: [dts()],
   },
