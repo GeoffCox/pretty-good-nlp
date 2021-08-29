@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { coffeeIntent } from "./coffeeIntent";
+  import { coffeeIntent } from "./intents/coffeeIntent";
   import { recognize } from "@geoffcox/pretty-good-nlp";
   import type { IntentRecognition } from "@geoffcox/pretty-good-nlp";
   import { Split } from "@geoffcox/svelte-splitter";
