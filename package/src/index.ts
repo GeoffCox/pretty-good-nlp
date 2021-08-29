@@ -1,6 +1,8 @@
-export { basicTokenize } from "./basicTokenizer";
-export { CharacterRanges } from "./characterRange";
-export { LinearRanges } from "./linearRange";
-export { TokenMaps } from "./tokenMap";
-export { TokenRanges } from "./tokenRange";
-export { recognize } from "./recognizer";
+export * from "./basicTokenizer";
+export * from "./characterRange";
+export * from "./linearRange";
+export * from "./tokenMap";
+export * from "./tokenRange";
+export * from "./recognizer";
+export * from "./referenceResolver";
+export * from "./types";
