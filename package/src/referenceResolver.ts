@@ -4,7 +4,7 @@ import cloneDeep from "lodash/cloneDeep";
 /**
  * @internal
  */
-export const _resolveStringReferences = (
+export const resolveStringReferences = (
   items: string[],
   library: Record<string, string[]>
 ) => {
@@ -29,18 +29,18 @@ export const _resolveStringReferences = (
 /**
  * @internal
  */
-export const _resolvePartReferences = (
+export const resolvePartReferences = (
   part: ExamplePart,
   library: Record<string, string[]>
 ) => {
   if (part.phrases) {
-    part.phrases = _resolveStringReferences(part.phrases, library);
+    part.phrases = resolveStringReferences(part.phrases, library);
   }
   if (part.patterns) {
-    part.patterns = _resolveStringReferences(part.patterns, library);
+    part.patterns = resolveStringReferences(part.patterns, library);
   }
   if (part.regularExpressions) {
-    part.regularExpressions = _resolveStringReferences(
+    part.regularExpressions = resolveStringReferences(
       part.regularExpressions,
       library
     );
@@ -59,10 +59,10 @@ export const resolveReferences = (
 
   result.examples.forEach((example) => {
     example.parts.forEach((part) => {
-      _resolvePartReferences(part, shared);
+      resolvePartReferences(part, shared);
     });
     example.neverParts?.forEach((neverPart) => {
-      _resolvePartReferences(neverPart, shared);
+      resolvePartReferences(neverPart, shared);
     });
   });
 

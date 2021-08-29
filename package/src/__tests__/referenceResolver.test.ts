@@ -1,7 +1,7 @@
 import {
   resolveReferences,
-  _resolveStringReferences as resolveStringReferences,
-  _resolvePartReferences as resolvePartReferences,
+  resolveStringReferences as resolveStringReferences,
+  resolvePartReferences as resolvePartReferences,
 } from "../referenceResolver";
 import { Intent } from "../types";
 

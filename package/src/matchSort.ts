@@ -2,6 +2,7 @@ import type { CharacterRange } from "./characterRange";
 import { CharacterRanges } from "./characterRange";
 
 /**
+ * @internal
  * Provides a sort method to order matches for an example part from best to worst.
  *
  * **Stateful sort**

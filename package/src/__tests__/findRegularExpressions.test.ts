@@ -1,4 +1,4 @@
-import { findRegularExpressions } from "../findRegularExpressions";
+import { _findRegularExpressions } from "../findRegularExpressions";
 import {CharacterRange, CharacterRanges} from "../characterRange";
 
 describe("findRegularExpressions", () => {
@@ -10,7 +10,7 @@ describe("findRegularExpressions", () => {
         CharacterRanges.create({ start: 23, length: 8 }),
       ];
 
-      const actual = findRegularExpressions(expressions, text);
+      const actual = _findRegularExpressions(expressions, text);
       expect(actual).toEqual(expected);
     });
     it("returns character ranges for multiple occurances of an expression", () => {
@@ -22,7 +22,7 @@ describe("findRegularExpressions", () => {
         CharacterRanges.create({ start: 41, length: 8 }),
       ];
 
-      const actual = findRegularExpressions(expressions, text);
+      const actual = _findRegularExpressions(expressions, text);
       expect(actual).toEqual(expected);
     });
     it("returns character ranges for multiple expressions", () => {
@@ -35,7 +35,7 @@ describe("findRegularExpressions", () => {
         CharacterRanges.create({ start: 41, length: 8 }),
       ];
 
-      const actual = findRegularExpressions(expressions, text);
+      const actual = _findRegularExpressions(expressions, text);
       expect(actual).toEqual(expected);
     });
     it("does not return character ranges for non-matching expressions", () => {
@@ -46,14 +46,14 @@ describe("findRegularExpressions", () => {
         CharacterRanges.create({ start: 23, length: 8 }),
       ];
 
-      const actual = findRegularExpressions(expressions, text);
+      const actual = _findRegularExpressions(expressions, text);
       expect(actual).toEqual(expected);
     });
     it("returns empty when expressions undefined", () => {
       const text = "This is a phone number 555-1212 to call";
       const expressions = undefined as unknown as string[];
       const expected: CharacterRange[] = [];
-      const actual = findRegularExpressions(expressions, text);
+      const actual = _findRegularExpressions(expressions, text);
       expect(actual).toEqual(expected);
     });
     it("returns character ranges when skipping undefined or empty expressions", () => {
@@ -67,7 +67,7 @@ describe("findRegularExpressions", () => {
         CharacterRanges.create({ start: 23, length: 8 }),
       ];
 
-      const actual = findRegularExpressions(expressions, text);
+      const actual = _findRegularExpressions(expressions, text);
       expect(actual).toEqual(expected);
     });
   });

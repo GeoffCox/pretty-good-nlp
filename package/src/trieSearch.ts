@@ -1,6 +1,9 @@
 import type { TokenRange } from "./tokenRange";
 import { TokenRanges } from "./tokenRange";
 
+/**
+ * @internal
+ */
 export type TrieNode = {
   children?: Record<string, TrieNode>;
   startIds?: number[];
@@ -46,6 +49,9 @@ const validateChildNode = (
   }
 };
 
+/**
+ * @internal
+ */
 export const validateTrieNode = (node: TrieNode) => {
   if (!node) {
     throw new Error("The node parameter is not defined.");
@@ -76,6 +82,9 @@ export const validateTrieNode = (node: TrieNode) => {
   }
 };
 
+/**
+ * @internal
+ */
 export const addTokensToTrieNode = (searchTokens: string[], node: TrieNode) => {
   if (!searchTokens) {
     throw new Error("The searchTokens array argument is undefined or null.");
@@ -132,6 +141,9 @@ type InProgressTrieNode = {
   endIds?: number[];
 };
 
+/**
+ * @internal
+ */
 export const trieSearch = (textTokens: string[], node: TrieNode) => {
   if (!textTokens) {
     throw new Error("The textTokens array argument is undefined or null.");

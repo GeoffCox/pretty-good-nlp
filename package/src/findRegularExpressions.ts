@@ -22,7 +22,10 @@ const searchForRegularExpression = (
   return result;
 };
 
-export const findRegularExpressions = (
+/**
+ * @internal
+ */
+export const _findRegularExpressions = (
   regularExpressions: string[],
   text: string
 ): CharacterRange[] => {

@@ -5,7 +5,9 @@ import type { TrieNode } from "./trieSearch";
 import { addTokensToTrieNode, trieSearch } from "./trieSearch";
 import type { Tokenizer } from "./types";
 
-
+/**
+ * @internal
+ */
 export const findPhrases = (  
   phrases: string[],
   textTokenMap: TokenMap,

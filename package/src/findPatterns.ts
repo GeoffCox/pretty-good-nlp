@@ -1,5 +1,5 @@
 import type { CharacterRange } from "./characterRange";
-import { findRegularExpressions } from "./findRegularExpressions";
+import { _findRegularExpressions } from "./findRegularExpressions";
 
 /**
  * @internal
@@ -68,11 +68,14 @@ export const _patternToRegularExpression = (pattern: string) => {
   return result.join("");
 };
 
+/**
+ * @internal
+ */
 export const findPatterns = (
   patterns: string[],
   text: string
 ): CharacterRange[] => {
   return patterns
-    ? findRegularExpressions(patterns.map(_patternToRegularExpression), text)
+    ? _findRegularExpressions(patterns.map(_patternToRegularExpression), text)
     : [];
 };
