@@ -1,18 +1,48 @@
 <script lang="ts">
-  import { coffeeIntent } from "./intents/coffeeIntent";
+  import { coffeeIntent, coffeeYaml } from "./intents/coffeeIntent";
   import { recognize } from "@geoffcox/pretty-good-nlp";
   import type { IntentRecognition } from "@geoffcox/pretty-good-nlp";
   import { Split } from "@geoffcox/svelte-splitter";
   import IntentRecognitionCard from "./IntentRecognitionCard.svelte";
   import UtteranceInput from "./UtteranceInput.svelte";
   import RecognitionLabel from "./RecognitionLabel.svelte";
-  //import { vacationIntent, vacationShared } from "./vacationIntent";
+  import YamlEditor from "./YamlEditor.svelte";
+  import Tabs from "./Tabs.svelte";
+  import { vacationIntent, vacationShared } from "./intents/vacationIntent";
 
-  //const intent = resolveIntentReferences(vacationIntent, vacationShared);
-  const intent = coffeeIntent;
+  const intents = [
+    { name: "Barrista", intents: [coffeeIntent] },
+    {
+      name: "Out of Office",
+      intents: [vacationIntent],
+      shared: vacationShared,
+    },
+    {
+      name: "Custom",
+      intents: [
+        {
+          name: "Name your intent",
+          examples: [],
+        },
+      ],
+    },
+  ];
+
+  // ---------- Tabs ---------- //
+
+  let tabIndex: number = 0;
+  $: tabNames = intents.map((x) => x.name);
+
+  const onTabChanged = (index: number) => {
+    tabIndex = index;
+  };
+
+  $: intent = intents[tabIndex].intents[0];
+  $: {
+    console.log(tabIndex);
+  }
 
   let utteranceText = "";
-
   let recognizedText = "";
   let intentRecognition: IntentRecognition;
 
@@ -26,14 +56,22 @@
   <div class="app">
     <div class="header">@geoffcox/pretty-good-nlp demo</div>
     <div class="content">
+      <div class="tab-strip">
+        <Tabs
+          tabs={tabNames}
+          initialIndex={tabIndex}
+          on:changed={(event) => onTabChanged(event.detail.index)}
+        />
+      </div>
       <Split resetOnDoubleClick>
         <svelte:fragment slot="primary">
+          <YamlEditor {intent} />
+        </svelte:fragment>
+        <svelte:fragment slot="secondary">
           <UtteranceInput
             bind:text={utteranceText}
             on:recognize={(event) => recognizeInput(event.detail.text)}
           />
-        </svelte:fragment>
-        <svelte:fragment slot="secondary">
           <IntentRecognitionCard {intentRecognition} text={recognizedText} />
         </svelte:fragment>
       </Split>
@@ -77,6 +115,10 @@
     padding: 10px;
     background: #222;
     color: #ddd;
+  }
+
+  .tabStrip {
+    width: 100%;
   }
 
   .content {
