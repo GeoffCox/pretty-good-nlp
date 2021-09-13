@@ -1,6 +1,6 @@
 import type { Intent } from "@geoffcox/pretty-good-nlp";
 
-export const vacationShared = {
+export const vacationShared : Record<string, string[]> = {
   iWillPhrases: ["I am", "I'm", "I will", "I will be", "I'll be"],
   vacationActionPhrases: [
     "on",

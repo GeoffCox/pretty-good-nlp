@@ -1,14 +1,22 @@
 <script lang="ts">
   import CodeMirror from "@svelte-parts/editor/codemirror";
-  import type { EditorConfiguration, EditorFromTextArea } from "codemirror";
+  import type {
+    Editor,  
+    EditorConfiguration,
+    EditorFromTextArea,
+  } from "codemirror";
   import "codemirror/mode/yaml/yaml.js";
   import "codemirror/mode/scheme/scheme.js";
-  import YAML from "yaml";
-  import type { Intent } from "@geoffcox/pretty-good-nlp";
+  import { createEventDispatcher } from "svelte";
 
-  export let intent: Intent = {
-    name: "Name your intent",
-    examples: [],
+  export let yaml: string = "";
+
+  const dispatch = createEventDispatcher<{ changed: { yaml: string } }>();
+
+  const raiseChanged = () => {
+    dispatch("changed", {
+      yaml,
+    });
   };
 
   const config: EditorConfiguration = {
@@ -19,27 +27,24 @@
 
   let codeEditor: EditorFromTextArea = undefined;
 
-  const updateYaml = (value: Intent) => {
-    console.log("updateYaml");
-    if (codeEditor) {
-      codeEditor.setValue(YAML.stringify(value));
-    }
-  };
-
   const accessEditor = (editor) => {
     codeEditor = editor;
     editor.setSize("100%", "100%");
-    updateYaml(intent);
-    // editor.on("change", (e) => {
-    //   try {
-    //     const newIntent = YAML.parse(e.getValue());
-    //     intent = newIntent;
-    //   } catch (e) {}
-    // });
+
+    editor.on("change", (editor: Editor /*, change: EditorChange*/) => {
+      // TODO: Wrap CodeMirror in Svelte control for everyone?
+      // console.log(
+      //   `${change.from}..${change.to} ${change.text} ${change.removed}`
+      // );
+      yaml = editor.getValue();
+      raiseChanged();
+    });
+
+    editor.setValue(yaml);
   };
 
   $: {
-    updateYaml(intent);
+    codeEditor && codeEditor.setValue(yaml);
   }
 </script>
 

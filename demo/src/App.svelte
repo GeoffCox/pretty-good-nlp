@@ -1,6 +1,7 @@
 <script lang="ts">
   import { coffeeIntent, coffeeYaml } from "./intents/coffeeIntent";
   import { recognize } from "@geoffcox/pretty-good-nlp";
+  import type { Intent } from "@geoffcox/pretty-good-nlp";
   import type { IntentRecognition } from "@geoffcox/pretty-good-nlp";
   import { Split } from "@geoffcox/svelte-splitter";
   import IntentRecognitionCard from "./IntentRecognitionCard.svelte";
@@ -9,6 +10,8 @@
   import YamlEditor from "./YamlEditor.svelte";
   import Tabs from "./Tabs.svelte";
   import { vacationIntent, vacationShared } from "./intents/vacationIntent";
+  import YAML from "yaml";
+import IntentsEditor from "./IntentsEditor.svelte";
 
   const intents = [
     { name: "Barrista", intents: [coffeeIntent] },
@@ -28,19 +31,20 @@
     },
   ];
 
-  // ---------- Tabs ---------- //
+  let tabIndex: number = 0;  
+  let yaml = YAML.stringify(coffeeIntent);
 
-  let tabIndex: number = 0;
+  const onYamlChanged = (value: string) => {
+    intents[tabIndex].intents[0] = YAML.parse(value);    
+  };  
+  
   $: tabNames = intents.map((x) => x.name);
 
   const onTabChanged = (index: number) => {
     tabIndex = index;
   };
 
-  $: intent = intents[tabIndex].intents[0];
-  $: {
-    console.log(tabIndex);
-  }
+  $: intent = intents[tabIndex].intents[0];  
 
   let utteranceText = "";
   let recognizedText = "";
@@ -55,17 +59,10 @@
 <div class="root">
   <div class="app">
     <div class="header">@geoffcox/pretty-good-nlp demo</div>
-    <div class="content">
-      <div class="tab-strip">
-        <Tabs
-          tabs={tabNames}
-          initialIndex={tabIndex}
-          on:changed={(event) => onTabChanged(event.detail.index)}
-        />
-      </div>
-      <Split resetOnDoubleClick>
+    <div class="content">    
+      <Split resetOnDoubleClick>        
         <svelte:fragment slot="primary">
-          <YamlEditor {intent} />
+          <IntentsEditor />          
         </svelte:fragment>
         <svelte:fragment slot="secondary">
           <UtteranceInput
@@ -115,10 +112,6 @@
     padding: 10px;
     background: #222;
     color: #ddd;
-  }
-
-  .tabStrip {
-    width: 100%;
   }
 
   .content {
