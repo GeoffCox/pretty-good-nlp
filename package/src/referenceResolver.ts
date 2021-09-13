@@ -1,5 +1,5 @@
 import type { ExamplePart, Intent } from "./types";
-import cloneDeep from "lodash/cloneDeep";
+import cloneDeep from "lodash-es/cloneDeep";
 
 /**
  * @internal

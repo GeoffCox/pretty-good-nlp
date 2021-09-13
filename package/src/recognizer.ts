@@ -1,4 +1,4 @@
-import maxBy from "lodash/maxBy";
+import maxBy from "lodash-es/maxBy";
 import { basicTokenize } from "./basicTokenizer";
 import { extractVariableValues } from "./extractVariableValues";
 import { _findRegularExpressions } from "./findRegularExpressions";
