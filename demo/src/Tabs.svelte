@@ -38,10 +38,10 @@
     display: flex;
     padding: 5px 0 0 0;
     font-size: 12px;
-    border-bottom: 1px solid lightgray;
+    border-bottom: 1px solid gray;
   }
   .tab {
-    background-color: lightgray;
+    background-color: gray;
     border-bottom: none;
     border-top: 1px solid gray;
     border-top-left-radius: 5px;
@@ -59,8 +59,8 @@
   }
 
   .tab.selected {
-    background-color: white;
-    border-bottom: 1px solid white;
+    background-color: lightgray;
+    border-bottom: 1px solid lightgray;
     color: black;
   }
 </style>

@@ -1,5 +1,4 @@
-<script lang="ts">
-    import * as _ from "lodash";
+<script lang="ts">    
     import type { ExampleRecognition } from "@geoffcox/pretty-good-nlp";
     import RecognitionLabel from "./RecognitionLabel.svelte";
     import ScoreMetricsCard from "./ScoreMetricsCard.svelte";

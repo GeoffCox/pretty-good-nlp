@@ -4,7 +4,7 @@ import type {
   ExampleRecognition,
 } from "@geoffcox/pretty-good-nlp";
 
-import * as _ from "lodash";
+import orderBy from "lodash-es/orderBy";
 
 // Gets the line segments (as CSS styles) for matches and never matches offset to avoid overlap
 export const getLabelLines = (
@@ -35,7 +35,7 @@ export const getLabelLines = (
     });
   });
 
-  ranges = _.orderBy(ranges, ["isNeverMatch", "isSecondary"], ["desc", "asc"]);
+  ranges = orderBy(ranges, ["isNeverMatch", "isSecondary"], ["desc", "asc"]);
 
   // the layout moves segments down to avoid overlap with any previous segments
   const segments = [];

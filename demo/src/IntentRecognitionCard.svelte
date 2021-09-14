@@ -1,5 +1,5 @@
 <script lang="ts">
-  import * as _ from "lodash";
+  import toPairs from "lodash-es/toPairs";
   import type { IntentRecognition } from "@geoffcox/pretty-good-nlp";
   import ExampleRecognitionCard from "./ExampleRecognitionCard.svelte";
 
@@ -8,7 +8,7 @@
 
   $: score = intentRecognition ? Math.floor(intentRecognition.score * 100) : 0;
   $: variables = intentRecognition
-    ? _.toPairs(intentRecognition.variableValues)
+    ? toPairs(intentRecognition.variableValues)
     : undefined;
 </script>
 

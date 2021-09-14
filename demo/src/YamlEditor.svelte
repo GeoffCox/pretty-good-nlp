@@ -1,51 +1,68 @@
 <script lang="ts">
+  import { createEventDispatcher } from "svelte";
+  import YAML from "yaml";
+
   import CodeMirror from "@svelte-parts/editor/codemirror";
   import type {
-    Editor,  
+    Editor,
     EditorConfiguration,
     EditorFromTextArea,
   } from "codemirror";
   import "codemirror/mode/yaml/yaml.js";
   import "codemirror/mode/scheme/scheme.js";
-  import { createEventDispatcher } from "svelte";
 
-  export let yaml: string = "";
+  let yaml = "";
+  let sharedCodeMirror: EditorFromTextArea = undefined;
 
-  const dispatch = createEventDispatcher<{ changed: { yaml: string } }>();
+  type T = $$Generic;
 
-  const raiseChanged = () => {
-    dispatch("changed", {
-      yaml,
-    });
+  export const get = (): T => {
+    return sharedCodeMirror?.getValue();
   };
 
-  const config: EditorConfiguration = {
+  export const set = (value: T) => {
+    yaml = YAML.stringify(value);
+    sharedCodeMirror?.setValue(yaml);
+  };
+
+  const dispatch = createEventDispatcher<{ changed: {} }>();
+
+  const raiseChanged = () => {
+    dispatch("changed", {});
+  };
+
+  const sharedCodeMirrorConfig: EditorConfiguration = {
     lineNumbers: true,
     lineWrapping: true,
     mode: "yaml",
   };
 
-  let codeEditor: EditorFromTextArea = undefined;
-
-  const accessEditor = (editor) => {
-    codeEditor = editor;
+  const accessSharedCodeMirror = (editor) => {
+    sharedCodeMirror = editor;
     editor.setSize("100%", "100%");
 
-    editor.on("change", (editor: Editor /*, change: EditorChange*/) => {
-      // TODO: Wrap CodeMirror in Svelte control for everyone?
-      // console.log(
-      //   `${change.from}..${change.to} ${change.text} ${change.removed}`
-      // );
-      yaml = editor.getValue();
+    editor.on("change", (editor: Editor) => {
       raiseChanged();
     });
 
-    editor.setValue(yaml);
+    sharedCodeMirror?.setValue(yaml);
   };
-
-  $: {
-    codeEditor && codeEditor.setValue(yaml);
-  }
 </script>
 
-<CodeMirror {config} {accessEditor} />
+<!--
+  @component
+  Provides basic YAML editing via CodeMirror
+-->
+<div class="yaml-editor">
+  <CodeMirror
+    config={sharedCodeMirrorConfig}
+    accessEditor={accessSharedCodeMirror}
+  />
+</div>
+
+<style>
+  .yaml-editor {
+    width: 100%;
+    height: 100%;    
+  }
+</style>

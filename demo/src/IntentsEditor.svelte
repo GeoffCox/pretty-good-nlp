@@ -1,36 +1,55 @@
 <script lang="ts">
+  import IntentsDocumentEditor from "./DemoExampleEditor.svelte";
   import { intentsDocuments } from "./stores";
-  import YAML from "yaml";
   import Tabs from "./Tabs.svelte";
-  import YamlEditor from "./YamlEditor.svelte";
+
+  let intentsDocumentEditor;
 
   $: documentNames = $intentsDocuments.map((x) => x.name);
 
   let tabIndex = 0;
   const onTabChanged = (index: number) => {
-      console.log(index);
+    console.log(index);
     tabIndex = index;
   };
 
-  $: currentDocument = $intentsDocuments[tabIndex];
-
-  $: yaml = YAML.stringify(currentDocument.intents[0]);
-
+  $: {
+    intentsDocumentEditor?.set($intentsDocuments[tabIndex]);
+  }
 </script>
 
-<div class="intents-editor">
+<div class="editor">
   <Tabs
     tabs={documentNames}
     initialIndex={tabIndex}
     on:changed={(event) => onTabChanged(event.detail.index)}
   />
-  <YamlEditor {yaml} />
+  <div class="toolbar">
+    <button>Format</button>
+    <button>Reset</button>
+  </div>
+  <IntentsDocumentEditor bind:this={intentsDocumentEditor} />
 </div>
 
 <style>
-  .intents-editor {
+  .editor {
     display: grid;
-    grid-template-rows: auto 1fr;
+    grid-template-rows: auto auto 1fr;
     grid-template-columns: 1fr;
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
+  }
+
+  .toolbar {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    background: lightgray;
+  }
+
+  .toolbar button {
+    margin: 4px;
   }
 </style>

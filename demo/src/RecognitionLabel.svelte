@@ -3,7 +3,6 @@
     ExampleRecognition,
   } from "@geoffcox/pretty-good-nlp";
 
-  import * as _ from "lodash";
   import { getLabelLines } from "./labels";
 
   export let text: string;

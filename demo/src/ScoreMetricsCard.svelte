@@ -1,6 +1,5 @@
 <script lang="ts">
   import type { ExampleScoreMetrics } from "@geoffcox/pretty-good-nlp";
-  import * as _ from "lodash";
 
   export let scoreMetrics: ExampleScoreMetrics;
 

@@ -1,9 +1,9 @@
 import { writable } from "svelte/store";
 import { coffeeIntent } from "./intents/coffeeIntent";
 import { vacationIntent, vacationShared } from "./intents/vacationIntent";
-import type { IntentsDocument } from "./types";
+import type { DemoExample } from "./types";
 
-export const intentsDocuments = writable<IntentsDocument[]>([
+export const intentsDocuments = writable<DemoExample[]>([
     {
         name: "Coffee Order",
         intents: [coffeeIntent]
