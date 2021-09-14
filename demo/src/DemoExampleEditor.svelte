@@ -26,6 +26,11 @@
     sharedYamlEditor?.set(document?.shared || {});
   };
 
+  export const format = () => {
+    intentsYamlEditor?.format();
+    sharedYamlEditor?.format();
+  };
+
   const dispatch = createEventDispatcher<{ changed: {} }>();
 
   const raiseChanged = () => {

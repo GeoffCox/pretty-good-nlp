@@ -1,7 +1,6 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
   import YAML from "yaml";
-
   import CodeMirror from "@svelte-parts/editor/codemirror";
   import type {
     Editor,
@@ -17,13 +16,17 @@
   type T = $$Generic;
 
   export const get = (): T => {
-    return sharedCodeMirror?.getValue();
+    return YAML.parse(sharedCodeMirror?.getValue());
   };
 
   export const set = (value: T) => {
     yaml = YAML.stringify(value);
     sharedCodeMirror?.setValue(yaml);
   };
+
+  export const format = () => {
+    set(get());
+  }
 
   const dispatch = createEventDispatcher<{ changed: {} }>();
 

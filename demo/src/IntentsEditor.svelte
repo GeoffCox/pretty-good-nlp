@@ -3,18 +3,25 @@
   import { intentsDocuments } from "./stores";
   import Tabs from "./Tabs.svelte";
 
-  let intentsDocumentEditor;
+  let demoExampleEditor;
 
   $: documentNames = $intentsDocuments.map((x) => x.name);
 
   let tabIndex = 0;
-  const onTabChanged = (index: number) => {
-    console.log(index);
+  const onTabChanged = (index: number) => {    
     tabIndex = index;
   };
 
   $: {
-    intentsDocumentEditor?.set($intentsDocuments[tabIndex]);
+    demoExampleEditor?.set($intentsDocuments[tabIndex]);
+  }
+
+  const onChanged = () => {
+    console.log('onChanged');
+  };
+
+  const onFormat = () => {
+    demoExampleEditor?.format();
   }
 </script>
 
@@ -25,10 +32,10 @@
     on:changed={(event) => onTabChanged(event.detail.index)}
   />
   <div class="toolbar">
-    <button>Format</button>
+    <button on:click={onFormat}>Format</button>
     <button>Reset</button>
   </div>
-  <IntentsDocumentEditor bind:this={intentsDocumentEditor} />
+  <IntentsDocumentEditor bind:this={demoExampleEditor} on:changed={onChanged}/>
 </div>
 
 <style>
