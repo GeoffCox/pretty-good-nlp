@@ -10,23 +10,25 @@
   import "codemirror/mode/yaml/yaml.js";
   import "codemirror/mode/scheme/scheme.js";
 
-  let yaml = "";
-  let sharedCodeMirror: EditorFromTextArea = undefined;
-
   type T = $$Generic;
+
+  let yaml = "";
+  let errorMessage = undefined;
+
+  let sharedCodeMirror: EditorFromTextArea = undefined;
 
   export const get = (): T => {
     return YAML.parse(sharedCodeMirror?.getValue());
   };
 
   export const set = (value: T) => {
-    yaml = YAML.stringify(value);
-    sharedCodeMirror?.setValue(yaml);
+      yaml = value ? YAML.stringify(value) : "";
+      sharedCodeMirror?.setValue(yaml);
   };
 
   export const format = () => {
     set(get());
-  }
+  };
 
   const dispatch = createEventDispatcher<{ changed: {} }>();
 
@@ -40,11 +42,21 @@
     mode: "yaml",
   };
 
+  const verify = () => {
+    try {
+      YAML.parse(sharedCodeMirror?.getValue());
+      errorMessage = "";
+    } catch (error) {
+      errorMessage = error.message;
+    }
+  };
+
   const accessSharedCodeMirror = (editor) => {
     sharedCodeMirror = editor;
     editor.setSize("100%", "100%");
 
     editor.on("change", (editor: Editor) => {
+      verify();
       raiseChanged();
     });
 
@@ -61,11 +73,22 @@
     config={sharedCodeMirrorConfig}
     accessEditor={accessSharedCodeMirror}
   />
+  {#if errorMessage}
+    <div class="error">{errorMessage}</div>
+  {/if}
 </div>
 
 <style>
   .yaml-editor {
     width: 100%;
-    height: 100%;    
+    height: 100%;
+    display: grid;
+    grid-template-rows: 1fr auto;
+  }
+
+  .error {
+    background-color: pink;
+    color: red;
+    padding: 4px;
   }
 </style>

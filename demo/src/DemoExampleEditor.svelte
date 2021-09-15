@@ -23,7 +23,7 @@
     document = intentsDocument;
 
     intentsYamlEditor?.set(document?.intents || []);
-    sharedYamlEditor?.set(document?.shared || {});
+    sharedYamlEditor?.set(document?.shared);
   };
 
   export const format = () => {
