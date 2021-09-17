@@ -1,15 +1,15 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
-  import type { IntentsDocument } from "./types";
+  import type { DemoDocument } from "./types";
   import { Split } from "@geoffcox/svelte-splitter";
   import YamlEditor from "./YamlEditor.svelte";
 
-  let document: IntentsDocument;
+  let document: DemoDocument;
 
   let intentsYamlEditor;
   let sharedYamlEditor;
 
-  export const get = (): IntentsDocument => {
+  export const get = (): DemDemoDocumentoDoc => {
     if (document) {
       return {
         ...document,
@@ -19,9 +19,8 @@
     }
   };
 
-  export const set = (intentsDocument: IntentsDocument) => {
+  export const set = (intentsDocument: DemoDocument) => {
     document = intentsDocument;
-
     intentsYamlEditor?.set(document?.intents || []);
     sharedYamlEditor?.set(document?.shared);
   };
@@ -31,11 +30,18 @@
     sharedYamlEditor?.format();
   };
 
-  const dispatch = createEventDispatcher<{ changed: {} }>();
+  type ChangeOrigin = "input" | "set";
 
-  const raiseChanged = () => {
-    dispatch("changed", {});
+  const dispatch =
+    createEventDispatcher<{ changed: { origin: ChangeOrigin } }>();
+
+    const raiseChanged = (origin: ChangeOrigin) => {    
+    dispatch("changed", { origin });
   };
+
+  const onChanged = (event) => {  
+    raiseChanged(event.detail.origin);
+  }
 </script>
 
 <!--
@@ -48,7 +54,7 @@
       <div class="intents">
         <YamlEditor
           bind:this={intentsYamlEditor}
-          on:changed={() => raiseChanged()}
+          on:changed={(event) => onChanged(event)}
         />
       </div>
     </svelte:fragment>
@@ -56,7 +62,7 @@
       <div class="shared">
         <YamlEditor
           bind:this={sharedYamlEditor}
-          on:changed={() => raiseChanged()}
+          on:changed={(event) => onChanged(event)}
         />
       </div>
     </svelte:fragment>

@@ -1,0 +1,91 @@
+<script lang="ts">
+  import debounce from "lodash-es/debounce";
+  import { onMount } from "svelte";
+  import DemoDocumentEditor from "./DemoDocumentEditor.svelte";
+  import { demoDocuments, demoDocumentIndex, demoDocument } from "./stores";
+  import Tabs from "./Tabs.svelte";
+  import type { DemoDocument } from "./types";
+
+  let demoExampleEditor;
+
+  $: tabNames = $demoDocuments.map((x) => x.name);  
+  
+  let updating = false;
+  const updateDemoExample = debounce(() => {
+    if (demoExampleEditor) {
+      $demoDocuments[$demoDocumentIndex] = demoExampleEditor.get();
+      console.log('set $document')
+    }    
+    updating = false;
+  }, 500);
+
+  onMount(() => {
+    demoExampleEditor?.set($demoDocuments[$demoDocumentIndex]);
+  })
+
+  const onChanged = (event) => {
+    if (event.detail.origin === "input") {
+      updating = true;      
+      updateDemoExample();
+    }
+  };  
+
+  const onTabChanged = (index: number) => {
+    // Wait for updates before switching tabs.
+    if (updating) {
+      const waitForUpdate = setInterval(() => {
+        console.log('waitForUpdate')
+        if (!updating) {
+          console.log(`setting tab to ${index}`);
+          $demoDocumentIndex = index;
+          demoExampleEditor?.set($demoDocuments[$demoDocumentIndex]);
+          clearInterval(waitForUpdate);
+        }
+      }, 500);
+    } else {
+      console.log(`setting tab to ${index}`);
+      $demoDocumentIndex = index;
+      demoExampleEditor?.set($demoDocuments[$demoDocumentIndex]);
+    }
+  };  
+
+  const onFormat = () => {
+    demoExampleEditor?.format();
+  };
+</script>
+
+<div class="editor">
+  <Tabs
+    tabs={tabNames}
+    initialIndex={$demoDocumentIndex}
+    on:changed={(event) => onTabChanged(event.detail.index)}
+  />
+  <div class="toolbar">
+    <button on:click={onFormat}>Format</button>
+    <button>Reset</button>
+  </div>
+  <DemoDocumentEditor bind:this={demoExampleEditor} on:changed={onChanged} />
+</div>
+
+<style>
+  .editor {
+    display: grid;
+    grid-template-rows: auto auto 1fr;
+    grid-template-columns: 1fr;
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
+  }
+
+  .toolbar {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    background: lightgray;
+  }
+
+  .toolbar button {
+    margin: 4px;
+  }
+</style>

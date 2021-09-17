@@ -13,6 +13,7 @@
   type T = $$Generic;
 
   let yaml = "";
+  let isSetting = false;
   let errorMessage = undefined;
 
   let sharedCodeMirror: EditorFromTextArea = undefined;
@@ -22,18 +23,23 @@
   };
 
   export const set = (value: T) => {
-      yaml = value ? YAML.stringify(value) : "";
-      sharedCodeMirror?.setValue(yaml);
+    yaml = value ? YAML.stringify(value) : "";
+    isSetting = true;
+    sharedCodeMirror?.setValue(yaml);
+    isSetting = false;
   };
 
   export const format = () => {
     set(get());
   };
 
-  const dispatch = createEventDispatcher<{ changed: {} }>();
+  type ChangeOrigin = "input" | "set";
 
-  const raiseChanged = () => {
-    dispatch("changed", {});
+  const dispatch =
+    createEventDispatcher<{ changed: { origin: ChangeOrigin } }>();
+
+  const raiseChanged = (origin: ChangeOrigin) => {    
+    dispatch("changed", { origin });
   };
 
   const sharedCodeMirrorConfig: EditorConfiguration = {
@@ -55,9 +61,10 @@
     sharedCodeMirror = editor;
     editor.setSize("100%", "100%");
 
-    editor.on("change", (editor: Editor) => {
+    editor.on("change", (editor: Editor, change) => {
       verify();
-      raiseChanged();
+      console.log(`YAML editor change.origin:${change?.origin}`);      
+      raiseChanged(change?.origin && change.origin.includes("setValue") ? "set" : "input");
     });
 
     sharedCodeMirror?.setValue(yaml);

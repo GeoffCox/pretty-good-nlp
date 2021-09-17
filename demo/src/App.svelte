@@ -6,12 +6,9 @@
   import { Split } from "@geoffcox/svelte-splitter";
   import IntentRecognitionCard from "./IntentRecognitionCard.svelte";
   import UtteranceInput from "./UtteranceInput.svelte";
-  import RecognitionLabel from "./RecognitionLabel.svelte";
-  import YamlEditor from "./YamlEditor.svelte";
-  import Tabs from "./Tabs.svelte";
   import { vacationIntent, vacationShared } from "./intents/vacationIntent";
   import YAML from "yaml";
-import IntentsEditor from "./IntentsEditor.svelte";
+  import IntentsEditor from "./MainEditor.svelte";
 
   const intents = [
     { name: "Barrista", intents: [coffeeIntent] },
@@ -31,20 +28,20 @@ import IntentsEditor from "./IntentsEditor.svelte";
     },
   ];
 
-  let tabIndex: number = 0;  
+  let tabIndex: number = 0;
   let yaml = YAML.stringify(coffeeIntent);
 
   const onYamlChanged = (value: string) => {
-    intents[tabIndex].intents[0] = YAML.parse(value);    
-  };  
-  
+    intents[tabIndex].intents[0] = YAML.parse(value);
+  };
+
   $: tabNames = intents.map((x) => x.name);
 
   const onTabChanged = (index: number) => {
     tabIndex = index;
   };
 
-  $: intent = intents[tabIndex].intents[0];  
+  $: intent = intents[tabIndex].intents[0];
 
   let utteranceText = "";
   let recognizedText = "";
@@ -59,10 +56,10 @@ import IntentsEditor from "./IntentsEditor.svelte";
 <div class="root">
   <div class="app">
     <div class="header">@geoffcox/pretty-good-nlp demo</div>
-    <div class="content">    
-      <Split resetOnDoubleClick>        
+    <div class="content">
+      <Split resetOnDoubleClick>
         <svelte:fragment slot="primary">
-          <IntentsEditor />          
+          <IntentsEditor />
         </svelte:fragment>
         <svelte:fragment slot="secondary">
           <UtteranceInput
