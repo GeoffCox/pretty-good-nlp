@@ -89,14 +89,16 @@
   }
 
   .toolbar {
-    width: 100%;
+    background: #f5f5f5;    
     display: flex;
-    flex-direction: row;
+    flex-direction: row;    
     justify-content: flex-end;
-    background: lightgray;
+    width: 100%;
   }
 
   .toolbar button {
     margin: 4px;
+    font-size: 14px;
+    background: #fefefe;
   }
 </style>

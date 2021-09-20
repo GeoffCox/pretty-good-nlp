@@ -38,16 +38,16 @@
     display: flex;
     padding: 5px 0 0 0;
     font-size: 12px;
-    border-bottom: 1px solid gray;
+    border-bottom: 1px solid #e1dfe1;
   }
   .tab {
-    background-color: gray;
+    background-color: #e1dfe1;
     border-bottom: none;
-    border-top: 1px solid gray;
+    border-top: 1px solid #e1dfe1;
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
-    border-left: 1px solid gray;
-    border-right: 1px solid gray;
+    border-left: 1px solid #e1dfe1;
+    border-right: 1px solid #e1dfe1;
     color: #222;
     margin: 0 0 -1px 5px;
     min-width: 100px;
@@ -59,8 +59,8 @@
   }
 
   .tab.selected {
-    background-color: lightgray;
-    border-bottom: 1px solid lightgray;
+    background-color: #f5f5f5;
+    border-bottom: 1px solid #f5f5f5;
     color: black;
   }
 </style>

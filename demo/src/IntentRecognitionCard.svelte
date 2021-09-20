@@ -10,6 +10,18 @@
   $: variables = intentRecognition
     ? toPairs(intentRecognition.variableValues)
     : undefined;
+
+  const toggleShowDetails = () => {
+    showExamples = !showExamples;
+  };
+
+  let showExamples = false;
+
+  $: {
+    showExamples =
+      intentRecognition?.details?.examples &&
+      intentRecognition.details.examples.length === 1;
+  }
 </script>
 
 <div>
@@ -32,12 +44,21 @@
             </div>
           {/each}
         </div>
-        <div class="examples">
-          {#each intentRecognition.details.examples as exampleRecognition}
-            <div class="example">
-              <ExampleRecognitionCard {exampleRecognition} {text} />
+        <div class="examples-area">
+          <button class="toggle-examples-button" on:click={toggleShowDetails}
+            >{showExamples
+              ? "Hide Example Recognitions"
+              : "Show Example Recognitions"}</button
+          >
+          {#if showExamples}
+            <div class="examples">
+              {#each intentRecognition.details.examples as exampleRecognition}
+                <div class="example">
+                  <ExampleRecognitionCard {exampleRecognition} {text} />
+                </div>
+              {/each}
             </div>
-          {/each}
+          {/if}
         </div>
       </div>
     </div>
@@ -90,6 +111,11 @@
   }
   .variable-value::before {
     content: ":";
+  }
+  .toggle-examples-button {
+    margin: 5px 0 5px 20px;
+    min-width: 220px;
+    font-size: 14px;
   }
   .example {
     margin: 10px 10px 10px 20px;

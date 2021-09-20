@@ -23,9 +23,8 @@
       shared: $demoDocument?.shared,
     });
     setTimeout(() => {
-      isRecognizing = false;  
-    }, (1000));
-    
+      isRecognizing = false;
+    }, 1000);
   }, 1000);
 
   $: {
@@ -48,7 +47,9 @@
     {#if pendingRecognize}<span>**Waiting**</span>{/if}
     {#if isRecognizing}<span>**Recognizing**</span>{/if}
   </div>
-  <IntentRecognitionCard {intentRecognition} text={textToRecognize} />
+  <div class="recognitions">
+    <IntentRecognitionCard {intentRecognition} text={textToRecognize} />
+  </div>
 </div>
 
 <style>
@@ -63,5 +64,8 @@
   }
   .text-input input {
     width: 450px;
+  }
+  .recognitions {
+    padding: 10px;
   }
 </style>

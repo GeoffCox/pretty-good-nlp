@@ -55,15 +55,15 @@
     </div>
     <div class="metric">
       <div class="metric-value">weight=</div>
-      <div class="metric-description">{weightPercent * 100}%</div>
+      <div class="metric-description">{Math.floor(weightPercent * 100)}%</div>
     </div>
     <div class="metric">
       <div class="metric-value">out of order=</div>
-      <div class="metric-description">{outOfOrderPercent * 100}%</div>
+      <div class="metric-description">{Math.floor(outOfOrderPercent * 100)}%</div>
     </div>
     <div class="metric">
       <div class="metric-value">noise=</div>
-      <div class="metric-description">{noisePercent * 100}%</div>
+      <div class="metric-description">{Math.floor(noisePercent * 100)}%</div>
     </div>
     <div class="metric">
       <div class="metric-value">score=</div>

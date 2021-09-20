@@ -1,6 +1,6 @@
 <script lang="ts">
   import { Split } from "@geoffcox/svelte-splitter";
-  import IntentsEditor from "./MainEditor.svelte";
+  import MainEditor from "./MainEditor.svelte";
   import OutputView from "./OutputView.svelte";
 </script>
 
@@ -8,9 +8,9 @@
   <div class="app">
     <div class="header">@geoffcox/pretty-good-nlp demo</div>
     <div class="content">
-      <Split resetOnDoubleClick>
+      <Split initialPrimarySize="550px" resetOnDoubleClick>
         <svelte:fragment slot="primary">
-          <IntentsEditor />
+          <MainEditor />
         </svelte:fragment>
         <svelte:fragment slot="secondary">
           <OutputView />
