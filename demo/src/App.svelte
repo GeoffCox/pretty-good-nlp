@@ -1,56 +1,7 @@
 <script lang="ts">
-  import { coffeeIntent, coffeeYaml } from "./intents/coffeeIntent";
-  import { recognize } from "@geoffcox/pretty-good-nlp";
-  import type { Intent } from "@geoffcox/pretty-good-nlp";
-  import type { IntentRecognition } from "@geoffcox/pretty-good-nlp";
   import { Split } from "@geoffcox/svelte-splitter";
-  import IntentRecognitionCard from "./IntentRecognitionCard.svelte";
-  import UtteranceInput from "./UtteranceInput.svelte";
-  import { vacationIntent, vacationShared } from "./intents/vacationIntent";
-  import YAML from "yaml";
   import IntentsEditor from "./MainEditor.svelte";
-
-  const intents = [
-    { name: "Barrista", intents: [coffeeIntent] },
-    {
-      name: "Out of Office",
-      intents: [vacationIntent],
-      shared: vacationShared,
-    },
-    {
-      name: "Custom",
-      intents: [
-        {
-          name: "Name your intent",
-          examples: [],
-        },
-      ],
-    },
-  ];
-
-  let tabIndex: number = 0;
-  let yaml = YAML.stringify(coffeeIntent);
-
-  const onYamlChanged = (value: string) => {
-    intents[tabIndex].intents[0] = YAML.parse(value);
-  };
-
-  $: tabNames = intents.map((x) => x.name);
-
-  const onTabChanged = (index: number) => {
-    tabIndex = index;
-  };
-
-  $: intent = intents[tabIndex].intents[0];
-
-  let utteranceText = "";
-  let recognizedText = "";
-  let intentRecognition: IntentRecognition;
-
-  const recognizeInput = (text: string) => {
-    recognizedText = text;
-    intentRecognition = recognize(text, intent);
-  };
+  import OutputView from "./OutputView.svelte";
 </script>
 
 <div class="root">
@@ -62,11 +13,7 @@
           <IntentsEditor />
         </svelte:fragment>
         <svelte:fragment slot="secondary">
-          <UtteranceInput
-            bind:text={utteranceText}
-            on:recognize={(event) => recognizeInput(event.detail.text)}
-          />
-          <IntentRecognitionCard {intentRecognition} text={recognizedText} />
+          <OutputView />
         </svelte:fragment>
       </Split>
     </div>

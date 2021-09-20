@@ -2,39 +2,43 @@
   import debounce from "lodash-es/debounce";
   import { onMount } from "svelte";
   import DemoDocumentEditor from "./DemoDocumentEditor.svelte";
-  import { demoDocuments, demoDocumentIndex, demoDocument } from "./stores";
+  import {
+    demoDocuments,
+    demoDocumentIndex,
+    initialDemoDocuments,
+  } from "./stores";
   import Tabs from "./Tabs.svelte";
   import type { DemoDocument } from "./types";
 
   let demoExampleEditor;
 
-  $: tabNames = $demoDocuments.map((x) => x.name);  
-  
+  $: tabNames = $demoDocuments.map((x) => x.name);
+
   let updating = false;
   const updateDemoExample = debounce(() => {
     if (demoExampleEditor) {
       $demoDocuments[$demoDocumentIndex] = demoExampleEditor.get();
-      console.log('set $document')
-    }    
+      console.log("set $document");
+    }
     updating = false;
   }, 500);
 
   onMount(() => {
     demoExampleEditor?.set($demoDocuments[$demoDocumentIndex]);
-  })
+  });
 
   const onChanged = (event) => {
     if (event.detail.origin === "input") {
-      updating = true;      
+      updating = true;
       updateDemoExample();
     }
-  };  
+  };
 
   const onTabChanged = (index: number) => {
     // Wait for updates before switching tabs.
     if (updating) {
       const waitForUpdate = setInterval(() => {
-        console.log('waitForUpdate')
+        console.log("waitForUpdate");
         if (!updating) {
           console.log(`setting tab to ${index}`);
           $demoDocumentIndex = index;
@@ -47,10 +51,17 @@
       $demoDocumentIndex = index;
       demoExampleEditor?.set($demoDocuments[$demoDocumentIndex]);
     }
-  };  
+  };
 
   const onFormat = () => {
     demoExampleEditor?.format();
+  };
+
+  const onReset = () => {
+    
+    if ($demoDocumentIndex < initialDemoDocuments.length) {      
+      demoExampleEditor?.set(initialDemoDocuments[$demoDocumentIndex]);
+    }   
   };
 </script>
 
@@ -62,7 +73,7 @@
   />
   <div class="toolbar">
     <button on:click={onFormat}>Format</button>
-    <button>Reset</button>
+    <button on:click={onReset}>Reset</button>
   </div>
   <DemoDocumentEditor bind:this={demoExampleEditor} on:changed={onChanged} />
 </div>

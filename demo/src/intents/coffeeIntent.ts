@@ -1,92 +1,16 @@
 import type { Intent } from "@geoffcox/pretty-good-nlp";
 
-export const coffeeYaml = "Name: Add coffee drink\
-Examples:\
-- CanonicalForm: I want a grande vanilla latte\
-  Parts:\
-  - Phrases:\
-    - Could I have\
-    - I would like\
-    - I'd like\
-    - I'd love\
-    - Please    \
-    - Please give me\
-    - Please make me\
-    - make me\
-    - give me\
-    - I will have\
-    - I'll have\
-    - I want\
-    - Make\
-    - Brew\
-  - Phrases:\
-    - a\
-    - one\
-    - two\
-    - three\
-    - four\
-    - five\
-    - six\
-    RegularExpressions:\
-    - \d+\
-    Variable: quantity\
-  - Phrases:\
-    - short\
-    - tall\
-    - grande\
-    - venti\
-    - small\
-    - medium\
-    - large\
-    - extra large\
-    - 8 ounce\
-    - 8 oz\
-    - 12 ounce\
-    - 12 oz\
-    - 16 ounce\
-    - 16 oz\
-    - 20 ounce\
-    - 20 oz\
-    Variable: size\
-  - Phrases:\
-    - vanilla\
-    - hazelnut\
-    - caramel\
-    - raspberry\
-    Variable: flavor\
-    Weight: 0\
-  - Phrases:\
-    - espresso\
-    - espressos\
-    - latte\
-    - lattes\
-    - americano\
-    - americanos\
-    - cappuccino\
-    - cappuccinos\
-    - macchiato\
-    - macchiatos\
-    - mocha\
-    - mochas\
-    - drip\
-    - drips\
-    - drip coffee\
-    - drip coffees\
-    - coffee\
-    - coffees\
-    - brewed coffee\
-    - brewed coffees\
-    Variable: product";
-
 export const coffeeIntent: Intent = {
-  name: "Add coffee drink",
+  name: "Add coffee order",
   examples: [
     {
-      name: "<order intent> [quantity] <size> [flavor] [temp] <drink>",
+      name: "Could I have an iced grande vanilla latte",
       parts: [
         {
+          name: "order intent",
           phrases: [
             "Could I have",
+            "Could I please have",
             "I would like",
             "I\'d like",
             "I'd love",
@@ -106,12 +30,14 @@ export const coffeeIntent: Intent = {
           ],
         },
         {
-          phrases: ["a", "one", "two", "three", "four", "five", "six"],
+          name: "quantity",
+          phrases: ["a", "an", "one", "two", "three", "four", "five", "six"],
           regularExpressions: ["\\d+"],
           variable: "quantity",
           weight: 0,
         },
         {
+          name: "size",
           phrases: [
             "short",
             "tall",
@@ -133,11 +59,13 @@ export const coffeeIntent: Intent = {
           variable: "size",
         },
         {
+          name: "flavors",
           phrases: ["vanilla", "hazelnut", "caramel", "raspberry"],
           variable: "flavor",
           weight: 0,
         },
         {
+          name: "temperature",
           phrases: [
             "hot",
             "cold",
@@ -150,8 +78,10 @@ export const coffeeIntent: Intent = {
           weight: 0,
         },
         {
+          name: "product",
           phrases: [
             "cocoa",
+            "chocolate",            
             "espresso",
             "espressos",
             "latte",
@@ -178,6 +108,7 @@ export const coffeeIntent: Intent = {
       ],
       neverParts: [
         {
+          name: "negations",
           phrases: [
             "don't",
             "do not",

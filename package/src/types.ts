@@ -11,6 +11,11 @@ export type Tokenizer = (text: string) => TokenMap;
  */
 export type ExamplePart = {
   /**
+   * Gets or sets the name of this part.
+   */
+  name?: string;
+
+  /**
    * Gets or sets the list of literal phrases for this part of the example.
    */
   phrases?: string[];
@@ -47,7 +52,7 @@ export type ExamplePart = {
  */
 export type Example = {
   /**
-   * Gets or sets the name of this example.   
+   * Gets or sets the name of this example.
    */
   name?: string;
 
@@ -87,12 +92,22 @@ export type Intent = {
  * The result of recognizing an example part.
  */
 export type ExamplePartRecognition = {
+  /**
+   * Gets or sets the name of this part.
+   */
+  name?: string;
+
   /** The ranges of the matches for this part in order from best to worst. */
   matches: CharacterRange[];
+
   /** The weight from the corresponding example part. */
   weight?: number;
+
   /** The option variable name from the corresponding example part. */
   variable?: string;
+
+  //TODO: required
+  //TODO: anyOrder
 };
 
 /**

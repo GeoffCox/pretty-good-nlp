@@ -33,6 +33,7 @@ import type {
     }
   
     return {
+      name: part.name,
       matches: uniqBy(result, (value) => `${value.start}..${value.end}`),
       weight: part.weight,
       variable: part.variable,
