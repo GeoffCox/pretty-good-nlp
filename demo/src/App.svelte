@@ -1,7 +1,7 @@
 <script lang="ts">
   import { Split } from "@geoffcox/svelte-splitter";
   import MainEditor from "./MainEditor.svelte";
-  import OutputView from "./OutputView.svelte";
+  import OutputView from "./ResultsView.svelte";
 </script>
 
 <div class="root">

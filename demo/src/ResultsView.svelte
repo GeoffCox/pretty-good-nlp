@@ -3,14 +3,14 @@
 
   import debounce from "lodash-es/debounce";
   import { recognize } from "@geoffcox/pretty-good-nlp";
-  import IntentRecognitionCard from "./IntentRecognitionCard.svelte";
+  import IntentRecognitionResult from "./IntentResult.svelte";
   import { demoDocument, demoDocumentIndex } from "./stores";
   import type { DemoDocument } from "./types";
 
   let text = "";
 
   let textToRecognize = "";
-  let intentRecognition: IntentRecognition;
+  let results: IntentRecognition[] = [];
 
   let pendingRecognize = false;
   let isRecognizing = false;
@@ -18,10 +18,10 @@
   const doRecognition = debounce((text: string, document: DemoDocument) => {
     pendingRecognize = false;
     isRecognizing = true;
-    textToRecognize = text;
-    intentRecognition = recognize(textToRecognize, document.intents[0], {
-      shared: $demoDocument?.shared,
-    });
+    textToRecognize = text;    
+    results = document.intents.map((intent) =>
+      recognize(textToRecognize, intent, { shared: document.shared})
+    );
     setTimeout(() => {
       isRecognizing = false;
     }, 1000);
@@ -48,7 +48,9 @@
     {#if isRecognizing}<span>**Recognizing**</span>{/if}
   </div>
   <div class="recognitions">
-    <IntentRecognitionCard {intentRecognition} text={textToRecognize} />
+    {#each results as result}
+      <IntentRecognitionResult intentRecognition={result} text={textToRecognize} />
+    {/each}
   </div>
 </div>
 

@@ -1,7 +1,8 @@
 <script lang="ts">
   import toPairs from "lodash-es/toPairs";
+  import orderBy from "lodash-es/orderBy";
   import type { IntentRecognition } from "@geoffcox/pretty-good-nlp";
-  import ExampleRecognitionCard from "./ExampleRecognitionCard.svelte";
+  import ExampleRecognitionCard from "./ExampleResult.svelte";
 
   export let intentRecognition: IntentRecognition;
   export let text: string;
@@ -11,17 +12,17 @@
     ? toPairs(intentRecognition.variableValues)
     : undefined;
 
-  const toggleShowDetails = () => {
-    showExamples = !showExamples;
+  const toggleShowAllExamples = () => {
+    showAllExamples = !showAllExamples;
   };
 
-  let showExamples = false;
+  let showAllExamples = false;
 
-  $: {
-    showExamples =
-      intentRecognition?.details?.examples &&
-      intentRecognition.details.examples.length === 1;
-  }
+  $: exampleRecognitions = intentRecognition?.details?.examples
+    ? orderBy(intentRecognition?.details?.examples, ["score"], ["desc"])
+    : [];
+
+  $: bestExample = exampleRecognitions?.[0];
 </script>
 
 <div>
@@ -45,19 +46,30 @@
           {/each}
         </div>
         <div class="examples-area">
-          <button class="toggle-examples-button" on:click={toggleShowDetails}
-            >{showExamples
-              ? "Hide Example Recognitions"
-              : "Show Example Recognitions"}</button
-          >
-          {#if showExamples}
-            <div class="examples">
-              {#each intentRecognition.details.examples as exampleRecognition}
+          <div class="examples">
+            {#if showAllExamples}
+              {#each exampleRecognitions as exampleRecognition}
                 <div class="example">
                   <ExampleRecognitionCard {exampleRecognition} {text} />
                 </div>
               {/each}
-            </div>
+            {:else}
+              <div class="example">
+                <ExampleRecognitionCard
+                  exampleRecognition={bestExample}
+                  {text}
+                />
+              </div>
+            {/if}
+          </div>
+          {#if exampleRecognitions.length > 1}
+            <button
+              class="toggle-examples-button"
+              on:click={toggleShowAllExamples}
+              >{showAllExamples
+                ? "Hide Other Example Recognitions"
+                : "Show All Example Recognitions"}</button
+            >
           {/if}
         </div>
       </div>
@@ -72,9 +84,9 @@
     grid-template-rows: auto;
   }
   .score {
-    border: 3px solid black;
-    width: 180px;
-    height: 180px;
+    border: 2px solid black;
+    width: 70px;
+    height: 70px;
     border-radius: 50%;
     display: grid;
     justify-content: center;
@@ -82,7 +94,7 @@
   }
   .score-value {
     font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-    font-size: 42pt;
+    font-size: 24px;
     padding: 10px;
   }
   .summary {
