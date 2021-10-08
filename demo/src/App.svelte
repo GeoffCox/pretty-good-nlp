@@ -50,6 +50,7 @@
     box-sizing: border-box;
     font-size: 14pt;
     width: 100%;
+    height: 100%;
     outline: none;
     overflow: hidden;
     grid-area: header;
@@ -61,14 +62,16 @@
   .content {
     box-sizing: border-box;
     width: 100%;
+    height: 100%;
     outline: none;
     overflow: hidden;
-    grid-area: content;
+    grid-area: content;    
   }
 
   .footer {
     box-sizing: border-box;
     width: 100%;
+    height: 100%;
     outline: none;
     overflow: hidden;
     grid-area: footer;
