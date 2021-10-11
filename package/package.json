@@ -7,17 +7,19 @@
   "bugs": {
     "url": "https://github.com/GeoffCox/pretty-good-nlp/issues"
   },
-  "homepage": "https://github.com/GeoffCox/pretty-good-nlp",
+  "homepage": "https://github.com/GeoffCox/pretty-good-nlp/tree/main/package",
   "keywords": [
     "nlp",
     "natural language processing",
     "natural language processor",
     "recognizer",
-    "text recognition",
+    "recognition",    
+    "text",
     "regular expressions",
-    "trie search",
+    "trie search",    
     "machine learning",
-    "typescript"
+    "typescript",    
+    "utterance"    
   ],
   "module": "dist/index.mjs",
   "main": "dist/index.js",

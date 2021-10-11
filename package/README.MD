@@ -5,6 +5,8 @@ Pretty-good-nlp is a deterministic, match-based, recognizer for natural language
 This readme covers installation and usage. 
 You can read about the NLP concepts in the [repository readme](https://github.com/GeoffCox/pretty-good-nlp).
 
+[Live Demo](https://geoffcox.github.io/demos/pretty-good-nlp/)
+
 ## Installation
 
 ```

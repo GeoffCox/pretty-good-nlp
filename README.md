@@ -4,6 +4,8 @@ Pretty-good-nlp is a deterministic, match-based, recognizer for natural language
 
 This readme cover the concepts, motivation, expected scenarios for building the pretty-good-nlp recognizer. For installation and usage, see the [package readme](https://github.com/GeoffCox/pretty-good-nlp/tree/main/package).
 
+[Live Demo](https://geoffcox.github.io/demos/pretty-good-nlp/)
+
 ## Recognition is not easy
 
 Let's say you are writing a home automation application. You want the app to respond to user input and take action. For example, the user might say `Turn on the oven to 450 degrees for 2 hours`. The app should recognize the user's _intention_ to turn on the oven. It should also extract the temperature and duration so you can use them to control the oven.
