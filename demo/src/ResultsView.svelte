@@ -7,7 +7,7 @@
   import { demoDocument, demoDocumentIndex } from "./stores";
   import type { DemoDocument } from "./types";
   import InputView from "./InputView.svelte";
-  import RecognizingIndicator from "./RecognizingIndicator.svelte";
+  import RecognizingIndicator from "./StatusIndicator.svelte";
   import { onMount } from "svelte";
   import Instructions from "./Instructions.svelte";
 
@@ -48,10 +48,7 @@
   <div class="input-view">
     <InputView bind:text on:change={onTextChange} />
   </div>
-  <hr class="separator" />
-  <div>
-    <RecognizingIndicator {state} />
-  </div>
+  <RecognizingIndicator {state} />
   {#if results.length > 0}
     <div class="recognitions">
       {#each results as result}
@@ -71,7 +68,7 @@
 <style>
   .output-view {
     display: grid;
-    grid-template-rows: auto auto auto 1fr;
+    grid-template-rows: auto auto 1fr;
     grid-template-columns: 1fr;
     height: 100%;
     width: 100%;
@@ -85,13 +82,6 @@
     height: 100%;
     width: 100%;
   }
-  .separator {
-    width: 100%;
-    height: 0.5px;
-    border: none;
-    border-top: 1px solid #e1dfe1;
-  }
-
   .recognitions {
     padding: 10px;
     overflow: auto;

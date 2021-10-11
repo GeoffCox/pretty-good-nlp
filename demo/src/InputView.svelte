@@ -77,29 +77,31 @@
 <style>
   .input-view {
     display: grid;
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     grid-template-rows: auto auto;
     padding: 10px;
     width: 100%;
     height: 100%;
-    min-width: 0;
+    overflow: hidden;
   }
   .input-field {
     display: grid;
-    grid-template-columns: 1fr auto auto;
+    grid-template-columns: minmax(0, 1fr) auto;
     grid-template-rows: auto;
     align-items: stretch;
     width: 100%;
     height: 100%;
+    overflow: hidden;
   }
   .input-field label {
     display: grid;
-    grid-template-columns: auto 1fr;
+    grid-template-columns: auto minmax(0, 1fr);
     grid-template-rows: auto;
     align-items: center;
     column-gap: 5px;
     width: 100%;
     height: 100%;
+    overflow: hidden;
   }
   
   .update-button {
