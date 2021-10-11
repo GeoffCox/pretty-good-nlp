@@ -1,19 +1,23 @@
 <script lang="ts">
   import { Split } from "@geoffcox/svelte-splitter";
-  import MainEditor from "./MainEditor.svelte";
-  import OutputView from "./ResultsView.svelte";
+  import EditorView from "./EditorView.svelte";
+  import EvalView from "./EvalView.svelte";
 </script>
 
+<!--
+  @component
+  The demo application
+-->
 <div class="root">
   <div class="app">
     <div class="header">@geoffcox/pretty-good-nlp demo</div>
     <div class="content">
-      <Split initialPrimarySize="550px" resetOnDoubleClick>
+      <Split initialPrimarySize="35%" resetOnDoubleClick>
         <svelte:fragment slot="primary">
-          <MainEditor />
+          <EditorView />
         </svelte:fragment>
         <svelte:fragment slot="secondary">
-          <OutputView />
+          <EvalView />
         </svelte:fragment>
       </Split>
     </div>

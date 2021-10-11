@@ -20,16 +20,19 @@
   };
 </script>
 
+<!--
+  @component
+  Provides a simple set of tabs for switching between content.
+-->
 <div class="tabs">
   {#each tabs as tab, i}
-    <div
+    <button
       class="tab"
       class:selected={index === i}
       on:click={() => onTabClick(i)}
-      role="button"
     >
       {tab}
-    </div>
+    </button>
   {/each}
 </div>
 
@@ -40,6 +43,7 @@
     font-size: 12px;
     border-bottom: 1px solid #e1dfe1;
   }
+
   .tab {
     background-color: #e1dfe1;
     border-bottom: none;
@@ -50,8 +54,7 @@
     border-right: 1px solid #e1dfe1;
     color: #222;
     margin: 0 0 -1px 5px;
-    min-width: 100px;
-    outline: none;
+    min-width: 100px;    
     padding: 5px;
     user-select: none;
     display: flex;

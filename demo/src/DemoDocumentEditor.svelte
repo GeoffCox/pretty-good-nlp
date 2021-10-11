@@ -1,6 +1,7 @@
 <script lang="ts">
-  import { createEventDispatcher } from "svelte";
   import type { DemoDocument } from "./types";
+
+  import { createEventDispatcher } from "svelte";  
   import { Split } from "@geoffcox/svelte-splitter";
   import YamlEditor from "./YamlEditor.svelte";
 
@@ -9,7 +10,7 @@
   let intentsYamlEditor;
   let sharedYamlEditor;
 
-  export const get = (): DemDemoDocumentoDoc => {
+  export const get = (): DemoDocument => {
     if (document) {
       return {
         ...document,
@@ -46,7 +47,7 @@
 
 <!--
   @component
-  Provides an editor for a set of intents and their shared parts
+  Editor for a demo document (a set of intents and their shared expressions)
 -->
 <div class="editor">
   <Split horizontal resetOnDoubleClick initialPrimarySize='50%'>
@@ -75,6 +76,7 @@
     height: 100%;
     overflow: hidden;
   }
+
   .intents, .shared {
     width: 100%;
     height: 100%;

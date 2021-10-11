@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { ExampleRecognition } from "@geoffcox/pretty-good-nlp";
   import RecognitionLabel from "./RecognitionLabel.svelte";
-  import ScoreMetricsCard from "./ExampleResultMetrics.svelte";
+  import Metrics from "./ExampleResultMetrics.svelte";
 
   export let exampleRecognition: ExampleRecognition;
   export let text: string;
@@ -17,7 +17,7 @@
 -->
 <div>
   {#if exampleRecognition}
-    <div class="root">
+    <div class="example-result">
       <div class="header">
         <div class="score">
           <div class="score-value">{score}%</div>
@@ -31,7 +31,7 @@
           <RecognitionLabel {exampleRecognition} {text} />
         </div>
         <div class="metrics">
-          <ScoreMetricsCard metrics={exampleRecognition.scoreMetrics} />
+          <Metrics metrics={exampleRecognition.scoreMetrics} />
         </div>
       </div>
     </div>
@@ -39,7 +39,7 @@
 </div>
 
 <style>
-  .root {
+  .example-result {
     display: grid;
     grid-template-columns: 1fr;
     grid-template-rows: auto;

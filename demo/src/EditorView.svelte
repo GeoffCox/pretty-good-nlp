@@ -1,14 +1,13 @@
 <script lang="ts">
-  import debounce from "lodash-es/debounce";
   import { onMount } from "svelte";
-  import DemoDocumentEditor from "./DemoDocumentEditor.svelte";
+  import debounce from "lodash-es/debounce";  
   import {
     demoDocuments,
     demoDocumentIndex,
     initialDemoDocuments,
   } from "./stores";
-  import Tabs from "./Tabs.svelte";
-  import type { DemoDocument } from "./types";
+  import DemoDocumentEditor from "./DemoDocumentEditor.svelte";
+  import Tabs from "./Tabs.svelte";  
 
   let demoExampleEditor;
 
@@ -57,14 +56,17 @@
     demoExampleEditor?.format();
   };
 
-  const onReset = () => {
-    
+  const onReset = () => {    
     if ($demoDocumentIndex < initialDemoDocuments.length) {      
       demoExampleEditor?.set(initialDemoDocuments[$demoDocumentIndex]);
     }   
   };
 </script>
 
+<!--
+  @component
+  MDI editor for the demo documents
+-->
 <div class="editor">
   <Tabs
     tabs={tabNames}

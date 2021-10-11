@@ -1,5 +1,6 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
+  
   export let text: string = "";
 
   let autoRecognize = true;
@@ -46,12 +47,12 @@
     if (text !== currentText) {
       updateText();
     }
-  }
+  };
 </script>
 
 <!--
   @component
-  Provides the text input to recognize
+  An input for the text recognize.
 -->
 <div class="input-view">
   <div class="input-field">
@@ -84,6 +85,7 @@
     height: 100%;
     overflow: hidden;
   }
+
   .input-field {
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto;
@@ -93,6 +95,7 @@
     height: 100%;
     overflow: hidden;
   }
+
   .input-field label {
     display: grid;
     grid-template-columns: auto minmax(0, 1fr);
@@ -103,11 +106,12 @@
     height: 100%;
     overflow: hidden;
   }
-  
+
   .update-button {
     padding: 4px;
-    min-width: 50px;    
+    min-width: 50px;
   }
+
   .options {
     justify-self: end;
     align-self: center;

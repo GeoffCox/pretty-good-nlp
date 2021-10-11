@@ -1,5 +1,8 @@
+<!--
+  @component
+  Instructions for the demo.
+-->
 <div class="instructions">
-  <div class="content">
     <h1>Welcome!</h1>
     <p>This demonstrates the <a href="https://github.com/GeoffCox/pretty-good-nlp" target="_blank">pretty-good-nlp</a> recognizer.</p>
     <h2>Intents</h2>
@@ -38,19 +41,14 @@
         For each intent, this pane will show recognition results.  
         These will include the results of the matches and scoring for each example.
     </p>    
-  </div>
 </div>
 
 <style>
-  .instructions {    
-  }
-
-  .content {
+  .instructions {
     padding: 20px;
-    max-width: 500px;
+    max-width: 900px;
     margin: auto;
   }
-
 
   .instructions ul li {
     margin-bottom: 0.5em;

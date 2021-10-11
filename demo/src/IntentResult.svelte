@@ -25,9 +25,13 @@
   $: bestExample = exampleRecognitions?.[0];
 </script>
 
+<!--
+  @component
+  Displays an IntentRecognition and its ExampleRecognitions
+-->
 <div>
   {#if intentRecognition}
-    <div class="root">
+    <div class="intent-result">
       <div class="score">
         <div class="score-value">{score}%</div>
       </div>
@@ -78,11 +82,12 @@
 </div>
 
 <style>
-  .root {
+  .intent-result {
     display: grid;
     grid-template-columns: auto 1fr;
     grid-template-rows: auto;
   }
+
   .score {
     border: 2px solid black;
     width: 70px;
@@ -92,17 +97,20 @@
     justify-content: center;
     align-content: center;
   }
+
   .score-value {
     font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
     font-size: 24px;
     padding: 10px;
   }
+
   .summary {
     display: grid;
     grid-template-columns: 1fr;
     grid-template-rows: auto;
     margin-left: 20px;
   }
+
   .intent-name {
     display: grid;
     justify-content: start;
@@ -110,25 +118,37 @@
     font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
     font-size: 24pt;
   }
+
   .variables {
     display: grid;
     grid-template-columns: auto 1fr;
     grid-template-rows: auto;
     font-family: "Courier New", Courier, monospace;
-    font-size: 14pt;
+    font-size: 14px;
     margin-left: 20px;
+    align-items: center;
+    row-gap: 5px;
   }
+
   .variable-name {
     font-weight: bold;
+    justify-self: end;
   }
-  .variable-value::before {
+
+  .variable-value {
+    margin-left: 0.5em;
+  }
+
+  .variable-name::after {
     content: ":";
   }
+
   .toggle-examples-button {
     margin: 5px 0 5px 20px;
     min-width: 220px;
     font-size: 14px;
   }
+
   .example {
     margin: 10px 10px 10px 20px;
     padding: 10px;

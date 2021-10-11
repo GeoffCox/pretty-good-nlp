@@ -19,7 +19,11 @@
   $: linesStyles = `--lines-height:${lines.lineCount * 5}px;`;
 </script>
 
-<div class="recognition-label">
+<!--
+  @component
+  Displays a label (underline) for each match in an example recognition
+-->
+<div class="match-label">
   <div class="measure-character" bind:this={measureCharacter}>W</div>
   <div class="utterance">{text}</div>
   <div class="lines" style={linesStyles}>
@@ -30,7 +34,7 @@
 </div>
 
 <style>
-  .recognition-label {
+  .match-label {
     font-family: monospace;
     font-size: 12pt;
   }

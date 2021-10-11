@@ -1,31 +1,31 @@
 <script lang="ts">
+  import type { DemoDocument } from "./types";
   import type { IntentRecognition } from "@geoffcox/pretty-good-nlp";
 
   import debounce from "lodash-es/debounce";
   import { recognize } from "@geoffcox/pretty-good-nlp";
-  import IntentRecognitionResult from "./IntentResult.svelte";
-  import { demoDocument, demoDocumentIndex } from "./stores";
-  import type { DemoDocument } from "./types";
+  import { demoDocument } from "./stores";
+
   import InputView from "./InputView.svelte";
-  import RecognizingIndicator from "./StatusIndicator.svelte";
-  import { onMount } from "svelte";
   import Instructions from "./Instructions.svelte";
+  import IntentResult from "./IntentResult.svelte";
+  import StatusIndicator from "./StatusIndicator.svelte";
 
   let text = "";
 
   let textToRecognize = "";
   let results: IntentRecognition[] = [];
 
-  let state: "ready" | "waiting" | "recognizing" = "ready";
+  let status: "ready" | "waiting" | "recognizing" = "ready";
 
   const doRecognition = debounce((text: string, document: DemoDocument) => {
-    state = "recognizing";
+    status = "recognizing";
     textToRecognize = text;
     results = document.intents.map((intent) =>
       recognize(textToRecognize, intent, { shared: document.shared })
     );
     setTimeout(() => {
-      state = "ready";
+      status = "ready";
     }, 1000);
   }, 1000);
 
@@ -34,25 +34,29 @@
   };
   $: {
     if ($demoDocument && text && text.length > 0) {
-      state = "waiting";
+      status = "waiting";
       doRecognition(text, $demoDocument);
     } else {
-      state = "ready";
+      status = "ready";
       textToRecognize = "";
       results = [];
     }
   }
 </script>
 
-<div class="output-view">
+<!--
+  @component
+  Displays the results for a recognize call.
+-->
+<div class="eval-view">
   <div class="input-view">
     <InputView bind:text on:change={onTextChange} />
   </div>
-  <RecognizingIndicator {state} />
+  <StatusIndicator status={status} />
   {#if results.length > 0}
     <div class="recognitions">
       {#each results as result}
-        <IntentRecognitionResult
+        <IntentResult
           intentRecognition={result}
           text={textToRecognize}
         />
@@ -66,7 +70,7 @@
 </div>
 
 <style>
-  .output-view {
+  .eval-view {
     display: grid;
     grid-template-rows: auto auto 1fr;
     grid-template-columns: 1fr;
