@@ -2,7 +2,7 @@
 
 Pretty-good-nlp is a deterministic, match-based, recognizer for natural language processing (NLP) scenarios.
 
-This readme cover the concepts, motivation, expected scenarios for building the pretty-good-nlp recognizer. For installation and usage, see the [package readme](https://github.com/GeoffCox/pretty-good-nlp/package).
+This readme cover the concepts, motivation, expected scenarios for building the pretty-good-nlp recognizer. For installation and usage, see the [package readme](https://github.com/GeoffCox/pretty-good-nlp/tree/main/package).
 
 ## Recognition is not easy
 
