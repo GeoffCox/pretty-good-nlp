@@ -2,10 +2,7 @@ import type { CharacterRange } from "./characterRange";
 import { CharacterRanges } from "./characterRange";
 import { _findRegularExpressions } from "./findRegularExpressions";
 import type { TokenMap } from "./tokenMap";
-import type {
-  ExampleRecognition,
-  ExampleScoreMetrics,
-} from "./types";
+import type { ExampleRecognition, ExampleScoreMetrics } from "./types";
 
 /**
  * @internal
@@ -22,20 +19,31 @@ export const scoreExample = (
   let matchedPartCount = 0;
   let partWeightSum = 0.0;
   let matchedPartWeightSum = 0.0;
+  let missingRequiredPartCount = 0;
   let inOrderMatchedPartCount = 0;
   let lastEnd = -1;
   const bestMatches: CharacterRange[] = [];
+
   parts.forEach((part) => {
     const weight = part.weight !== undefined ? part.weight : 1;
     partWeightSum += weight;
+
     if (part.matches.length > 0) {
       matchedPartCount++;
       matchedPartWeightSum += weight;
-      if (lastEnd == -1 || part.matches[0].start >= lastEnd) {
+
+      if (
+        part.ignoreOrder ||
+        lastEnd == -1 ||
+        part.matches[0].start >= lastEnd
+      ) {
         inOrderMatchedPartCount++;
       }
       lastEnd = part.matches[0].end;
+
       bestMatches.push(part.matches[0]);
+    } else if (part.required) {
+      missingRequiredPartCount++;
     }
   });
 
@@ -51,20 +59,32 @@ export const scoreExample = (
       bestMatches.some((m) => CharacterRanges.contains(m, characterRange))
   ).length;
 
-  let score =
-    matchedNeverPartCount === 0 && partWeightSum > 0
-      ? matchedPartWeightSum / partWeightSum
-      : 0;
+  // calculate scores
+  let score = 0;
+  if (partWeightSum > 0) {
+    score = matchedPartWeightSum / partWeightSum;
+  }
+  if (matchedNeverPartCount !== 0) {
+    score = 0;
+  }
+  if (missingRequiredPartCount !== 0) {
+    score = 0;
+  }
+
   const outOfOrderPercent =
     matchedPartCount > 0
       ? (matchedPartCount - inOrderMatchedPartCount) / matchedPartCount
       : 0;
+
+  score -= outOfOrderPercent * maxOutOfOrderPenalty;
+
   const noisePercent =
     tokenCount > 0
       ? (textTokenMap.characterRanges.length - matchedTokenCount) / tokenCount
       : 0;
-  score -= outOfOrderPercent * maxOutOfOrderPenalty;
   score -= noisePercent * maxNoisePenalty;
+
+  // ensure score between 0 and 1 inclusive
   score = Math.max(0, Math.min(1, score));
 
   return {
@@ -72,6 +92,7 @@ export const scoreExample = (
     metrics: {
       partCount: parts.length,
       matchedPartCount,
+      missingRequiredPartCount,
       inOrderMatchedPartCount,
       matchedNeverPartCount,
       partWeightSum,

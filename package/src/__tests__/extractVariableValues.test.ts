@@ -58,7 +58,7 @@ describe("extractVariableValues", () => {
     expect(actual.subject).toEqual(["brown fox"]);
     expect(actual.directObject).toEqual(["the lazy dog.", "lazy dog"]);
   });
-  it("returns no value when variable defined but no matches", () => {
+  it("returns empty value array when variable defined but no matches", () => {
     const example = {
       parts: [
         {
@@ -79,7 +79,8 @@ describe("extractVariableValues", () => {
     };
     const actual = extractVariableValues(testText, example);
     expect(actual).toBeDefined();
-    expect(Object.keys(actual).length).toEqual(1);
+    expect(Object.keys(actual).length).toEqual(2);
+    expect(actual.subject).toEqual([]);
     expect(actual.directObject).toEqual(["the lazy dog."]);
   });
   it("returns empty when matches and no variables defined", () => {

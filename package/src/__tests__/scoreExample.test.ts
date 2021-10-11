@@ -7,7 +7,7 @@ const testText = "The quick brown fox jumps over the lazy dog.";
 const testTextTokenMap = basicTokenize(testText);
 
 describe("scoreExample", () => {
-  it("returns score of 1 for all matched", () => {
+  it("returns score of 1 when all matched", () => {
     const example = {
       parts: [
         {
@@ -18,6 +18,7 @@ describe("scoreExample", () => {
         },
         {
           matches: [CharacterRanges.create({ start: 20, length: 10 })], //jumps over
+          required: true
         },
         {
           matches: [CharacterRanges.create({ start: 31, length: 13 })], //the lazy dog
@@ -29,7 +30,7 @@ describe("scoreExample", () => {
     const actual = scoreExample(example, testTextTokenMap, 1, 1);
     expect(actual.score).toEqual(1);
   });
-  it("returns score of 0 for no parts", () => {
+  it("returns score of 0 when no parts", () => {
     const example = {
       parts: [],
       neverParts: [],
@@ -38,7 +39,7 @@ describe("scoreExample", () => {
     const actual = scoreExample(example, testTextTokenMap, 0, 0);
     expect(actual.score).toEqual(0);
   });
-  it("returns score of 0 for no matches", () => {
+  it("returns score of 0 when no matches", () => {
     const example = {
       parts: [
         {
@@ -57,7 +58,30 @@ describe("scoreExample", () => {
     const actual = scoreExample(example, testTextTokenMap, 0, 0);
     expect(actual.score).toEqual(0);
   });
-  it("returns score of 0 for for never match", () => {
+  it("returns score of 0 when required part missing", () => {
+    const example = {
+      parts: [
+        {          
+          matches: [CharacterRanges.create({ start: 0, length: 9 })], //The quick
+        },
+        {
+          matches: [CharacterRanges.create({ start: 10, length: 9 })], //brown fox
+        },
+        {
+          matches: [],
+          required: true
+        },
+        {
+          matches: [CharacterRanges.create({ start: 31, length: 13 })], //the lazy dog
+        },
+      ],
+      neverParts: [],
+    };
+
+    const actual = scoreExample(example, testTextTokenMap, 0, 0);
+    expect(actual.score).toEqual(0);
+  });
+  it("returns score of 0 when never matches", () => {
     const example = {
       parts: [
         {
@@ -145,19 +169,21 @@ describe("scoreExample", () => {
     const actual = scoreExample(example, testTextTokenMap, 0.15, 0.05);
     expect(Math.floor(actual.score * 100)).toEqual(98);
   });
-  it("returns score for ordered matches", () => {
+  it("returns score based on in order and out of order matches", () => {
     const example = {
       parts: [
         {
           matches: [CharacterRanges.create({ start: 20, length: 10 })], //jumps over
         },
         {
+          // Out of order
           matches: [CharacterRanges.create({ start: 0, length: 9 })], //The quick
         },
         {
           matches: [CharacterRanges.create({ start: 31, length: 13 })], //the lazy dog
         },
         {
+          // Out of order
           matches: [CharacterRanges.create({ start: 10, length: 9 })], //brown fox
         },
       ],
@@ -170,6 +196,35 @@ describe("scoreExample", () => {
     // -= 0/9 noise * 0.05 = 0
     // = 0.92.5
     expect(Math.floor(actual.score * 100)).toEqual(92);
+  });
+  it("returns score for ordered matches when ignoreOrder defined on out of order part.", () => {
+    const example = {
+      parts: [
+        {
+          matches: [CharacterRanges.create({ start: 20, length: 10 })], //jumps over
+        },   
+        {
+          // Out of order
+          matches: [CharacterRanges.create({ start: 0, length: 9 })], //The quick
+          ignoreOrder: true
+        },     
+        {
+          matches: [CharacterRanges.create({ start: 31, length: 13 })], //the lazy dog
+        },        
+        {
+          // Out of order
+          matches: [CharacterRanges.create({ start: 10, length: 9 })], //brown fox
+        },
+      ],
+      neverParts: [],
+    };
+
+    const actual = scoreExample(example, testTextTokenMap, 0.15, 0.05);
+    // score: 4/4 weight = 1
+    // -= 1/4 out of order * .15 = -3.75
+    // -= 0/9 noise * 0.05 = 0
+    // = 96.25
+    expect(Math.floor(actual.score * 100)).toEqual(96);
   });
   it("returns metrics", () => {
     const example = {
@@ -193,6 +248,7 @@ describe("scoreExample", () => {
     };
 
     const expected = {
+      missingRequiredPartCount: 0,
       inOrderMatchedPartCount: 2,
       matchedNeverPartCount: 1,
       matchedPartCount: 3,

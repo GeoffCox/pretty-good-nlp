@@ -103,11 +103,14 @@ export type ExamplePartRecognition = {
   /** The weight from the corresponding example part. */
   weight?: number;
 
+  /** True if this part is required. Score will be zero if missing. */
+  required?: boolean;
+
+  /** True if this part can appear in any order within the example. */
+  ignoreOrder?: boolean;
+
   /** The option variable name from the corresponding example part. */
   variable?: string;
-
-  //TODO: required
-  //TODO: anyOrder
 };
 
 /**
@@ -118,6 +121,8 @@ export type ExampleScoreMetrics = {
   partCount: number;
   /** The number of example parts that matched. */
   matchedPartCount: number;
+  /** The number of required example parts that are missing. */
+  missingRequiredPartCount: number;
   /** The number of matched example parts that were in order. */
   inOrderMatchedPartCount: number;
   /** The number of example never parts that matched. */
