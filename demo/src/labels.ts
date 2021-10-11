@@ -4,7 +4,7 @@ import type {
   ExampleRecognition,
 } from "@geoffcox/pretty-good-nlp";
 
-import orderBy from "lodash-es/orderBy";
+import orderBy from "lodash/orderBy";
 
 /**
  * Gets the line segments (as CSS styles) for matches and never matches with offset to avoid overlap.

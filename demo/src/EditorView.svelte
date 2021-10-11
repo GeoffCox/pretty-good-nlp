@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import debounce from "lodash-es/debounce";  
+  import debounce from "lodash/debounce";  
   import {
     demoDocuments,
     demoDocumentIndex,

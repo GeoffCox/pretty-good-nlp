@@ -1,4 +1,4 @@
-import uniqBy from "lodash-es/uniqBy";
+import uniqBy from "lodash/uniqBy";
 import type { CharacterRange } from "./characterRange";
 import { findPatterns } from "./findPatterns";
 import { findPhrases } from "./findPhrases";

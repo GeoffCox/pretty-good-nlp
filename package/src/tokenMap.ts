@@ -2,7 +2,7 @@ import type { CharacterRange } from "./characterRange";
 import { CharacterRanges } from "./characterRange";
 import type { TokenRange } from "./tokenRange";
 import { TokenRanges } from "./tokenRange";
-import sortBy from "lodash-es/sortBy";
+import sortBy from "lodash/sortBy";
 
 /**
  * The result of tokenizing text into a collection of character ranges; one per token.

@@ -13,7 +13,7 @@
     "@rollup/plugin-node-resolve": "^11.0.0",
     "@rollup/plugin-typescript": "^8.0.0",
     "@tsconfig/svelte": "^1.0.0",
-    "@types/lodash-es": "^4.17.5",
+    "@types/lodash": "^4.14.175",
     "@types/yaml": "^1.9.7",
     "rollup": "^2.56.3",
     "rollup-plugin-css-only": "^3.1.0",
@@ -31,7 +31,7 @@
     "@geoffcox/svelte-splitter": "^1.0.1",
     "@svelte-parts/editor": "0.0.19",
     "codemirror": "^5.62.3",
-    "lodash-es": "^4.17.21",
+    "lodash": "^4.17.21",
     "sirv-cli": "^1.0.0",
     "svelte-bootstrap-icons": "^1.5.2",
     "yaml": "^1.10.2"

@@ -1,6 +1,6 @@
 <script lang="ts">
-  import toPairs from "lodash-es/toPairs";
-  import orderBy from "lodash-es/orderBy";
+  import toPairs from "lodash/toPairs";
+  import orderBy from "lodash/orderBy";
   import type { IntentRecognition } from "@geoffcox/pretty-good-nlp";
   import ExampleRecognitionCard from "./ExampleResult.svelte";
 

@@ -2,7 +2,7 @@
   import type { DemoDocument } from "./types";
   import type { IntentRecognition } from "@geoffcox/pretty-good-nlp";
 
-  import debounce from "lodash-es/debounce";
+  import debounce from "lodash/debounce";
   import { recognize } from "@geoffcox/pretty-good-nlp";
   import { demoDocument } from "./stores";
 
