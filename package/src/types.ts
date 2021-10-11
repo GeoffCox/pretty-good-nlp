@@ -2,26 +2,26 @@ import type { CharacterRange } from "./characterRange";
 import type { TokenMap } from "./tokenMap";
 
 /**
- * A method that breaks up a continuous string of text into a map of tokens.
+ * A method that breaks up a text into a map of tokens.
  */
 export type Tokenizer = (text: string) => TokenMap;
 
 /**
- * A part of an example identified by matching against literals, patterns, or regular expressions.
+ * A part of an example identified by matching against phrases, patterns, or regular expressions.
  */
 export type ExamplePart = {
   /**
-   * Gets or sets the name of this part.
+   * The name of this part.
    */
   name?: string;
 
   /**
-   * Gets or sets the list of literal phrases for this part of the example.
+   * The list of literal phrases for this part of the example.
    */
   phrases?: string[];
 
   /**
-   * Gets or sets the patterns for this part of the example.
+   * The patterns for this part of the example.
    * * = zero or more letters and/or numbers (A-z0-9 case insensitive)
    * @ = any single letter (A-z case insensitive)
    * # = any single number (0-9)
@@ -32,32 +32,50 @@ export type ExamplePart = {
   patterns?: string[];
 
   /**
-   * Gets or sets the regular expressions for this part of the example.
+   * The regular expressions for this part of the example.
    */
   regularExpressions?: string[];
 
   /**
-   * Gets or sets the weight of this matching part.
+   * The weight of this part relative to other parts in the example.
+   * @default 1
    */
   weight?: number;
 
+  /** 
+   * If this part is required. 
+   * The score will be zero if part is missing. 
+   */
+  required?: boolean;
+
+  /** 
+   * If this part can appear in any order within the example. 
+   */
+  ignoreOrder?: boolean;
+
   /**
-   * Gets or sets the variable name to associate with this part's value when matched.
+   * The variable name to associate with this part's value when matched.
    */
   variable?: string;
 };
+
+/**
+ * A part of an example identified by matching against phrases, patterns, or regular expressions.
+ * A match of a never part anywhere in the text causes an example to have a score of zero.
+ */
+export type NeverPart = Pick<ExamplePart, "name" | "phrases" | "patterns" | "regularExpressions">;
 
 /**
  * An example that when matched indicates an intent.
  */
 export type Example = {
   /**
-   * Gets or sets the name of this example.
+   * The name of this example.
    */
   name?: string;
 
   /**
-   * Gets or sets the ordered list of parts expected for this example.
+   * The ordered list of parts expected for this example.
    *
    * For the canonical form: I am going on vacation Monday.
    * - [0] - Phrases = "I am","I'm","I will be","I'll"
@@ -68,9 +86,9 @@ export type Example = {
   parts: ExamplePart[];
 
   /**
-   * Gets or sets the list of parts that will cause the example to never match.
+   * The list of parts that will cause this example to score 0 if any are matched.
    */
-  neverParts?: ExamplePart[];
+  neverParts?: NeverPart[];
 };
 
 /**
@@ -78,12 +96,11 @@ export type Example = {
  */
 export type Intent = {
   /**
-   * Gets or sets the name of the intent
+   * The name of this intent.
    */
   name: string;
   /**
-   * Gets or sets the list of examples indicating this intent.
-   * Ordering is only used to break score ties.
+   * The list of examples that, when matched, indicate this intent.   
    */
   examples: Example[];
 };
@@ -91,60 +108,67 @@ export type Intent = {
 /**
  * The result of recognizing an example part.
  */
-export type ExamplePartRecognition = {
-  /**
-   * Gets or sets the name of this part.
+export type ExamplePartRecognition = Omit<ExamplePart, "phrases" | "patterns" | "regularExpresisons"> & {
+  /** 
+   * The matches for this part in order from best to worst. 
    */
-  name?: string;
+  matches: CharacterRange[];
+};
 
+/**
+ * The resulting matches of never parts.
+ */
+ export type NeverPartRecognition = Omit<NeverPart, "phrases" | "patterns" | "regularExpresisons"> & {
   /** The ranges of the matches for this part in order from best to worst. */
   matches: CharacterRange[];
-
-  /** The weight from the corresponding example part. */
-  weight?: number;
-
-  /** True if this part is required. Score will be zero if missing. */
-  required?: boolean;
-
-  /** True if this part can appear in any order within the example. */
-  ignoreOrder?: boolean;
-
-  /** The option variable name from the corresponding example part. */
-  variable?: string;
 };
 
 /**
  * A set of metrics specific to the recognition algorithm.
  */
 export type ExampleScoreMetrics = {
-  /** The number of example parts */
+  /** 
+   * The number of example parts.
+   */
   partCount: number;
-  /** The number of example parts that matched. */
+  /** 
+   * The number of example parts that matched. 
+   */
   matchedPartCount: number;
-  /** The number of required example parts that are missing. */
+  /** 
+   * The number of required example parts that are missing. 
+   */
   missingRequiredPartCount: number;
-  /** The number of matched example parts that were in order. */
+  /** 
+   * The number of matched example parts that were in order. 
+   */
   inOrderMatchedPartCount: number;
-  /** The number of example never parts that matched. */
+  /** 
+   * The number of example never parts that matched. 
+   */
   matchedNeverPartCount: number;
-  /** The sum of the weights of the example parts. */
+  /** 
+   * The sum of the weights of the example parts. 
+   */
   partWeightSum: number;
-  /** The sum of the weights of the matched example parts. */
+  /** 
+   * The sum of the weights of the matched example parts. 
+   */
   matchedPartWeightSum: number;
-  /** The number of tokens in the input text. */
+  /** 
+   * The number of tokens in the input text. 
+   */
   tokenCount: number;
-  /** The number of tokens in the input text that matched. */
+  /** 
+   * The number of tokens in the input text that matched. 
+   */
   matchedTokenCount: number;
 };
 
 /**
  * The result of recognizing an example.
  */
-export type ExampleRecognition = {
-  /**
-   * The name of the example.
-   */
-  name?: string;
+export type ExampleRecognition = Omit<Example, "parts" | "neverParts"> & { 
   /**
    * The score between 0 and 1 indicating if the text matches this example.
    */
@@ -156,7 +180,7 @@ export type ExampleRecognition = {
   /**
    * The recognition of this example's never parts.
    */
-  neverParts: ExamplePartRecognition[];
+  neverParts: NeverPartRecognition[];
   /**
    * Detailed metrics about this example recognition.
    */
@@ -166,11 +190,7 @@ export type ExampleRecognition = {
 /**
  * The result of recognizing and intent.
  */
-export type IntentRecognition = {
-  /**
-   * The intent name.
-   */
-  name: string;
+export type IntentRecognition = Omit<Intent, "examples"> & {  
   /**
    * The score between 0 and 1 indicating if the text is this intent.
    */

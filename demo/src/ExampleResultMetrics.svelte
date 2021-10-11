@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { ExampleScoreMetrics } from "@geoffcox/pretty-good-nlp";
 
+  export let score: number;
   export let metrics: ExampleScoreMetrics;
 
   const toPercentText = (value: number) => {
@@ -17,6 +18,15 @@
     metrics.matchedNeverPartCount === 0
       ? `${metrics.matchedPartCount}/${metrics.partCount} matches, ${metrics.matchedPartWeightSum}/${metrics.partWeightSum} weighted sum`
       : `${metrics.matchedNeverPartCount} never matches`;
+
+  // ----- Missing Required Parts -----//
+
+  $: missingRequiredText =
+    metrics.missingRequiredPartCount > 0
+      ? `${metrics.missingRequiredPartCount} required ${
+          metrics.missingRequiredPartCount > 1 ? "parts" : "part"
+        } missing`
+      : "";
 
   // ----- Out of Order ----- //
   $: outOfOrderCount =
@@ -39,9 +49,7 @@
 
   // ----- Noise ----- //
   $: noiseCount =
-    metrics.tokenCount > 0
-      ? metrics.tokenCount - metrics.matchedTokenCount
-      : 0;
+    metrics.tokenCount > 0 ? metrics.tokenCount - metrics.matchedTokenCount : 0;
   $: noisePercent =
     metrics.tokenCount > 0 ? noiseCount / metrics.tokenCount : 0;
 
@@ -54,7 +62,12 @@
   )} x 5% penalty weight = ${toPercentText(noisePenaltyPercent)}`;
 
   // ----- Score ----- //
-  $: score = weightPercent - outOfOrderPenaltyPercent - noisePenaltyPercent;
+  $: scoreTooltip =
+    metrics.missingRequiredPartCount > 0
+      ? `${metrics.missingRequiredPartCount} required ${
+          metrics.missingRequiredPartCount > 1 ? "parts" : "part"
+        } missing`
+      : "";
 </script>
 
 <!--
@@ -64,7 +77,7 @@
 <div class="metrics">
   {#if metrics}
     <div class="matches" title={weightTooltip}>
-      {toPercentText(weightPercent)} matched
+      {toPercentText(weightPercent)} weighted matches
     </div>
     <div class="math-operator">-</div>
     <div class="out-of-order" title={outOfOrderTooltip}>
@@ -75,21 +88,29 @@
       {toPercentText(noisePenaltyPercent)} noise
     </div>
     <div class="math-operator">=</div>
-    <div class="score">
+    <div class="score" title={scoreTooltip}>
       {toPercentText(score)}
+      {#if metrics.missingRequiredPartCount > 0}
+        <sup class="issue">*</sup>
+      {/if}
     </div>
   {/if}
 </div>
 
 <style>
-  .metrics {    
+  .metrics {
     color: #444;
-    display: flex; 
-    flex-wrap: wrap;       
-    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;    
+    display: flex;
+    flex-wrap: wrap;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
     font-size: 14px;
+    align-items: baseline;
   }
   .math-operator {
     padding: 0 0.5em;
+  }
+  .issue {
+    display: inline;
+    color: rgb(140, 0, 0);    
   }
 </style>

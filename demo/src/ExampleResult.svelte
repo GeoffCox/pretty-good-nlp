@@ -31,7 +31,7 @@
           <RecognitionLabel {exampleRecognition} {text} />
         </div>
         <div class="metrics">
-          <Metrics metrics={exampleRecognition.scoreMetrics} />
+          <Metrics score={exampleRecognition.score} metrics={exampleRecognition.scoreMetrics} />
         </div>
       </div>
     </div>

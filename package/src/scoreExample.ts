@@ -32,14 +32,14 @@ export const scoreExample = (
       matchedPartCount++;
       matchedPartWeightSum += weight;
 
-      if (
-        part.ignoreOrder ||
-        lastEnd == -1 ||
-        part.matches[0].start >= lastEnd
-      ) {
+      if (part.ignoreOrder) {
         inOrderMatchedPartCount++;
+      } else {
+        if (lastEnd == -1 || part.matches[0].start >= lastEnd) {
+          inOrderMatchedPartCount++;
+        }
+        lastEnd = part.matches[0].end;
       }
-      lastEnd = part.matches[0].end;
 
       bestMatches.push(part.matches[0]);
     } else if (part.required) {

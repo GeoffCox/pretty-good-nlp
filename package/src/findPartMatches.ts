@@ -30,11 +30,13 @@ import type {
       result.push(
         ..._findRegularExpressions(part.regularExpressions, textTokenMap.text)
       );
-    }
+    }    
   
     return {
       name: part.name,
       matches: uniqBy(result, (value) => `${value.start}..${value.end}`),
+      ignoreOrder: part.ignoreOrder,
+      required: part.required,      
       weight: part.weight,
       variable: part.variable,
     };

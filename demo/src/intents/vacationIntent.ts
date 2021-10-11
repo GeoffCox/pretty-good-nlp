@@ -65,6 +65,7 @@ export const vacationIntent: Intent = {
       parts: [
         {
           phrases: ["add", "set", "plus"],
+          required: true,
           weight: 20,
         },
         {
