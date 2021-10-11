@@ -1,10 +1,12 @@
 # pretty-good-nlp
 
-A simple natural language processing (NLP) recognizer you can use in minutes.
+Pretty-good-nlp is a deterministic, match-based, recognizer for natural language processing (NLP) scenarios.
 
-## Recognizing Intent
+This readme cover the concepts, motivation, expected scenarios for building the pretty-good-nlp recognizer. For installation and usage, see the [package readme](https://github.com/GeoffCox/pretty-good-nlp/package).
 
-Let's say you are writing a home automation application. You want the app to respond to user input and take action. For example, the user might say `Turn on the oven to 450 degrees for 2 hours`. The app should recognize the user's _intention_ to turn on the oven. It should also extract the temperature and duration.
+## Recognition is not easy
+
+Let's say you are writing a home automation application. You want the app to respond to user input and take action. For example, the user might say `Turn on the oven to 450 degrees for 2 hours`. The app should recognize the user's _intention_ to turn on the oven. It should also extract the temperature and duration so you can use them to control the oven.
 
 There are many different ways a user might express the same intent.
 
@@ -13,276 +15,74 @@ There are many different ways a user might express the same intent.
 - `Please bake for 2 hours at 450 degrees.`
 - `Bake at 450 for 120 minutes`
 
-Correctly recognizing the multitude of possible expressions needs sophisticated natural language processing (NLP) and an accurate machine learning (ML) model. Building these systems requires significant expertise, large labeled data sets, and many days of effort. The cost is multipled because each intent likely needs it own model. The side quest of building machine learning models might take so long, you never get back to the main quest of building your app. **Yikes!**
+Accurately recognizing the multitude of possible expressions requires sophisticated natural language processing (NLP) and machine learning (ML) models. 
+
+Building these systems requires significant expertise, large labeled data sets, and week to months of effort. 
+
+The costs are higher when each intent needs it own model. The side quest of building machine learning models might take so long, you never get back to the main quest of building your app. **Yikes!**
 
 ## Pretty-good-nlp to the rescue
 
-- Get basic recognition working in minutes.
-- Extract values from the text to named variables.
-- Fast, deterministic, and debuggable algorithm.
-- No machine learning or NLP knowledge required.
-- No external dependencies.
+This recognizer was created so you can get basic recognition working in a hour or two. No machine larning nor NLP knowledge is required. It is easy to improve as you develop your application.
 
-> Bonus: Bookend your machine learning model
+The algorithm is fast and deterministic. It is easy to debug if you have problems. The package has no external dependencies on large datasets.
 
-- When you get to the point that you do need machine learning, you can use the data you've already captured for labeled examples, dictionary features, and patterns.
-- If you have a machine learning model but don't get a 100% score for the exact match cases, you can leverage this recognizer either pre- or post-prediction.
+If you need a machine learning model, you can develop it in parallel with your application. The configuration passed to the recognizer was designed to be leveraged when building ML models. Examples with variables are positive labels. The phrases, patterns, and regular expressions can be converted to feature dictionaries. You could even use the permutations of each example's parts to generate a labeled dataset.
 
-## Basic Usage
+Once you have a machine learning model, you can augment it with this recognizer. If you run the recognizer pre-prediction, you can avoid the cost of the ML model for positive, exact matches. If you run the recognizer post-prediction, you can correct for non-deterministic deviations or small issues with precision and recall.
 
-### Installation
+## Design considerations
 
-```
-npm install @geoffcox/pretty-good-nlp
-```
+### Short utterances
 
-### Creating an Intent
+Short and simple sentences are the primary input for IoT devices, ordering systems, and chat bots. 
 
-The `Turn on the oven to 450 degrees for 2 hours` example will help demonstrate building an intent to pass to the recognizer. The steps below will take you through creating example parts, examples, and then an intent.
+Accurate long document recognition is a massive undertaking. It is way beyond this simple recognizer to handle complex sequencing, look-ahead and back-tracking for context, format and relative position metadata, normalization, and data cleaning. Performance becomes a big factor in long documents for both computation and memory footprint.
 
-1. Define the parts that should match in order to recognize this example.
+This recognizer is built to examine short utterances and provide scores for multiple intents and examples. 
 
-```
-Turn on the oven | to | 450 | degrees | for | 2 | hours
-```
+### Examples first
 
-In the ExamplePart type, we can define:
+When describing what to recognize and what to reject, almost everyone starts by listing a set of positive examples and maybe a few negative examples. 
 
-- phrases like `Turn on`, `the oven`, and `degrees`
-- patterns like `###` for the temperature
-- regular expressions like `\\d+` for the hours
+This recognizer's configuration was designed to allow developers to quickly enumerate a set of examples and break them down into their ordered parts. As more examples are considered, parts can be broken up and more phrases added to handle variations.
 
-Phrases are string literals that are case-insensitive matched. Patterns are a simpler way to write a regular expression. Regular expressions let you define sophsticated pattern matching. If needed, an ExamplePart can have phrases, patterns, and regular expressions.
+### Sentence ordering
 
-```ts
-const parts: ExamplePart[] = [
-  { phrases: ["Turn on the oven"] },
-  { phrases: ["to"] },
-  { patterns: ["###"] },
-  { phrases: ["degrees"] },
-  { phrases: ["for"] },
-  { regularExpressions: ["\\d+"] },
-  { phrases: ["hours"] },
-];
-```
+Although humans can understand mixed up sentence structure (i.e. Yoda), order is often important in distinguishing intent. 'How to cook dinner for vegetarians' is very different than 'How to cook vegetarians for dinner'.
 
-2. Define a variable name in each part that should be extracted.
+This recognizer includes ordering in its scoring calculation, but the penalty is capped. The maximum out-of-order penalty can be configured per recognize call.
 
-In this example, the temperature, temperatureUnit, duration, and durationUnit should be extracted. If they match, the recognizer will return them in a name/value dictionary.
+### Deterministic
 
-```ts
-const parts: ExamplePart[] = [
-  { phrases: ["Turn on the oven"] },
-  { phrases: ["to"] },
-  { patterns: ["###"], variable: "temperature" },
-  { phrases: ["degrees"], variable: "temperatureUnit" },
-  { phrases: ["for"] },
-  { regularExpressions: ["\\d+"], variable: "duration" },
-  { phrases: ["hours"], variable: "durationUnit" },
-];
-```
+Machine learning models built with deep learning algorithm and millions of examples have a complex decision tree. This can make them nearly impossible to debug and there may be non-deterministic variations in complex predictions.
 
-3. Set a weight on a part that should be relatively more or less important than other parts. A weight of zero indictes an optional part. The default is 1.
+This recognizer is built to be deterministic and easy to debug. Each intent score equals it's best scoring example. Examples are scored based on the weighted matches of their parts. The scoring penalizes out-of-order, missing, or unexpected parts.
 
-In this example, knowing the temperature is very important, the duration moderately important, and `to` and `for` can be completely optional.
+### Replaceable
 
-```ts
-const parts: ExamplePart[] = [
-  { phrases: ["Turn on the oven"] },
-  { phrases: ["to"], weight: 0 },
-  { patterns: ["###"], variable: "temperature", weight: 4 },
-  { phrases: ["degrees"], variable: "temperatureUnit" },
-  { phrases: ["for"], weight: 0 },
-  { regularExpressions: ["\\d+"], variable: "duration", weight: 2 },
-  { phrases: ["hours"], variable: "durationUnit" },
-];
-```
+Many developers will dismiss this as nothing more than simple text-based matching - which is completely accurate. This recognizer started as an array of exact match strings. It then supported regular expressions. Regular expressions seemed difficult so patterns were added. Then the literal match was replaced with phrase matching. Finally a simple scoring algorithm was added to account for partial part matching, noise, and ordering. 
 
-4. Fill out your example parts to cover different variations. Add alternative phrases, word synonyms, and patterns/regular expressions.
+There is deliberately no magic here. This recognizer was built to be replaced. The goal is to have a placeholder for sophisticated regular expressions. Its value is in the effort required to add each feature, fully unit test, define a configuration format, and return a useful result.
 
-```ts
-const parts: ExamplePart[] = [
-  {
-    phrases: [
-      "Oven on",
-      "Turn on the oven",
-      "Turn the oven on",
-      "Start the oven",
-      "Bake at",
-      "Set the oven",
-    ],
-  },
-  {
-    phrases: ["to", "at", "for"],
-    weight: 0,
-  },
-  {
-    patterns: ["###"],
-    variable: "temperature",
-    weight: 4,
-  },
-  {
-    phrases: ["degrees", "fahrenheit", "celcius"],
-    weight: 0.5,
-    variable: "temperatureUnit",
-  },
-  {
-    phrases: ["for", "lasting", "ending after", "no more than"],
-    weight: 0,
-  },
-  {
-    regularExpressions: ["\\d+"],
-    variable: "duration",
-    weight: 2,
-  },
-  {
-    phrases: ["hours", "minutes"],
-    variable: "durationUnit",
-  },
-];
-```
+### Fast matching
 
-5. Define an example.
+A recognizer will have to consider multiple intents, each with multiple parts, and each with multiple phrases. Dictionaries of phrases can easily get large enough to impact the performance of an iterative complete match algorithm. 
 
-An example is an ordered set of parts to match. You can name it to help with debugging.
+This recognizer employs a Trie search algorithm to quickly match sequences of words against phrase lists.
 
-Here's a few of ways to name this example:
+### Pattern recognition
 
-- `Turn on the oven to 450 degrees for 2 hours`
-- `Turn on the oven to <temperature> degrees for <duration> hours`
-- `<Turn on oven command> [to] <temperature> <temperatureUnit> [for] <duration> <durationUnit>`
+Sometimes a part cannot be recognized by a set of literals.  For example, a list of every possible calendar date would be impractical. Regular expressions are very powerful in pattern recognition, but equally as difficult to construct. 
 
-There is also a collection of neverParts. Never parts allow you to specify things that shouldn't show in the example. If any never part matches then the entire example is considered a non-match and gets a recognition score of 0.
+This recognizer provides a simplified pattern language which is converted into regular expressions. For example, a phone number pattern could be `#-###-###-####`. Full regular expressions are supported as well.
 
-```ts
-const example: Example = {
-  name: "Turn the oven on to 450 degrees for 2 hours",
-  parts: [
-    // TODO: Put the parts you define here.
-  ],
-  neverParts: [],
-};
-```
+### Noise
 
-Each example acts as an overall sentence structure to match. Remember there are lot of ways a user might express an intent. You probably want to create an example for each variation. Here are the variations from earlier.
+Text input captured from speech recognition or casual conversation typing in chat bots may have significant noise words or unmatched words. 
 
-- `Turn on the oven to 450 degrees for 2 hours`
-- `I want to heat the oven to 450 degrees and bake for 2 hours.`
-- `Please bake for 2 hours at 450 degrees.`
-- `Bake at 450 for 120 minutes`
+This recognizer can effectively remove noise words by marking a part as weight zero and ignoring order. Noise words are included in the scoring calculation, but the penalty is capped. The maximum noise penalty can be configured per recognize call.
 
-These can be handled in a single example because the sentence structure is the same. Something like `Start baking at 10 AM for 2 hours at 325 degrees` would required a new example.
+### Client and Server
 
-6. Define an intent.
-
-An intent is a just a named set of examples.
-
-```ts
-const intent : Intent = {
-    name: 'Turn on oven',
-    examples: [
-      //TODO: Put the examples you define here.
-    ];
-}
-```
-
-### Calling recognize()
-
-The recognize method takes the text to recognize, the intent you created, and some options. The options are covered later in the advanced usage section.
-
-```ts
-function recognize(
-  text: string,
-  intent: Intent,
-  options?: RecognizeOptions
-): IntentRecognition;
-```
-
-Recognize returns an IntentRecognition. 
-It has the name of the intent, a recognition score, and a dictionary of extracted variable name/values. 
-There is also a details object that contains more information specific to this recognizer.
-
-```ts
-export type IntentRecognition = {
-  name: string;
-  score: number;
-  variableValues: Record<string, string[]>;
-  details: {
-    examples: ExampleRecognition[];
-    textTokenMap: TokenMap;
-  };
-```
-
-How scoring works:
-- The recognition score for the intent is the highest example recognition score. 
-- The score will be between 0 (not recognized) and 1 (exactly recognized) inclusive.
-- Each example recognition is scored by a ratio of the actual/expected part matches. 
-  - The score is adjusted based on the relative weight of each part.
-  - There is a deduction if the matches are out of order up to a maximum of 0.15.
-  - There is also a deduction for noise (i.e. words in the text that are not matched) up to a maximum of 0.05.
-
-About variable values:
-- The variable values will contain the variables extracted for the higest scoring example.
-- Sometimes there are multiple possible matches for a variable. In this case there will be more than one value in the values array.
-- The values array associated with each varaible name will be in order from best to worst match.
-
-About details:
-- The example recognitions are in the same order as the examples in the intent.
-- Each example recognition can be inspected to review the example's name, score, recognized parts, recognized never parts, and some metrics from the scoring process.
-- The text token map can be inspected to review the input text and the tokens from tokenization. Tokenization is breaking up the input text into words.
-
-## Advanced Usage
-
-Pass an options parameter to the recognize method to handle advanced scenarios.
-
-### Share phrases, patterns, and regular expressions
-
-Use the shared property to specify named sets of phrases, patterns, and regular expressions to use across intents and examples. 
-
-```ts
-const options = {
-  shared: {
-    temperatureUnits: ['fahrenheit', 'celcius', 'kelvin'],
-    timeDurations: ['hours', 'minutes'],
-    datePatterns: ['####-##-##','##/##/##','##-####'],
-    timeRegexs: ['\\d\\d:\\d\\d', '\\d+']
-  }
-};
-```
-You can then include them into example parts by reference.
-
-```ts
-const part : ExamplePart = {
-  // This resolves to ['degrees', fahrenheit', 'celcius', 'kelvin']
-  phrases: ['degrees', '$ref=temperatureUnits']
-}
-```
-
-### Tune the out of order and noise penalties
-
-Set the maxOutOfOrderPenalty or maxNoisePenalty to control how severe the penalties are when scoring examples. Values must be between 0 and 1 inclusive.
-
-```ts
-const options = {
-  maxOutOfOrderPenalty: 0.2,
-  maxNoisePenalty: 0    
-};
-```
-
-### Using a different tokenizer
-
-The tokenize method takes a string of text and returns a TokenMap. A TokenMap is the original text and an array of character ranges with one range per token.
-
-```ts
-export type Tokenizer = (text: string) => TokenMap;
-```
-
-You can implement a tokenizer to separate words based on a particular language, or if you want to break on different delimiters.  The default tokenizer breaks up words based on ' .,:;' (i.e. space, period, comma, colon, semicolon, question mark, and exclamation point). Pass your tokenizer in the options.
-
-```ts
-const options = {
-  tokenizer: myTokenizer,  
-};
-```
-
-
+To support rapid development, this recognizer was built in Typescript/JavaScript so that it could run in web browsers. The recognizer is built as a single function `recognize` that would allow for background web workers to do heavy lifting in client scenario. As well, the recognizer could be used on a node server when chained with a machine learning model.
